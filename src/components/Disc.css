@@ -1,0 +1,92 @@
+.disc {
+  position: relative;
+  width: min(70vmin, 480px);
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.5));
+}
+
+.disc__art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  /*
+   * Guarantees the 15mm centre hole reads as transparent (docs/03-object-spec.md,
+   * "120mm diameter, 15mm centre hole"), independent of how clean the source
+   * scan's own alpha is. It does not touch the clear polycarbonate ring beyond
+   * the hole; that transparency comes from the retail PNG itself and is left
+   * alone, per "Retail disc scans usually include it as transparency. Do not
+   * fill it."
+   */
+  mask-image: radial-gradient(
+    circle closest-side,
+    transparent 0 calc(var(--hub-hole-ratio) * 100%),
+    black calc(var(--hub-hole-ratio) * 100% + 0.5%) 100%
+  );
+  -webkit-mask-image: radial-gradient(
+    circle closest-side,
+    transparent 0 calc(var(--hub-hole-ratio) * 100%),
+    black calc(var(--hub-hole-ratio) * 100% + 0.5%) 100%
+  );
+  animation: disc-spin 6s linear infinite;
+}
+
+.disc__sweep {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  opacity: 0.5;
+  mix-blend-mode: screen;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 55deg,
+    rgba(255, 255, 255, 0.4) 95deg,
+    transparent 135deg,
+    transparent 360deg
+  );
+  /*
+   * The clear ring runs from the hub hole out to 46mm on a 120mm disc
+   * (docs/03-object-spec.md, "Disc rendering"). The highlight is masked out
+   * of that whole clear zone so it only plays over the printed area, which
+   * is where a real reflection would actually land.
+   */
+  mask-image: radial-gradient(
+    circle closest-side,
+    transparent 0 calc(var(--clear-ring-ratio) * 100%),
+    black calc(var(--clear-ring-ratio) * 100% + 1%) 100%
+  );
+  -webkit-mask-image: radial-gradient(
+    circle closest-side,
+    transparent 0 calc(var(--clear-ring-ratio) * 100%),
+    black calc(var(--clear-ring-ratio) * 100% + 1%) 100%
+  );
+  /*
+   * Own rotation, independent of .disc__art's: different duration and
+   * direction so the highlight travels across the artwork rather than
+   * spinning fixed to it, per the specular sweep note in
+   * docs/03-object-spec.md.
+   */
+  animation: disc-sweep 9s linear infinite reverse;
+}
+
+@keyframes disc-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes disc-sweep {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .disc__art,
+  .disc__sweep {
+    animation: none;
+  }
+}
