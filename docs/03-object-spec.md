@@ -52,18 +52,20 @@ The result is honest. It does not pretend to be a retail scan, and it looks like
 
 For entries with no physical release at all, and available as a deliberate style for any entry.
 
-Two variants, because the medium determines the dye:
+The rendered face is the label side, the side that faced up on a shelf, not the recording side. Silver or matte white. The dye colour below describes the underside, which the site never shows.
 
-- **CD-R**, for albums. Recording side reads cyan-green, or pale gold for phthalocyanine stock. Label side is silver or matte white.
-- **DVD-R**, for films, series and games. Recording side reads violet-blue. Label side is silver or matte white.
+Two variants, because the medium determines that hidden dye:
 
-Construction:
+- **CD-R**, for albums. Underside reads cyan-green, or pale gold for phthalocyanine stock. Visible label side is silver or matte white.
+- **DVD-R**, for films, series and games. Underside reads violet-blue. Visible label side is silver or matte white.
 
-1. Base disc in the dye colour, with the specular sweep at higher intensity than a printed disc. Blank recordable media is more reflective, not less.
-2. A printed manufacturer ring near the hub, small type, low contrast. This is what sells it. A perfectly clean blank looks like a mistake. A blank with a faint ring of unreadable printing looks like something out of a spindle.
-3. The title in marker across the middle of the disc, straight rather than curved. People wrote across the disc, not around it.
-4. Slight rotation, 2 to 5 degrees. Slight vertical offset from centre. Never perfectly aligned.
-5. Optional second line, smaller: the year, or "DISC 1", or nothing.
+Construction, bottom to top:
+
+1. Silver base with a radial brushed sheen. Not flat grey.
+2. Low-saturation rainbow diffraction through the centre. This and the specular sweep are light on the surface, not print on it, so neither rotates with the disc the way the printed layers do.
+3. Concentric moulding rings from the hub out to 33mm, including the stacking ring at 26 to 33mm (see the Cases table).
+4. A printed band across the middle, full width. An invented brand mark on the left, capacity and speed on the right: DVD-R reads 4.7GB and 120min, CD-R reads 700MB and 80min. Low contrast and slightly transparent, printed on the surface rather than floating above it. Never a real brand.
+5. The handwritten title in marker, in the upper third, above the band. Wraps to a second line below itself if long. Slight rotation, 2 to 5 degrees, and a slight offset. Never perfectly aligned.
 
 Typography: a marker face rather than a script face. Permanent Marker, Rock Salt or Shadows Into Light from Google Fonts. Permanent Marker is the closest to an actual Sharpie on plastic. Set it in caps for films and games, mixed case for albums, because that is roughly how people wrote them.
 

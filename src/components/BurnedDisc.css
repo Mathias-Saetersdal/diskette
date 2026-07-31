@@ -1,0 +1,182 @@
+.burned-disc {
+  position: absolute;
+  inset: 0;
+}
+
+.burned-disc__base,
+.burned-disc__rainbow,
+.burned-disc__rings {
+  position: absolute;
+  inset: 0;
+}
+
+/* Layer 1: silver base with a radial brushed sheen, not flat grey. */
+.burned-disc__base {
+  background-image:
+    radial-gradient(
+      circle at 35% 28%,
+      #f4f5f7 0%,
+      #d9dbdf 20%,
+      #b7bac1 42%,
+      #90939a 68%,
+      #5f6267 100%
+    ),
+    repeating-radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.07) 0px,
+      rgba(255, 255, 255, 0.07) 1px,
+      rgba(0, 0, 0, 0.05) 1px,
+      rgba(0, 0, 0, 0.05) 2px
+    );
+  background-blend-mode: soft-light;
+}
+
+/*
+ * Layer 2: low-saturation rainbow diffraction through the centre. Light on
+ * the surface, not print, so it counter-rotates against .disc__art's spin
+ * at the same duration, cancelling it out and holding still on screen while
+ * everything printed keeps turning underneath it.
+ */
+.burned-disc__rainbow {
+  background: conic-gradient(
+    from 0deg,
+    rgba(255, 170, 195, 0.4),
+    rgba(255, 219, 140, 0.4),
+    rgba(180, 255, 190, 0.4),
+    rgba(140, 200, 255, 0.4),
+    rgba(200, 165, 255, 0.4),
+    rgba(255, 170, 195, 0.4)
+  );
+  mix-blend-mode: color;
+  mask-image: radial-gradient(
+    circle closest-side,
+    black 0%,
+    black 32%,
+    transparent 76%
+  );
+  -webkit-mask-image: radial-gradient(
+    circle closest-side,
+    black 0%,
+    black 32%,
+    transparent 76%
+  );
+  animation: disc-spin 6s linear infinite reverse;
+}
+
+/*
+ * Layer 3: concentric moulding rings from the hub out to 33mm, with the
+ * stacking ring called out at 26 to 33mm (docs/03-object-spec.md, Cases).
+ * Confined to that band by the outer mask; the fine rings and the heavier
+ * stacking ring are two background layers within it.
+ */
+.burned-disc__rings {
+  background-image:
+    repeating-radial-gradient(
+      circle,
+      rgba(0, 0, 0, 0.07) 0,
+      rgba(0, 0, 0, 0.07) 1px,
+      transparent 1px,
+      transparent 3px
+    ),
+    radial-gradient(
+      circle closest-side,
+      transparent 0 calc(var(--stack-inner) * 100%),
+      rgba(0, 0, 0, 0.14) calc(var(--stack-inner) * 100% + 0.3%)
+        calc(var(--stack-outer) * 100% - 0.3%),
+      transparent calc(var(--stack-outer) * 100%) 100%
+    );
+  mask-image: radial-gradient(
+    circle closest-side,
+    transparent 0 calc(var(--hub-hole-ratio) * 100%),
+    black calc(var(--hub-hole-ratio) * 100% + 0.5%)
+      calc(var(--mould-outer) * 100%),
+    transparent calc(var(--mould-outer) * 100% + 0.5%) 100%
+  );
+  -webkit-mask-image: radial-gradient(
+    circle closest-side,
+    transparent 0 calc(var(--hub-hole-ratio) * 100%),
+    black calc(var(--hub-hole-ratio) * 100% + 0.5%)
+      calc(var(--mould-outer) * 100%),
+    transparent calc(var(--mould-outer) * 100% + 0.5%) 100%
+  );
+}
+
+/*
+ * Layer 4: printed band across the middle, full width. Widest chord of the
+ * circle is exactly at the vertical centre, so the band reaches edge to
+ * edge without extra clipping work. Multiply-blended at low opacity so it
+ * reads as ink on the silver rather than a sticker floating above it.
+ */
+.burned-disc__band {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 15%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-inline: 13%;
+  background: rgba(40, 42, 48, 0.16);
+  mix-blend-mode: multiply;
+  font-family: system-ui, sans-serif;
+  font-size: clamp(0.4rem, 4.2cqw, 0.75rem);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: rgba(28, 30, 34, 0.6);
+}
+
+.burned-disc__brand {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 700;
+}
+
+.burned-disc__brand-mark {
+  width: 0.7em;
+  height: 0.7em;
+  margin-right: 0.35em;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+}
+
+.burned-disc__specs {
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* Layer 5: handwritten title, upper third, above the band. */
+.burned-disc__title-wrap {
+  position: absolute;
+  left: 9%;
+  right: 9%;
+  top: 8%;
+  height: 33%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  text-align: center;
+  pointer-events: none;
+}
+
+.burned-disc__title {
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  /* Near-black with a blue cast, at 90% opacity so the disc shows through. */
+  color: rgba(15, 12, 34, 0.9);
+  font-size: clamp(0.6rem, 10cqw, 1.6rem);
+  line-height: 1.15;
+  overflow-wrap: break-word;
+}
+
+/* Caps for films and games, mixed case for albums: roughly how people wrote them. */
+.burned-disc__title--caps {
+  text-transform: uppercase;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .burned-disc__rainbow {
+    animation: none;
+  }
+}

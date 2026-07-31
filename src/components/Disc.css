@@ -4,21 +4,23 @@
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.5));
+  /* Lets content size itself off the disc's own box (cqw) instead of the
+     viewport, so a shrunk instance in a row doesn't outgrow its face. */
+  container-type: inline-size;
 }
 
 .disc__art {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
+  border-radius: 50%;
+  overflow: hidden;
   /*
    * Guarantees the 15mm centre hole reads as transparent (docs/03-object-spec.md,
-   * "120mm diameter, 15mm centre hole"), independent of how clean the source
-   * scan's own alpha is. It does not touch the clear polycarbonate ring beyond
-   * the hole; that transparency comes from the retail PNG itself and is left
-   * alone, per "Retail disc scans usually include it as transparency. Do not
-   * fill it."
+   * "120mm diameter, 15mm centre hole"), independent of how clean the face
+   * mounted inside is. It does not touch the clear polycarbonate ring beyond
+   * the hole; a retail scan's own alpha carries that, and a generated face
+   * paints its own, per "Retail disc scans usually include it as
+   * transparency. Do not fill it."
    */
   mask-image: radial-gradient(
     circle closest-side,
@@ -33,17 +35,23 @@
   animation: disc-spin 6s linear infinite;
 }
 
+.disc__art > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .disc__sweep {
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  opacity: 0.5;
+  opacity: var(--sweep-opacity, 0.5);
   mix-blend-mode: screen;
   background: conic-gradient(
     from 0deg,
     transparent 0deg,
     transparent 55deg,
-    rgba(255, 255, 255, 0.4) 95deg,
+    rgba(255, 255, 255, var(--sweep-highlight, 0.4)) 95deg,
     transparent 135deg,
     transparent 360deg
   );
