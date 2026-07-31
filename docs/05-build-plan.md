@@ -65,7 +65,7 @@ Commit after every step.
 
 | Format | H x W x D (mm) | Front face ratio (w/h) | Used for |
 |---|---|---|---|
-| PS5 case (?) | 170 x 135 x 14 | 0.794 | PS5 games |
+| PS5 case (?) | 148 x 135 x 14 | 0.912 | PS5 games |
 
 Then add a livery section: `standard`, `ps2` black body, `ps3` black body with the platform band, `ps4` blue body, `ps5` white body with a blue band. Livery is colour over existing geometry, not a new shape.
 
@@ -133,8 +133,8 @@ Prompt:
 ```
 Build src/components/Case.tsx wrapping the Disc component.
 
-Blu-ray case: 171 x 135 x 12mm, front face ratio 0.789. Comment every number
-with its source from docs/03-object-spec.md.
+Blu-ray case: 148 x 128.5 x 12mm, front face ratio 0.868. Comment every
+number with its source from docs/03-object-spec.md.
 
 The hinge is one Y-axis rotation with a transformed origin at the spine.
 Use CSS transform-style: preserve-3d. Three states: closed at a slight angle

@@ -4,16 +4,26 @@ The physical objects and how they behave. Dimensions are real millimetres, used 
 
 ## Cases
 
+Dimensions from print.dvdcover.com and coverstitch.io.
+
 | Format | H × W × D (mm) | Front face ratio (w/h) | Used for |
 |---|---|---|---|
-| DVD keep case | 190 × 135 × 14 | 0.711 | Films, series box sets |
-| Blu-ray case | 171 × 135 × 12 | 0.789 | Films, PS5 and Xbox games |
+| DVD keep case | 184 × 130 × 14 | 0.707 | Films, series box sets |
+| Blu-ray case | 148 × 128.5 × 12 | 0.868 | Films, PS3 and PS4 games |
 | CD jewel case | 142 × 125 × 10 | 0.880 | Albums |
+| PS5 case (?) | 148 × 135 × 14 | 0.912 | PS5 games |
 | Switch case (?) | 170 × 105 × 11 | 0.618 | Switch games |
 
 The disc is the same object across all of them: 120mm diameter, 15mm centre hole. The clear polycarbonate inner ring runs from the hole out to roughly 46mm diameter, where the printed area begins. A stacking ring sits at about 26 to 33mm.
 
 That inner ring is the detail that makes a rendered disc read as real. Retail disc scans usually include it as transparency. Do not fill it.
+
+### Full wrap
+
+Cover art that wraps around the spine needs the whole unfolded sheet, not just the front face ratio. Same sources as above.
+
+- DVD keep case: 273 × 183mm overall. 130mm front and back panels either side of a 14mm spine, folding at 47.6% and 52.7% of the width.
+- Blu-ray case: 264 × 148mm overall. 126mm front and back panels either side of a 12mm spine, folding at 47.7% and 52.3% of the width.
 
 ## Interactions
 
