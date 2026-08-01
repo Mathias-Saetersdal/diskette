@@ -1,0 +1,64 @@
+.tilt-compare {
+  min-height: 100svh;
+  padding: 48px 24px 96px;
+  background: #1a1a1a;
+  color: #eee;
+  font-family: system-ui, sans-serif;
+}
+
+.tilt-compare__heading {
+  margin: 0 0 8px;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.tilt-compare__intro {
+  margin: 0 0 16px;
+  max-width: 640px;
+  color: #aaa;
+}
+
+.tilt-compare__back {
+  display: inline-block;
+  margin-bottom: 40px;
+  color: #9cf;
+}
+
+.tilt-compare__row {
+  margin-bottom: 56px;
+}
+
+.tilt-compare__row-label {
+  margin: 0 0 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ddd;
+}
+
+.tilt-compare__cases {
+  /* Same figure as FilmsList.css's own --list-case-h, duplicated rather
+     than shared: this page renders the cases at list rest size without
+     depending on FilmsList.css at all, so it stays a true comparison of
+     Case.css's own defaults and can be deleted without touching the list. */
+  --list-case-h: clamp(95px, 9vw, 180px);
+  display: flex;
+  align-items: flex-end;
+  gap: 32px;
+}
+
+.tilt-compare__cases .case {
+  --case-h: calc(var(--list-case-h) * var(--height-scale, 1));
+}
+
+/*
+ * Overrides Case.css's own closed-state --tilt-x/--tilt-y (declared
+ * directly on .case__toggle, so only a rule targeting .case__toggle
+ * itself can win — an ancestor custom property alone would be shadowed).
+ * Higher specificity than Case.css's bare .case__toggle rule, and reads
+ * the per-row values set as inline custom properties on .tilt-compare__cases
+ * above, so each row can differ without three separate CSS rules.
+ */
+.tilt-compare__cases .case__toggle {
+  --tilt-x: var(--row-tilt-x);
+  --tilt-y: var(--row-tilt-y);
+}

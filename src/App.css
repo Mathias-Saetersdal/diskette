@@ -32,3 +32,28 @@
 .burned-row .disc {
   width: min(24vmin, 260px);
 }
+
+/*
+ * One per row, not side by side: an open jewel case's front leaf swings
+ * left past its own layout box (JewelCase.css, same overflow-to-the-left
+ * as Case.css's keep cases), and at hero size with a plain flex-row gap
+ * that overflow reached into the closed case sitting next to it.
+ * Stacking removes the adjacency instead of trying to reserve exactly
+ * enough horizontal margin for a temporary, two-instance preview.
+ */
+.jewel-case-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 96px;
+}
+
+/* Both closed, so side by side is safe here — no swung-open leaf to
+   overlap into the gap the way .jewel-case-stack's open instance does. */
+.jewel-case-compare {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 48px;
+}

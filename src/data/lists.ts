@@ -6,8 +6,11 @@
 // burned. Set it explicitly only to force a result, which currently means the
 // three entries that never had a physical release.
 //
-// note is empty on every entry. Matti writes those. The list view does not
-// ship until they are filled.
+// note is written by Matti, one entry at a time. Films are done. Series,
+// albums and games hold the placeholder "TODO: Her vil jeg skrive to
+// setninger om hvorfor jeg liker dette." until he replaces each one by
+// hand. scripts/check-notes.ts fails the build if any note still starts
+// with TODO, so this cannot ship by accident.
 
 export type Medium = "film" | "series" | "album" | "game";
 
@@ -213,7 +216,7 @@ export const series: Entry[] = [
     livery: "standard",
     cover: "/assets/series/one-piece/cover.png",
     disc: "/assets/series/one-piece/disc.png",
-    note: "",
+    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
     id: "breaking-bad",
@@ -228,7 +231,7 @@ export const series: Entry[] = [
     livery: "standard",
     cover: "/assets/series/breaking-bad/cover.png",
     disc: "/assets/series/breaking-bad/disc.png",
-    note: "",
+    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
     id: "avatar-the-last-airbender",
@@ -243,7 +246,7 @@ export const series: Entry[] = [
     livery: "standard",
     cover: "/assets/series/avatar-the-last-airbender/cover.png",
     disc: "/assets/series/avatar-the-last-airbender/disc.png",
-    note: "",
+    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
     id: "game-of-thrones",
@@ -258,7 +261,7 @@ export const series: Entry[] = [
     livery: "standard",
     cover: "/assets/series/game-of-thrones/cover.png",
     disc: "/assets/series/game-of-thrones/disc.png",
-    note: "",
+    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
     id: "invincible",
@@ -272,7 +275,7 @@ export const series: Entry[] = [
     livery: "standard",
     cover: "/assets/series/invincible/cover.png",
     disc: "/assets/series/invincible/disc.png",
-    note: "",
+    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
     id: "vinland-saga",
@@ -286,7 +289,7 @@ export const series: Entry[] = [
     livery: "standard",
     cover: "/assets/series/vinland-saga/cover.png",
     disc: "/assets/series/vinland-saga/disc.png",
-    note: "",
+    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
     // 1997 Kentaro Miura adaptation, not the 2016 series. Confirm before fetch.
@@ -302,7 +305,7 @@ export const series: Entry[] = [
     livery: "standard",
     cover: "/assets/series/berserk/cover.png",
     disc: "/assets/series/berserk/disc.png",
-    note: "",
+    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
     id: "its-always-sunny-in-philadelphia",
@@ -316,7 +319,7 @@ export const series: Entry[] = [
     livery: "standard",
     cover: "/assets/series/its-always-sunny-in-philadelphia/cover.png",
     disc: "/assets/series/its-always-sunny-in-philadelphia/disc.png",
-    note: "",
+    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
     id: "eastbound-and-down",
@@ -331,7 +334,7 @@ export const series: Entry[] = [
     livery: "standard",
     cover: "/assets/series/eastbound-and-down/cover.png",
     disc: "/assets/series/eastbound-and-down/disc.png",
-    note: "",
+    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
     id: "south-park",
@@ -345,7 +348,7 @@ export const series: Entry[] = [
     livery: "standard",
     cover: "/assets/series/south-park/cover.png",
     disc: "/assets/series/south-park/disc.png",
-    note: "",
+    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
 ];
 
@@ -367,7 +370,7 @@ export const albums: Entry[] = [
     livery: "standard",
     cover: "/assets/album/currents/cover.png",
     disc: "/assets/album/currents/disc.png",
-    note: "",
+    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
     id: "man-on-the-moon-iii-the-chosen",
@@ -381,7 +384,7 @@ export const albums: Entry[] = [
     livery: "standard",
     cover: "/assets/album/man-on-the-moon-iii-the-chosen/cover.png",
     disc: "/assets/album/man-on-the-moon-iii-the-chosen/disc.png",
-    note: "",
+    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
     id: "one-of-wun",
@@ -395,7 +398,7 @@ export const albums: Entry[] = [
     livery: "standard",
     cover: "/assets/album/one-of-wun/cover.png",
     disc: "/assets/album/one-of-wun/disc.png",
-    note: "",
+    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
     id: "at-long-last-asap",
@@ -409,7 +412,7 @@ export const albums: Entry[] = [
     livery: "standard",
     cover: "/assets/album/at-long-last-asap/cover.png",
     disc: "/assets/album/at-long-last-asap/disc.png",
-    note: "",
+    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
     id: "2014-forest-hills-drive",
@@ -423,7 +426,7 @@ export const albums: Entry[] = [
     livery: "standard",
     cover: "/assets/album/2014-forest-hills-drive/cover.png",
     disc: "/assets/album/2014-forest-hills-drive/disc.png",
-    note: "",
+    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
     // No official CD pressing. Burned by definition, not by fallback.
@@ -439,7 +442,7 @@ export const albums: Entry[] = [
     cover: "/assets/album/the-life-of-pablo/cover.png",
     disc: "/assets/album/the-life-of-pablo/disc.png",
     discSource: "burned",
-    note: "",
+    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
     id: "damn",
@@ -453,7 +456,7 @@ export const albums: Entry[] = [
     livery: "standard",
     cover: "/assets/album/damn/cover.png",
     disc: "/assets/album/damn/disc.png",
-    note: "",
+    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
     id: "astroworld",
@@ -467,7 +470,7 @@ export const albums: Entry[] = [
     livery: "standard",
     cover: "/assets/album/astroworld/cover.png",
     disc: "/assets/album/astroworld/disc.png",
-    note: "",
+    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
     // Released 3 October 2017 on S2OP. Cover Art Archive coverage unverified.
@@ -482,7 +485,7 @@ export const albums: Entry[] = [
     livery: "standard",
     cover: "/assets/album/rommet/cover.png",
     disc: "/assets/album/rommet/disc.png",
-    note: "",
+    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
     id: "konnichiwa",
@@ -496,7 +499,7 @@ export const albums: Entry[] = [
     livery: "standard",
     cover: "/assets/album/konnichiwa/cover.png",
     disc: "/assets/album/konnichiwa/disc.png",
-    note: "",
+    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
 ];
 
@@ -524,7 +527,7 @@ export const games: Entry[] = [
     livery: "ps5",
     cover: "/assets/game/elden-ring/cover.png",
     disc: "/assets/game/elden-ring/disc.png",
-    note: "",
+    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
     id: "call-of-duty-black-ops-ii",
@@ -539,7 +542,7 @@ export const games: Entry[] = [
     livery: "ps3",
     cover: "/assets/game/call-of-duty-black-ops-ii/cover.png",
     disc: "/assets/game/call-of-duty-black-ops-ii/disc.png",
-    note: "",
+    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
     id: "sly-3-honor-among-thieves",
@@ -554,7 +557,7 @@ export const games: Entry[] = [
     livery: "ps2",
     cover: "/assets/game/sly-3-honor-among-thieves/cover.png",
     disc: "/assets/game/sly-3-honor-among-thieves/disc.png",
-    note: "",
+    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
     id: "lego-star-wars-the-complete-saga",
@@ -569,7 +572,7 @@ export const games: Entry[] = [
     livery: "ps3",
     cover: "/assets/game/lego-star-wars-the-complete-saga/cover.png",
     disc: "/assets/game/lego-star-wars-the-complete-saga/disc.png",
-    note: "",
+    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
     id: "call-of-duty-black-ops-iii",
@@ -584,7 +587,7 @@ export const games: Entry[] = [
     livery: "ps4",
     cover: "/assets/game/call-of-duty-black-ops-iii/cover.png",
     disc: "/assets/game/call-of-duty-black-ops-iii/disc.png",
-    note: "",
+    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
     id: "elden-ring-nightreign",
@@ -599,7 +602,7 @@ export const games: Entry[] = [
     livery: "ps5",
     cover: "/assets/game/elden-ring-nightreign/cover.png",
     disc: "/assets/game/elden-ring-nightreign/disc.png",
-    note: "",
+    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
     id: "dark-souls-iii",
@@ -614,7 +617,7 @@ export const games: Entry[] = [
     livery: "ps4",
     cover: "/assets/game/dark-souls-iii/cover.png",
     disc: "/assets/game/dark-souls-iii/disc.png",
-    note: "",
+    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
     // Played from download. Burned rather than generated.
@@ -631,7 +634,7 @@ export const games: Entry[] = [
     cover: "/assets/game/rocket-league/cover.png",
     disc: "/assets/game/rocket-league/disc.png",
     discSource: "burned",
-    note: "",
+    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
     // Work is 2013. The PS5 version arrived in 2022.
@@ -647,7 +650,7 @@ export const games: Entry[] = [
     livery: "ps5",
     cover: "/assets/game/grand-theft-auto-v/cover.png",
     disc: "/assets/game/grand-theft-auto-v/disc.png",
-    note: "",
+    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
     // No PS5 physical release. Burned rather than generated.
@@ -664,7 +667,7 @@ export const games: Entry[] = [
     cover: "/assets/game/cuphead/cover.png",
     disc: "/assets/game/cuphead/disc.png",
     discSource: "burned",
-    note: "",
+    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
 ];
 
