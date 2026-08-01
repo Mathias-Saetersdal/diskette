@@ -51,9 +51,9 @@ Composite the transparent PNG onto the tray. Add a specular sweep on top: a low-
 
 For entries with no retail scan.
 
-1. Take the cover art. Crop to a square from the centre, then to a circle at 120 units.
-2. Punch the 15mm hole and the clear ring out to 46mm, as transparency.
-3. Overlay the specular sweep.
+1. Take the cover art. Crop to a square from the centre, then to a circle at 120mm.
+2. The ring from the hub hole out to 46mm carries no printed artwork — cover art is masked out of it, not punched through it. It is transparent polycarbonate, not a hole, and renders as clear plastic: a slight tint, a specular highlight that moves with the sweep, and the stacking ring visible at 26 to 33mm. Only the 15mm hub hole itself is punched to true transparency, independent of source, the same guarantee retail discs get.
+3. Overlay the specular sweep over the printed area.
 4. Optional: a thin printed ring at the outer edge, 2mm in, which is how most retail discs are trimmed.
 
 The result is honest. It does not pretend to be a retail scan, and it looks like the disc a print-on-demand release would have shipped.

@@ -75,6 +75,8 @@ Printable replacement covers, high quality, but organised by upload id with no r
 
 **Normalise before committing.** Discs to a square canvas at a fixed size, centred, hub hole aligned. Covers to the aspect ratio of their case format. Doing this once in a script beats correcting it in CSS forty times.
 
+**Downloads shell out to curl, not fetch.** Node's own networking was demonstrably unreliable against archive.org's CDN while building the script: the same URL sometimes returned in under two seconds and sometimes hung or dropped mid-transfer, where curl succeeded every time. The retry wrapper accounts for both failure modes separately, since they need different handling: a connection that never opens, and a connection that opens but the body-read fails partway through.
+
 ## Licensing
 
 Phase one is a personal site displaying cover art for media I own or have watched, with attribution. Low risk in practice, the same position as any film blog.

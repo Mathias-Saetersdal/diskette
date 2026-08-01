@@ -13,11 +13,15 @@ import './Disc.css'
 export const DISC_DIAMETER_MM = 120
 export const HUB_HOLE_DIAMETER_MM = 15
 export const CLEAR_RING_DIAMETER_MM = 46 // where the printed area begins
+export const STACKING_RING_INNER_MM = 26 // "A stacking ring sits at about 26 to 33mm"
+export const STACKING_RING_OUTER_MM = 33
 
-// Both ratios are diameter-over-diameter, which equals radius-over-radius,
-// so they double as fractions of the disc's radius for the masks in Disc.css.
+// All diameter-over-diameter, which equals radius-over-radius, so they
+// double as fractions of the disc's radius for the masks in Disc.css.
 export const hubHoleRatio = HUB_HOLE_DIAMETER_MM / DISC_DIAMETER_MM // 15mm hole / 120mm disc
 export const clearRingRatio = CLEAR_RING_DIAMETER_MM / DISC_DIAMETER_MM // 46mm ring / 120mm disc
+export const stackingRingInnerRatio = STACKING_RING_INNER_MM / DISC_DIAMETER_MM
+export const stackingRingOuterRatio = STACKING_RING_OUTER_MM / DISC_DIAMETER_MM
 
 // Matches the ambient disc-spin keyframes below: 360deg over 6000ms. This is
 // also the velocity a drag decays back toward, so a release never just
@@ -149,6 +153,15 @@ interface DiscShellProps {
   sweepHighlight?: number
   /** Lifted-out state: enables drag-to-spin. Off, it's the plain ambient CSS spin. */
   interactive?: boolean
+  /**
+   * No retail scan: the mounted face is a cover crop, not a real disc
+   * photo. The 15–46mm ring is masked out of that cover art (it is clear
+   * polycarbonate, not printed area) and rendered as clear plastic instead
+   * — tint, a sweep-synced highlight, the stacking ring — rather than left
+   * as a hole or covered by artwork that was never printed there.
+   * docs/03-object-spec.md, Disc rendering, Generated.
+   */
+  generated?: boolean
 }
 
 /**
@@ -161,10 +174,13 @@ export function DiscShell({
   sweepOpacity = 0.5,
   sweepHighlight = 0.4,
   interactive = false,
+  generated = false,
 }: DiscShellProps) {
   const style = {
     '--hub-hole-ratio': hubHoleRatio,
     '--clear-ring-ratio': clearRingRatio,
+    '--stack-ring-inner': stackingRingInnerRatio,
+    '--stack-ring-outer': stackingRingOuterRatio,
     '--sweep-opacity': sweepOpacity,
     '--sweep-highlight': sweepHighlight,
   } as CSSProperties
@@ -182,9 +198,20 @@ export function DiscShell({
       onClick={drag.onClick}
     >
       <div
-        className={`disc__art${drag.isActive ? ' disc__art--interactive' : ''}`}
+        className={`disc__art${drag.isActive ? ' disc__art--interactive' : ''}${generated ? ' disc__art--generated' : ''}`}
         ref={drag.artRef}
       >
+        {generated && (
+          <>
+            {/*
+             * Sits under the cover art, which is masked out of this same
+             * band by .disc__art--generated's CSS — clear plastic showing
+             * through where there's no printed artwork, not a hole.
+             */}
+            <div className="disc__clear-ring" aria-hidden="true" />
+            <div className="disc__clear-ring-sheen" aria-hidden="true" />
+          </>
+        )}
         {children}
       </div>
       <div className="disc__sweep" aria-hidden="true" />
@@ -196,11 +223,12 @@ interface DiscProps {
   src: string
   alt: string
   interactive?: boolean
+  generated?: boolean
 }
 
-export default function Disc({ src, alt, interactive }: DiscProps) {
+export default function Disc({ src, alt, interactive, generated }: DiscProps) {
   return (
-    <DiscShell interactive={interactive}>
+    <DiscShell interactive={interactive} generated={generated}>
       <img src={src} alt={alt} />
     </DiscShell>
   )
