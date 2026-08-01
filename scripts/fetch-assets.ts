@@ -40,14 +40,6 @@ const CREDITS_PATH = path.join(ROOT, 'credits.json')
 const DISC_CANVAS = 1000
 const COVER_HEIGHT = 1200
 
-// Front face ratios, docs/03-object-spec.md Cases table. Only the formats
-// films/series/albums actually use — ps5 and switch belong to games, out
-// of scope here.
-const FRONT_FACE_RATIO: Record<string, number> = {
-  dvd: 0.707,
-  bluray: 0.868,
-  jewel: 0.88,
-}
 
 function redact(url: string): string {
   return url.replace(/([?&]api_key=)[^&]+/i, '$1REDACTED')
@@ -347,11 +339,14 @@ async function saveGeneratedDisc(coverPath: string, outPath: string): Promise<vo
   await sharp(coverPath).resize(DISC_CANVAS, DISC_CANVAS, { fit: 'cover' }).png().toFile(outPath)
 }
 
-async function saveCover(buffer: Buffer, outPath: string, caseFormat: CaseFormat): Promise<void> {
-  const ratio = FRONT_FACE_RATIO[caseFormat] ?? 0.75
-  const height = COVER_HEIGHT
-  const width = Math.round(height * ratio)
-  await sharp(buffer).resize(width, height, { fit: 'cover' }).png().toFile(outPath)
+async function saveCover(buffer: Buffer, outPath: string): Promise<void> {
+  // The cover keeps its own aspect ratio always — the case component
+  // insets it and lets the body colour show around it, per
+  // docs/03-object-spec.md's Livery section. Cropping to the case's front
+  // face ratio here used to cut real posters off (a tall 2:3 poster
+  // forced into Blu-ray's ~0.87 ratio loses the bottom, title included),
+  // which no CSS fix downstream could recover once the pixels were gone.
+  await sharp(buffer).resize({ height: COVER_HEIGHT, withoutEnlargement: true }).png().toFile(outPath)
 }
 
 async function saveBackdrop(buffer: Buffer, outPath: string): Promise<void> {
@@ -407,7 +402,7 @@ async function resolveFilmOrSeries(entry: Entry, credits: Credits): Promise<Resu
   if (match.poster_path) {
     const buf = await downloadBuffer(`https://image.tmdb.org/t/p/original${match.poster_path}`)
     if (buf) {
-      await saveCover(buf, path.join(dir, 'cover.png'), entry.case)
+      await saveCover(buf, path.join(dir, 'cover.png'))
       coverFound = true
       assetCredits.cover = {
         source: 'TMDB',
@@ -485,7 +480,7 @@ async function resolveAlbum(entry: Entry, credits: Credits): Promise<ResultRow> 
 
   const coverBuf = await fetchCoverArtArchive(mbid)
   if (coverBuf) {
-    await saveCover(coverBuf, path.join(dir, 'cover.png'), entry.case)
+    await saveCover(coverBuf, path.join(dir, 'cover.png'))
     coverFound = true
     assetCredits.cover = {
       source: 'Cover Art Archive',

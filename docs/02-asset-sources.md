@@ -73,7 +73,7 @@ Printable replacement covers, high quality, but organised by upload id with no r
 
 **Transparent PNGs only for discs.** A disc with a baked-in white background cannot be composited onto a case interior.
 
-**Normalise before committing.** Discs to a square canvas at a fixed size, centred, hub hole aligned. Covers to the aspect ratio of their case format. Doing this once in a script beats correcting it in CSS forty times.
+**Normalise before committing.** Discs to a square canvas at a fixed size, centred, hub hole aligned. Covers keep their own aspect ratio — resized to a fixed height, never cropped. Cropping a cover to the case's front face ratio here once cut real posters off with no way to recover it downstream: a tall 2:3 poster forced into Blu-ray's ~0.87 ratio loses its bottom edge, title included. The case component insets the cover and lets the body colour show around it instead.
 
 **Downloads shell out to curl, not fetch.** Node's own networking was demonstrably unreliable against archive.org's CDN while building the script: the same URL sometimes returned in under two seconds and sometimes hung or dropped mid-transfer, where curl succeeded every time. The retry wrapper accounts for both failure modes separately, since they need different handling: a connection that never opens, and a connection that opens but the body-read fails partway through.
 

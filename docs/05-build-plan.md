@@ -190,8 +190,9 @@ request per second. fanart.tv needs a token bucket with exponential backoff.
 Keys from .env.
 
 Normalise with sharp: discs to a square canvas at fixed size, hub hole
-aligned, transparent PNG only. Covers to the aspect ratio of their case
-format.
+aligned, transparent PNG only. Covers keep their own aspect ratio, resized
+to a fixed height only — never cropped to the case format. The case
+component insets the cover and lets the body colour show around it.
 
 Skip any entry that already has discSource set. Those are fixed by hand and
 must not be overwritten.
