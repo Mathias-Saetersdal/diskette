@@ -93,24 +93,28 @@
   top: 0;
   width: var(--depth);
   height: 100%;
-  transform-origin: left center;
   /*
-   * scaleY and translateY correct a real top-and-bottom edge mismatch,
-   * not a cosmetic nudge: the spine, tray unit and front panel all share
-   * top:0/height:100% in their own local box (checked directly, they're
-   * identical), but the spine's own rotateY(90deg) pivots around a
-   * different point in 3D space than the front panel's translateX/
-   * translateZ chain, so once .case__toggle's shelf tilt (rotateX/
-   * rotateY) is composed on top, the spine renders measurably shorter
-   * than the front panel, not just offset — its top AND bottom both land
-   * short of the front panel's. A real case is one moulded shell with one
-   * continuous top edge and one height across every face.
-   * --spine-scale/--spine-translate-ratio (Case.tsx, SPINE_CORRECTION)
-   * are solved exactly from live-measured top/bottom deltas against the
-   * front panel, not eyeballed, and set per format since each one's own
-   * depth-to-height ratio changes the correction needed.
+   * The pivot is the edge that's rigidly joined to the tray unit (this
+   * box's own local x:depth, its right edge) — not the outer edge. That's
+   * the edge that's actually fixed in 3D space; the outer edge (local
+   * x:0) is the one that sweeps round to meet the front panel's left
+   * edge. With this origin, rotateY(90deg) carries it to z:depth there,
+   * landing on the exact same 3D line the front panel's own left edge
+   * occupies — confirmed by measuring both against live-marker corner
+   * points, not the bounding rect, which matched to within 0.001px. No
+   * separate scale or translate correction needed once the pivot is
+   * right; an earlier version fit one empirically instead of finding
+   * this.
+   *
+   * At the current -24deg tilt this correct geometry puts the spine
+   * almost edge-on to the camera, and the front panel occludes it
+   * entirely in the closed state — the spine was only ever visible
+   * before because the wrong pivot happened to position it to the left
+   * of the front panel instead of behind it. If the spine needs to read
+   * as visible again, that's a tilt-angle decision, not a geometry bug.
    */
-  transform: translateY(calc(var(--depth) * var(--spine-translate-ratio))) rotateY(90deg) scaleY(var(--spine-scale));
+  transform-origin: right center;
+  transform: rotateY(90deg);
   display: flex;
   align-items: center;
   justify-content: center;

@@ -29,19 +29,6 @@ const TRAY_RING_INNER_MM = 100 // the raised glossy ring the disc rests on
 const TRAY_RING_OUTER_MM = 118
 const HUB_BOSS_MM = 30 // the centre boss the disc clips onto
 
-// The spine's transform-origin is left center, which pivots it around its
-// outer edge rather than the edge joined to the tray. This puts the
-// spine's top 21.6px above the front face's top-left corner, and the
-// --spine-scale and --spine-translate-ratio values compensate for it.
-// Correcting the origin to right center aligns the geometry exactly, but
-// at the current -24deg tilt the spine then sits edge-on behind the front
-// face and becomes invisible. The misalignment is what makes the spine
-// visible. Revisit if the tilt angle changes.
-const SPINE_CORRECTION: Record<SupportedCaseFormat, { scale: number; translateRatio: number }> = {
-  bluray: { scale: 1.076, translateRatio: -0.5511 },
-  dvd: { scale: 1.073, translateRatio: -0.526 },
-}
-
 function useCaseGeometry(caseFormat: SupportedCaseFormat) {
   const { heightMm, widthMm, depthMm } = CASE_GEOMETRY[caseFormat]
   return {
@@ -52,7 +39,6 @@ function useCaseGeometry(caseFormat: SupportedCaseFormat) {
     trayRingOuterRatio: TRAY_RING_OUTER_MM / widthMm,
     hubBossRatio: HUB_BOSS_MM / widthMm,
     heightScale: heightMm / MAX_CASE_HEIGHT_MM,
-    spineCorrection: SPINE_CORRECTION[caseFormat],
   }
 }
 
@@ -217,8 +203,6 @@ export default function Case({ title, coverSrc, coverAlt, discSrc, discAlt, case
     '--tray-ring-inner': geometry.trayRingInnerRatio,
     '--tray-ring-outer': geometry.trayRingOuterRatio,
     '--hub-boss-ratio': geometry.hubBossRatio,
-    '--spine-scale': geometry.spineCorrection.scale,
-    '--spine-translate-ratio': geometry.spineCorrection.translateRatio,
     '--front-header-height': showHeader ? `${FRONT_HEADER_HEIGHT_PCT}%` : '0%',
     '--front-inset': showHeader ? `${FRONT_INSET_PCT}%` : '0%',
   } as CSSProperties
