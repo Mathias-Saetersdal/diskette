@@ -29,29 +29,14 @@ const TRAY_RING_INNER_MM = 100 // the raised glossy ring the disc rests on
 const TRAY_RING_OUTER_MM = 118
 const HUB_BOSS_MM = 30 // the centre boss the disc clips onto
 
-// The spine, tray unit and front panel all share top:0/height:100% in
-// their own local box — checked directly, they're identical. But the
-// spine's rotateY(90deg) pivots around a different point in 3D space than
-// the front panel's translateX/translateZ chain, so once the shared
-// shelf tilt is composed on top, the spine renders shorter than the front
-// panel, not just offset — real cases are one moulded shell with one
-// continuous top edge and one height across every face. scale/translateRatio
-// are the exact correction (solved from live-measured top/bottom deltas
-// against the front panel, not eyeballed) that makes the spine's rendered
-// height and position match the front panel's exactly, at the current
-// tilt angles (6deg/-24deg). They differ slightly per format because
-// each format's own depth-to-height ratio changes how much the spine's
-// rotation shortens it — DVD's 14mm-into-184mm spine forwards a different
-// fraction than Blu-ray's 12mm-into-148mm one.
-//
-// These numbers are empirical, not derived: they exist because the
-// spine's rendered height did not match its geometric height, and the
-// underlying cause is upstream of this fix — likely a difference in
-// perspective or transform-origin handling between the spine and the
-// front face's own transform chain, not something intrinsic to a spine
-// needing correction at all. If the case is ever restructured, remove
-// this correction first and check whether it's still needed before
-// re-deriving it.
+// The spine's transform-origin is left center, which pivots it around its
+// outer edge rather than the edge joined to the tray. This puts the
+// spine's top 21.6px above the front face's top-left corner, and the
+// --spine-scale and --spine-translate-ratio values compensate for it.
+// Correcting the origin to right center aligns the geometry exactly, but
+// at the current -24deg tilt the spine then sits edge-on behind the front
+// face and becomes invisible. The misalignment is what makes the spine
+// visible. Revisit if the tilt angle changes.
 const SPINE_CORRECTION: Record<SupportedCaseFormat, { scale: number; translateRatio: number }> = {
   bluray: { scale: 1.076, translateRatio: -0.5511 },
   dvd: { scale: 1.073, translateRatio: -0.526 },
