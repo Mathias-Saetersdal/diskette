@@ -18,6 +18,8 @@ const stackingRingOuterRatio = STACKING_RING_OUTER_MM / DISC_DIAMETER_MM
 interface BurnedDiscProps {
   title: string
   medium: Medium
+  /** Lifted-out state: enables drag-to-spin, forwarded straight to DiscShell. */
+  interactive?: boolean
 }
 
 // Deterministic, not random: the same title always lands on the same
@@ -30,7 +32,7 @@ function hash(input: string): number {
   return h
 }
 
-export default function BurnedDisc({ title, medium }: BurnedDiscProps) {
+export default function BurnedDisc({ title, medium, interactive }: BurnedDiscProps) {
   // CD-R for albums, DVD-R for everything else, per the burned disc section
   // of docs/03-object-spec.md.
   const isCD = medium === 'album'
@@ -62,7 +64,7 @@ export default function BurnedDisc({ title, medium }: BurnedDiscProps) {
     // less, so the sweep runs at higher intensity than Disc's defaults. The
     // sweep lives outside the rotating art layer, same as the rainbow below,
     // because light does not travel with the object.
-    <DiscShell sweepOpacity={0.75} sweepHighlight={0.65}>
+    <DiscShell sweepOpacity={0.75} sweepHighlight={0.65} interactive={interactive}>
       <div className="burned-disc">
         <div className="burned-disc__base" />
         <div className="burned-disc__rainbow" />

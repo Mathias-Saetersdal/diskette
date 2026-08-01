@@ -1,0 +1,79 @@
+.media-list-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+}
+
+.media-list {
+  --list-case-h: clamp(95px, 9vw, 180px);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+}
+
+/* --height-scale is Case.tsx's own per-format inline style; JewelCase.tsx
+   never sets it, so the var() fallback of 1 applies there, correctly —
+   every jewel case is already the same size. */
+.media-list .case,
+.media-list .jewel-case {
+  --case-h: calc(var(--list-case-h) * var(--height-scale, 1));
+}
+
+/* Same class name for both FilmCard and AlbumCard's wrapper div, so one
+   selector already covers both — no dual selector needed here. */
+.media-list .film-card {
+  align-self: flex-end;
+}
+
+.media-list .case,
+.media-list .jewel-case {
+  margin-inline: calc(var(--enlarge, 1) * var(--extent) - (var(--depth) + var(--front-w)) / 2);
+  margin-top: calc((var(--enlarge, 1) - 1) * var(--case-h));
+  transition:
+    transform var(--enlarge-duration) ease-in-out,
+    margin-inline 1.2s ease-in-out,
+    margin-top 1.2s ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .media-list .case,
+  .media-list .jewel-case {
+    transition: none;
+  }
+}
+
+.media-list-detail {
+  min-height: 3em;
+  max-width: 640px;
+  margin-inline: auto;
+  text-align: center;
+  color: #eee;
+  font-family: system-ui, sans-serif;
+}
+
+.media-list-detail__title {
+  margin: 0 0 4px;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.media-list-detail__year {
+  font-weight: 400;
+  color: #999;
+}
+
+.media-list-detail__creator {
+  margin: 0 0 8px;
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+.media-list-detail__note {
+  margin: 0;
+  color: #ddd;
+  line-height: 1.5;
+}

@@ -6,7 +6,7 @@
  * down to a flat bar with the disc floating over the collapsed body. The
  * shared baseline both the case and the rank number need instead comes
  * from bottom-aligning this whole stack as one unit within the row (see
- * .films-list .film-card in FilmsList.css) — case then rank, in that
+ * .media-list .film-card in MediaList.css) — case then rank, in that
  * order, so a fixed rank height and gap sit below whichever height the
  * case happens to be, DVD or Blu-ray, open or closed, enlarged or not.
  */

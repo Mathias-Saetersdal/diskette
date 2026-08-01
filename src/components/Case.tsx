@@ -1,6 +1,7 @@
 import { useEffect, useState, type CSSProperties, type KeyboardEvent, type RefObject } from 'react'
 import Disc, { DISC_DIAMETER_MM } from './Disc'
-import type { Livery } from '../data/lists'
+import BurnedDisc from './BurnedDisc'
+import type { DiscSource, Livery, Medium } from '../data/lists'
 import { CASE_GEOMETRY, MAX_CASE_HEIGHT_MM, type SupportedCaseFormat } from './caseGeometry'
 import CaseFrontFace, { BLURAY_LOGO_SRC } from './CaseFrontFace'
 import './caseMechanism.css'
@@ -31,14 +32,18 @@ interface CaseProps {
   title: string
   coverSrc: string
   coverAlt: string
-  discSrc: string
-  discAlt: string
+  /** Absent when discSource is 'burned' — BurnedDisc renders instead, no fetched image involved. */
+  discSrc?: string
+  discAlt?: string
+  medium: Medium
+  /** 'burned' selects BurnedDisc over a fetched Disc image; anything else, or absent, keeps the fetched disc. */
+  discSource?: DiscSource
   caseFormat: SupportedCaseFormat
   livery: Livery
   /**
    * Controlled, not internal: a list of many cases needs exactly one open
    * at a time, which means the state that decides open/closed has to live
-   * above whichever Case currently exists — see FilmsList. discOut stays
+   * above whichever Case currently exists — see MediaList. discOut stays
    * internal below, since Case only ever mounts for the one active entry
    * and unmounting already clears it for free.
    */
@@ -153,6 +158,8 @@ export default function Case({
   coverAlt,
   discSrc,
   discAlt,
+  medium,
+  discSource,
   caseFormat,
   livery,
   open,
@@ -271,7 +278,11 @@ export default function Case({
             }}
             onKeyDown={handleDiscKeyDown}
           >
-            <Disc src={discSrc} alt={discAlt} interactive={discOut} />
+            {discSource === 'burned' ? (
+              <BurnedDisc title={title} medium={medium} interactive={discOut} />
+            ) : (
+              <Disc src={discSrc ?? ''} alt={discAlt ?? ''} interactive={discOut} />
+            )}
           </div>
         </div>
 

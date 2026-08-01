@@ -47,6 +47,71 @@
   overflow: visible;
   perspective: 2600px;
   perspective-origin: 50% 50%;
+  /*
+   * Grows the whole case by 100% before it opens (the card sequences
+   * enlarged before open, for both a keep case and a jewel case). A
+   * transform on this outer box, scaled around its own centre, not a
+   * change to --case-h itself: every hinge dimension inside .case__toggle
+   * / .jewel-case__toggle is a calc() off --case-h, most without a
+   * transition of their own, so changing --case-h directly would make
+   * them all snap instead of grow smoothly. Scaling the already-rendered
+   * subtree as one composited unit sidesteps that. List-level concept
+   * (exclusivity and emphasis on the active item), not intrinsic to
+   * either case type, so it lives here rather than in either format's own
+   * file — genuinely shared, not merely duplicated between them.
+   */
+  --enlarge: 1;
+  /* Single source for the duration both here and in the list's own
+     margin transitions — see the transition declaration below for why
+     that second declaration exists at all. */
+  --enlarge-duration: 1.5s;
+  transform: scale(var(--enlarge));
+  /*
+   * Anchored at the bottom edge, not the centre: the list already sits
+   * each card on a shelf line (align-self: flex-end), and growing from
+   * centre pushed the bottom edge down by half the extra height on every
+   * enlarge, straight into the detail text sitting below the row. Growing
+   * up from a fixed bottom edge instead means the row's own footprint
+   * never changes, so that text never has to move or get covered.
+   */
+  transform-origin: 50% 100%;
+  /*
+   * ease-in-out, not ease-out: ease-out front-loads most of the growth
+   * into the first fraction of the duration, then spends the rest visibly
+   * tapering off — reads as a quick snap to nearly full size followed by a
+   * slow creep, not the steady, even grow the object should have. This is
+   * starting from a dead stop, so both ends of the curve should ease.
+   *
+   * This declaration only takes effect for a standalone Case or JewelCase
+   * (outside a list). Nested in a list, the list's own, more specific
+   * `.<list> .case` rule also sets transition — and since cascade resolves
+   * the whole transition-property list per selector match, not per
+   * individual property, that rule's list fully replaces this one rather
+   * than merging with it. The list's copy repeats `transform` for exactly
+   * this reason: leaving it out there silently drops this transition the
+   * moment a case is used inside a list.
+   */
+  transition: transform var(--enlarge-duration) ease-in-out;
+  /*
+   * The un-scaled visual half-width from centre, before --enlarge is
+   * applied: half the closed footprint at rest, the front panel's own
+   * width once open (below — matches the extent the lid and the
+   * recentred tray-unit actually reach at this element's own scale of 1).
+   * The list's own CSS multiplies this by --enlarge to reserve exactly
+   * enough margin at every point in both animations, not just the resting
+   * and fully-open-and-enlarged states.
+   */
+  --extent: calc((var(--depth) + var(--front-w)) / 2);
+}
+
+.case[data-enlarged='true'],
+.jewel-case[data-enlarged='true'] {
+  --enlarge: 2;
+}
+
+.case[data-open='true'],
+.jewel-case[data-open='true'] {
+  --extent: var(--front-w);
 }
 
 .case__toggle,
@@ -274,10 +339,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .case,
   .case__toggle,
   .case__spine,
   .case__front,
   .case__disc-slot,
+  .jewel-case,
   .jewel-case__toggle,
   .jewel-case__spine,
   .jewel-case__front,

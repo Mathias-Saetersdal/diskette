@@ -185,7 +185,11 @@ export function DiscShell({
     '--sweep-highlight': sweepHighlight,
   } as CSSProperties
 
-  const drag = useDragSpin(interactive)
+  // artRef pulled out on its own, not read as drag.artRef below: react-hooks/refs
+  // flags every property access off an object once any one of its fields is a
+  // ref, so a bare local keeps the other, genuinely plain fields (isActive, the
+  // handlers) from tripping it too. Don't re-bundle this back into drag.*.
+  const { artRef, ...drag } = useDragSpin(interactive)
 
   return (
     <div
@@ -199,7 +203,7 @@ export function DiscShell({
     >
       <div
         className={`disc__art${drag.isActive ? ' disc__art--interactive' : ''}${generated ? ' disc__art--generated' : ''}`}
-        ref={drag.artRef}
+        ref={artRef}
       >
         {generated && (
           <>

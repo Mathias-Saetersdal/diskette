@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react'
 import Case from './Case'
 import type { SupportedCaseFormat } from './caseGeometry'
-import type { Livery } from '../data/lists'
+import type { Livery, Medium } from '../data/lists'
 import './TiltCompare.css'
 
 /**
@@ -18,6 +18,7 @@ interface CompareEntry {
   title: string
   cover: string
   disc: string
+  medium: Medium
   caseFormat: SupportedCaseFormat
   livery: Livery
 }
@@ -30,6 +31,7 @@ const ENTRIES: CompareEntry[] = [
     title: 'The Dark Knight',
     cover: '/assets/film/the-dark-knight/cover.png',
     disc: '/assets/film/the-dark-knight/disc.png',
+    medium: 'film',
     caseFormat: 'bluray',
     livery: 'standard',
   },
@@ -38,6 +40,7 @@ const ENTRIES: CompareEntry[] = [
     title: 'Fight Club',
     cover: '/assets/film/fight-club/cover.png',
     disc: '/assets/film/fight-club/disc.png',
+    medium: 'film',
     caseFormat: 'dvd',
     livery: 'standard',
   },
@@ -46,6 +49,7 @@ const ENTRIES: CompareEntry[] = [
     title: 'Spirited Away',
     cover: '/assets/film/spirited-away/cover.png',
     disc: '/assets/film/spirited-away/disc.png',
+    medium: 'film',
     caseFormat: 'dvd',
     livery: 'standard',
   },
@@ -98,6 +102,7 @@ export default function TiltCompare() {
                 coverAlt={`${entry.title} cover`}
                 discSrc={entry.disc}
                 discAlt={`${entry.title} disc`}
+                medium={entry.medium}
                 caseFormat={entry.caseFormat}
                 livery={entry.livery}
                 open={false}

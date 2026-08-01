@@ -1,5 +1,7 @@
 import { useState, type CSSProperties, type KeyboardEvent, type RefObject } from 'react'
 import Disc, { DISC_DIAMETER_MM } from './Disc'
+import BurnedDisc from './BurnedDisc'
+import type { DiscSource } from '../data/lists'
 import './caseMechanism.css'
 import './JewelCase.css'
 
@@ -10,7 +12,9 @@ import './JewelCase.css'
 const HEIGHT_MM = 142
 const WIDTH_MM = 125
 const DEPTH_MM = 10
-const FRONT_FACE_RATIO = WIDTH_MM / HEIGHT_MM
+// Exported: FlatJewelCase.tsx needs the same ratio for its own closed
+// placeholder and has no format table of its own to recompute it from.
+export const FRONT_FACE_RATIO = WIDTH_MM / HEIGHT_MM
 const DEPTH_RATIO = DEPTH_MM / HEIGHT_MM
 // The same 120mm disc as every other case, reused from Disc.tsx rather
 // than redeclared — in a 125mm panel, tighter than Blu-ray's ~4mm margin.
@@ -20,28 +24,40 @@ interface JewelCaseProps {
   title: string
   coverSrc: string
   coverAlt: string
-  discSrc: string
-  discAlt: string
-  /** Uncontrolled initial state, so two instances can sit side by side
-      showing both closed and open without either being forced afterward. */
-  defaultOpen?: boolean
+  /** Absent when discSource is 'burned' — BurnedDisc renders instead, no fetched image involved. */
+  discSrc?: string
+  discAlt?: string
+  /** 'burned' selects BurnedDisc over a fetched Disc image; anything else, or absent, keeps the fetched disc. */
+  discSource?: DiscSource
+  /**
+   * Controlled, not internal: a list of many cases needs exactly one open
+   * at a time, which means the state that decides open/closed has to live
+   * above whichever JewelCase currently exists — see AlbumsList. discOut
+   * stays internal below, since JewelCase only ever mounts for the one
+   * active entry and unmounting already clears it for free. Mirrors
+   * Case.tsx exactly.
+   */
+  open: boolean
+  onToggleOpen: () => void
+  /**
+   * Also controlled, also owned by the sequencing in AlbumCard: a case
+   * grows to twice its list size before it opens, not at the same time.
+   * Mirrors Case.tsx's own enlarged prop.
+   */
+  enlarged: boolean
   /** Focused once this mounts, if it's replacing a previous focus target. */
   toggleRef?: RefObject<HTMLButtonElement | null>
 }
 
 /**
- * A CD jewel case: closed, open and disc-out states, the same three every
- * other object has (docs/03-object-spec.md, Interactions) — no enlarge
- * stage or livery, which nothing has asked for here yet. Hard clear
- * plastic shell and lid, opaque black tray and spine, sharp corners. The
- * defining material difference from Case.tsx's keep cases: a keep case's
- * cover is printed on the outside of opaque plastic, a jewel case's is a
- * booklet sitting behind a clear lid, so the poster renders under a gloss
- * and edge-refraction layer here instead of being the outer surface
- * itself.
- *
- * Not wired into any list — self-contained open state, uncontrolled,
- * since nothing outside needs to coordinate it with sibling objects yet.
+ * A CD jewel case: closed, enlarged, open and disc-out states, the same
+ * ones every other object has (docs/03-object-spec.md, Interactions) — no
+ * livery, which nothing has asked for here yet. Hard clear plastic shell
+ * and lid, opaque black tray and spine, sharp corners. The defining
+ * material difference from Case.tsx's keep cases: a keep case's cover is
+ * printed on the outside of opaque plastic, a jewel case's is a booklet
+ * sitting behind a clear lid, so the poster renders under a gloss and
+ * edge-refraction layer here instead of being the outer surface itself.
  */
 export default function JewelCase({
   title,
@@ -49,10 +65,12 @@ export default function JewelCase({
   coverAlt,
   discSrc,
   discAlt,
-  defaultOpen = false,
+  discSource,
+  open,
+  enlarged,
+  onToggleOpen,
   toggleRef,
 }: JewelCaseProps) {
-  const [open, setOpen] = useState(defaultOpen)
   const [discOut, setDiscOut] = useState(false)
   // A closed case can't have a floating disc — same render-time invariant
   // as Case.tsx, watching the prop/state that actually gates it rather
@@ -77,14 +95,14 @@ export default function JewelCase({
   } as CSSProperties
 
   return (
-    <div className="jewel-case" data-open={open} style={style}>
+    <div className="jewel-case" data-open={open} data-enlarged={enlarged} style={style}>
       <button
         ref={toggleRef}
         type="button"
         className="jewel-case__toggle"
         aria-expanded={open}
         aria-label={`${open ? 'Close' : 'Open'} case: ${title}`}
-        onClick={() => setOpen((was) => !was)}
+        onClick={onToggleOpen}
       >
         {/* Opaque black plastic, blank — the reference photos show no
             printed spine insert, unlike a keep case's own paper spine. */}
@@ -143,7 +161,11 @@ export default function JewelCase({
             }}
             onKeyDown={handleDiscKeyDown}
           >
-            <Disc src={discSrc} alt={discAlt} interactive={discOut} />
+            {discSource === 'burned' ? (
+              <BurnedDisc title={title} medium="album" interactive={discOut} />
+            ) : (
+              <Disc src={discSrc ?? ''} alt={discAlt ?? ''} interactive={discOut} />
+            )}
           </div>
         </div>
 

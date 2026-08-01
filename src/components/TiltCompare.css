@@ -36,9 +36,9 @@
 }
 
 .tilt-compare__cases {
-  /* Same figure as FilmsList.css's own --list-case-h, duplicated rather
+  /* Same figure as MediaList.css's own --list-case-h, duplicated rather
      than shared: this page renders the cases at list rest size without
-     depending on FilmsList.css at all, so it stays a true comparison of
+     depending on MediaList.css at all, so it stays a true comparison of
      Case.css's own defaults and can be deleted without touching the list. */
   --list-case-h: clamp(95px, 9vw, 180px);
   display: flex;

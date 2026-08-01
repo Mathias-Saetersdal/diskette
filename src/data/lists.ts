@@ -42,7 +42,8 @@ export interface Entry {
   cover: string;
   spine?: string;
   back?: string;
-  disc: string;
+  /** Absent for a burned entry: there is no disc PNG, ever, for those. */
+  disc?: string;
   /** Omit to let the fetch script resolve it. */
   discSource?: DiscSource;
   note: string;
@@ -440,7 +441,6 @@ export const albums: Entry[] = [
     case: "jewel",
     livery: "standard",
     cover: "/assets/album/the-life-of-pablo/cover.png",
-    disc: "/assets/album/the-life-of-pablo/disc.png",
     discSource: "burned",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
@@ -632,7 +632,6 @@ export const games: Entry[] = [
     case: "bluray",
     livery: "ps4",
     cover: "/assets/game/rocket-league/cover.png",
-    disc: "/assets/game/rocket-league/disc.png",
     discSource: "burned",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
@@ -665,7 +664,6 @@ export const games: Entry[] = [
     case: "ps5",
     livery: "ps5",
     cover: "/assets/game/cuphead/cover.png",
-    disc: "/assets/game/cuphead/disc.png",
     discSource: "burned",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
