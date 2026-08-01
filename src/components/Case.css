@@ -1,5 +1,13 @@
+/*
+ * Base sizing, tilt, hinge, spine pivot, disc-slot mechanics, focus
+ * outlines, contact shadow and reduced-motion handling all live in
+ * caseMechanism.css now, shared with JewelCase.css — this file keeps
+ * only what's genuinely specific to the keep case: --case-h itself
+ * (Case.tsx's own per-format height-scale), the enlarge feature (jewel
+ * has none), liveries, hub and tray materials, and the front-face
+ * booklet layers CaseFrontFace renders.
+ */
 .case {
-  position: relative;
   /* Base unit: the on-screen height of the case's front face. Everything
      else is a ratio of it, per docs/03-object-spec.md's "used as ratios
      rather than absolute sizes." --front-face-ratio and --depth-ratio come
@@ -8,30 +16,6 @@
      tallest format in the table, so a DVD case renders taller on screen
      than a Blu-ray case sitting next to it, not just narrower. */
   --case-h: calc(min(64vmin, 460px) * var(--height-scale, 1));
-  --front-w: calc(var(--case-h) * var(--front-face-ratio));
-  /*
-   * Doubles as the spine face's own local width before it turns to face
-   * the viewer, and as how far the front leaf sits forward of the back
-   * plane when closed. Materials: "A 12mm depth on a 148mm case is thin,
-   * and rendering it too thick is the most common way this kind of thing
-   * looks wrong" — so this stays a straight ratio, not nudged up for
-   * visibility.
-   */
-  --depth: calc(var(--case-h) * var(--depth-ratio));
-  /*
-   * This box stays sized to the closed footprint always. It does not grow
-   * to the open 257mm width (docs/03-object-spec.md's Full wrap section):
-   * growing it pulled .case__tray-unit along too (it was right-anchored,
-   * so a widening box dragged it sideways every frame), which is what
-   * made the whole left half look like it was swinging instead of just
-   * the lid. The open lid overflows this box to the left instead —
-   * overflow stays visible, and tray-unit's own position never changes.
-   */
-  width: calc(var(--depth) + var(--front-w));
-  height: var(--case-h);
-  overflow: visible;
-  perspective: 2600px;
-  perspective-origin: 50% 50%;
   /*
    * Grows the whole case by 100% before it opens (FilmCard sequences
    * enlarged before open). A transform on this outer box, scaled around
@@ -39,7 +23,8 @@
    * inside .case__toggle is a calc() off --case-h, most without a
    * transition of their own, so changing --case-h directly would make
    * them all snap instead of grow smoothly. Scaling the already-rendered
-   * subtree as one composited unit sidesteps that.
+   * subtree as one composited unit sidesteps that. Jewel has no enlarge
+   * stage, so none of this exists in JewelCase.css.
    */
   --enlarge: 1;
   /* Single source for the duration both here and in FilmsList.css's
@@ -95,94 +80,23 @@
   --extent: var(--front-w);
 }
 
-.case__toggle {
-  all: unset;
-  position: absolute;
-  inset: 0;
-  cursor: pointer;
-  transform-style: preserve-3d;
-  /*
-   * Constant "on a shelf" presentation angle when closed. Open relaxes
-   * to near flat — the point of fixing the aspect ratio is defeated if
-   * heavy perspective is left to foreshorten it back out of true.
-   * --recenter is a single uniform shift for the whole rigid group
-   * (spine + tray unit + the lid's own pivot), not a per-part
-   * adjustment: .case's own box stays sized to the closed footprint
-   * (see .case), so the open lid overflows it to the left. Without this
-   * the open spread reads visually off-centre, dragged left by that
-   * overflow. Applying it to the whole group rather than to
-   * .case__tray-unit alone moves everything together with zero
-   * relative motion between them — the lid's rotation is still the
-   * only thing that isn't shared.
-   * (This used to target a .case__stage wrapper that no longer exists
-   * in the markup, which meant none of it was ever actually applied.)
-   */
-  --tilt-x: 6deg;
-  --tilt-y: -24deg;
-  --recenter: 0px;
-  transform: translateX(var(--recenter)) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
-  transition: transform 0.6s ease;
-}
-
-.case[data-open='true'] .case__toggle {
-  --tilt-x: 2deg;
-  --tilt-y: -4deg;
-  --recenter: calc((var(--front-w) - var(--depth)) / 2);
+@media (prefers-reduced-motion: reduce) {
+  .case {
+    transition: none;
+  }
 }
 
 /*
- * Outlining the button itself would draw the ring pre-rotation, on a box
- * that's mostly not facing the viewer once open. The outer .case box is
- * flat and untransformed, so its outline stays a plain, reliable rectangle
- * in every state.
- */
-.case:has(.case__toggle:focus-visible) {
-  outline: 2px solid #fff;
-  outline-offset: 6px;
-}
-
-/*
- * The spine: a true left-facing face, not a flat cheat, depth x case-h,
- * turned 90deg so its local width becomes the Z-span from the back plane
- * out to the closed front leaf. Open has no separate spine strip — the
- * fold between the two panels sits flush at the join, so this just fades
- * out rather than being repositioned.
+ * The spine's pivot and fade live in caseMechanism.css; only the printed
+ * surface is specific to a keep case. Colour-sampled from the cover at
+ * runtime for standard livery, overridden solid for Blu-ray below.
  */
 .case__spine {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: var(--depth);
-  height: 100%;
-  /*
-   * The pivot is the edge that's rigidly joined to the tray unit (this
-   * box's own local x:depth, its right edge) — not the outer edge. That's
-   * the edge that's actually fixed in 3D space; the outer edge (local
-   * x:0) is the one that sweeps round to meet the front panel's left
-   * edge. With this origin, rotateY(90deg) carries it to z:depth there,
-   * landing on the exact same 3D line the front panel's own left edge
-   * occupies — confirmed by measuring both against live-marker corner
-   * points, not the bounding rect, which matched to within 0.001px. No
-   * separate scale or translate correction needed once the pivot is
-   * right; an earlier version fit one empirically instead of finding
-   * this.
-   *
-   * At the current -24deg tilt this correct geometry puts the spine
-   * almost edge-on to the camera, and the front panel occludes it
-   * entirely in the closed state — the spine was only ever visible
-   * before because the wrong pivot happened to position it to the left
-   * of the front panel instead of behind it. If the spine needs to read
-   * as visible again, that's a tilt-angle decision, not a geometry bug.
-   */
-  transform-origin: right center;
-  transform: rotateY(90deg);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   background: var(--spine-bg, #26262b);
-  opacity: 1;
-  transition: opacity 0.25s ease;
   /* The title runs the spine's height (sideways-lr), not its width, so it
      scales off container query height rather than width. */
   container-type: size;
@@ -210,10 +124,6 @@
   height: auto;
 }
 
-.case[data-open='true'] .case__spine {
-  opacity: 0;
-}
-
 .case__spine-title {
   writing-mode: sideways-lr;
   font-family: system-ui, sans-serif;
@@ -227,31 +137,17 @@
 }
 
 /*
- * The tray half — the rigid, motionless part of the case. Fixed at
- * left: depth always, in both states: this is what "the rest of the
- * case stays still" means concretely. It used to be right-anchored,
- * which tied its position to .case's own width and made it visibly
- * slide as that width animated open. Never state-dependent.
+ * caseMechanism.css positions the tray unit; this is the keep-case-only
+ * empirical correction on top of it. Measured directly against a jewel
+ * case (open, tray unit vs front leaf edges) before sharing this: the
+ * keep case's own -0.0993/1.0115 pair put the jewel tray unit's top edge
+ * 5.1px out of alignment, where leaving it uncorrected already lands
+ * both edges under 0.5px apart. Tuned for this format's own
+ * depth-to-height ratio, not portable — stays here, not in the shared
+ * file.
  */
 .case__tray-unit {
-  position: absolute;
-  left: var(--depth);
-  top: 0;
-  width: var(--front-w);
-  height: 100%;
-  /*
-   * Same edge correction as .case__spine, much smaller here since this
-   * unit isn't carrying an extra rotation of its own the way the spine
-   * is — just left:var(--depth) rather than a transform, which still
-   * renders fractionally short and offset from the front panel once the
-   * shared shelf tilt is composed on top. Empirically measured at the
-   * current tilt angles, same reasoning as the spine's correction above.
-   */
   transform: translateY(calc(var(--depth) * -0.0993)) scaleY(1.0115);
-  /* Without this, the lifted disc (a descendant here) gets flattened into
-     DOM paint order against .case__front's children instead of sorting by
-     actual 3D depth, and loses to whatever comes later in the markup. */
-  transform-style: preserve-3d;
 }
 
 .case__tray {
@@ -450,47 +346,6 @@
     rgba(255, 255, 255, 0.12) 100%
   );
   mix-blend-mode: screen;
-}
-
-/*
- * The one animated 3D piece. Closed: flush against the tray unit, offset
- * forward by the case depth, transform-origin at the spine. Open: the
- * pivot itself moves out to front-w (the fold, now that the case has
- * widened to two panels) and forward offset drops to 0, so the leaf ends
- * up coplanar with the tray unit at x:[0, front-w] instead of trailing
- * off at an oblique angle.
- */
-.case__front {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: var(--front-w);
-  height: 100%;
-  transform-origin: left center;
-  /*
-   * translateX/translateZ are constant — the pivot sits at depth (the
-   * fold, matching .case__tray-unit's own fixed left edge) in both
-   * states and never moves. --hinge is the only thing that changes
-   * between open and closed: rotation is the entire difference, exactly
-   * "the lid rotates on the hinge, the rest of the case stays still."
-   * Closed (0deg): the leaf sits flush at [depth, depth+front-w], z:depth,
-   * directly in front of the tray unit. Open (-180deg): it swings to
-   * [depth-front-w, depth], landing flush against the tray unit's left
-   * edge with zero gap.
-   */
-  transform: translateX(var(--depth)) translateZ(var(--depth)) rotateY(var(--hinge, 0deg));
-  transition: transform 0.6s ease;
-  transform-style: preserve-3d;
-}
-
-.case[data-open='true'] .case__front {
-  --hinge: -180deg;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .case[data-open='false'] .case__toggle:hover .case__front {
-    --hinge: -12deg;
-  }
 }
 
 /* Outer face: the cover art. Hides itself once rotated past 90deg instead
@@ -709,77 +564,4 @@
 
 .case__booklet-clip--bottom {
   bottom: 20%;
-}
-
-/*
- * Sized against the tray unit's own 128.5mm width, not the full open
- * case: --disc-ratio (Case.tsx) is 120 / 128.5, so the disc leaves the
- * real ~4mm margin all round rather than an eyeballed percentage, and it
- * must stay within the panel — it never crosses the fold at rest.
- */
-.case__disc-slot {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: calc(var(--disc-ratio) * 100%);
-  cursor: pointer;
-  transform: translate(-50%, -50%) translateZ(1px) scale(1);
-  transition:
-    left 0.6s ease,
-    top 0.6s ease,
-    transform 0.6s ease,
-    width 0.6s ease;
-}
-
-.case__disc-slot:focus-visible {
-  outline: none;
-}
-
-.case__disc-slot:focus-visible .disc {
-  outline: 2px solid #fff;
-  outline-offset: 6px;
-  border-radius: 50%;
-}
-
-.case__disc-slot .disc {
-  width: 100%;
-}
-
-/* A disc resting in the tray does not spin. Only a lifted disc does. Fully
-   off rather than paused, so it rests at a fixed, upright orientation
-   instead of freezing wherever the animation happened to be. */
-.case__disc-slot:not(.is-out) .disc__art,
-.case__disc-slot:not(.is-out) .disc__sweep {
-  animation: none;
-}
-
-/* Lifted: shifts left to the centre of the whole open case (the tray
-   unit's own left edge, in its local coordinates, is the case's
-   horizontal midpoint) and grows slightly beyond its resting size. */
-.case__disc-slot.is-out {
-  left: 0%;
-  top: 46%;
-  width: 105%;
-  transform: translate(-50%, -50%) translateZ(90px) scale(1);
-}
-
-.case__shadow {
-  position: absolute;
-  left: 8%;
-  right: 8%;
-  bottom: -6%;
-  height: 14%;
-  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.5) 0%, transparent 72%);
-  filter: blur(6px);
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .case,
-  .case__toggle,
-  .case__spine,
-  .case__front,
-  .case__disc-slot {
-    transition: none;
-  }
 }

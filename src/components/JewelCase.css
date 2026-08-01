@@ -1,88 +1,39 @@
+/*
+ * Base sizing, tilt, hinge, spine pivot, disc-slot mechanics, focus
+ * outlines, contact shadow and reduced-motion handling all live in
+ * caseMechanism.css now, shared with Case.css — this file keeps only
+ * what's genuinely specific to a jewel case: --case-h itself (one fixed
+ * size, no per-format table), clear-plastic materials, the rosette hub,
+ * the tray reliefs, and the booklet/refraction layers under the lid.
+ * No border-radius anywhere in this file: a jewel case has sharp
+ * corners, unlike Case.css's keep case.
+ */
 .jewel-case {
-  position: relative;
-  /* Standalone sizing, matching Case.css's own hero-sized default for a
-     single object shown alone — there is only one jewel case size, so
-     unlike Case.css there is no --height-scale to fold in here. */
+  /* One fixed size — unlike Case.css, there is no --height-scale to fold
+     in, since every jewel case is the same 142 x 125 x 10mm. */
   --case-h: min(64vmin, 460px);
-  --front-w: calc(var(--case-h) * var(--front-face-ratio));
-  --depth: calc(var(--case-h) * var(--depth-ratio));
-  width: calc(var(--depth) + var(--front-w));
-  height: var(--case-h);
-  overflow: visible;
-  perspective: 2600px;
-  perspective-origin: 50% 50%;
-}
-
-.jewel-case__toggle {
-  all: unset;
-  position: absolute;
-  inset: 0;
-  cursor: pointer;
-  transform-style: preserve-3d;
-  /* Same shelf tilt as Case.css's keep cases (docs/03-object-spec.md
-     gives no separate figure for jewel cases), so an album sitting next
-     to a film reads as part of the same shelf rather than at an
-     unrelated angle. */
-  --tilt-x: 6deg;
-  --tilt-y: -24deg;
-  --recenter: 0px;
-  transform: translateX(var(--recenter)) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
-  transition: transform 0.6s ease;
-}
-
-.jewel-case[data-open='true'] .jewel-case__toggle {
-  --tilt-x: 2deg;
-  --tilt-y: -4deg;
-  --recenter: calc((var(--front-w) - var(--depth)) / 2);
-}
-
-.jewel-case:has(.jewel-case__toggle:focus-visible) {
-  outline: 2px solid #fff;
-  outline-offset: 6px;
 }
 
 /*
  * Opaque black, blank — the reference photos show no printed spine
- * insert. Same left-edge pivot as Case.css's .case__spine: the rigid
- * edge is the one joined to the tray unit (this box's local x:depth),
- * not the outer edge, so rotateY(90deg) lands it flush with the front
- * panel's own left edge with no separate correction needed.
+ * insert, unlike a keep case's own paper spine. The pivot itself is
+ * shared (caseMechanism.css); only the printed surface is specific.
  */
 .jewel-case__spine {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: var(--depth);
-  height: 100%;
-  transform-origin: right center;
-  transform: rotateY(90deg);
   background: linear-gradient(180deg, #1c1c1e 0%, #0e0e10 100%);
-  opacity: 1;
-  transition: opacity 0.25s ease;
-}
-
-.jewel-case[data-open='true'] .jewel-case__spine {
-  opacity: 0;
 }
 
 /*
- * The rigid half — tray unit stays still, only the front leaf moves.
- * Fixed at left: depth in both states, same reasoning as Case.css: never
- * state-dependent, so nothing here visibly slides.
+ * caseMechanism.css positions the tray unit; a jewel case adds no
+ * correction on top of it. A keep case needs one for its own
+ * depth-to-height ratio (Case.css) — measured directly against this
+ * format before sharing that file: applying the keep case's own
+ * -0.0993/1.0115 pair here put the tray unit's top edge 5.1px out of
+ * alignment against the front leaf, where leaving this format uncorrected
+ * already lands both edges under 0.5px apart. The correction doesn't
+ * transfer to a thinner depth ratio, so this file simply omits it rather
+ * than fitting a second empirical constant.
  */
-.jewel-case__tray-unit {
-  position: absolute;
-  left: var(--depth);
-  top: 0;
-  width: var(--front-w);
-  height: 100%;
-  /* Same edge correction Case.css's .case__tray-unit uses, valid at the
-     same tilt angles reused above regardless of this case's own,
-     thinner depth ratio — the correction compensates the shared
-     perspective foreshortening, not the depth figure itself. */
-  transform: translateY(calc(var(--depth) * -0.0993)) scaleY(1.0115);
-  transform-style: preserve-3d;
-}
 
 /*
  * The clear outer shell, full panel size — hard, brittle plastic, not
@@ -102,8 +53,7 @@
 /*
  * The tray: a separate opaque black piece inset within the clear shell,
  * the visible clear rim the reference photos show around it — not a
- * tray that fills the whole panel. No border-radius anywhere in this
- * file: a jewel case has sharp corners, unlike Case.css's keep case.
+ * tray that fills the whole panel.
  */
 .jewel-case__tray {
   position: absolute;
@@ -187,84 +137,6 @@
   right: 14%;
 }
 
-.jewel-case__disc-slot {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: calc(var(--disc-ratio) * 100%);
-  cursor: pointer;
-  transform: translate(-50%, -50%) translateZ(1px) scale(1);
-  transition:
-    left 0.6s ease,
-    top 0.6s ease,
-    transform 0.6s ease,
-    width 0.6s ease;
-}
-
-.jewel-case__disc-slot:focus-visible {
-  outline: none;
-}
-
-.jewel-case__disc-slot:focus-visible .disc {
-  outline: 2px solid #fff;
-  outline-offset: 6px;
-  border-radius: 50%;
-}
-
-.jewel-case__disc-slot .disc {
-  width: 100%;
-}
-
-/* A disc resting in the tray does not spin, same convention as
-   Case.css — only a lifted one does. */
-.jewel-case__disc-slot:not(.is-out) .disc__art,
-.jewel-case__disc-slot:not(.is-out) .disc__sweep {
-  animation: none;
-}
-
-/* Lifted: shifts to the horizontal midpoint of the whole open case (the
-   tray unit's own left edge, in its local coordinates) and grows
-   slightly beyond its resting size — same formula as Case.css's own
-   .case__disc-slot.is-out. */
-.jewel-case__disc-slot.is-out {
-  left: 0%;
-  top: 46%;
-  width: 105%;
-  transform: translate(-50%, -50%) translateZ(90px) scale(1);
-}
-
-.jewel-case__disc-slot .disc {
-  width: 100%;
-}
-
-/*
- * The one animated 3D piece, same transform as Case.css's .case__front:
- * pivot fixed at depth in both states, --hinge the only thing that
- * changes. Closed the leaf sits flush over the tray unit; open it swings
- * flush against the tray unit's left edge.
- */
-.jewel-case__front {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: var(--front-w);
-  height: 100%;
-  transform-origin: left center;
-  transform: translateX(var(--depth)) translateZ(var(--depth)) rotateY(var(--hinge, 0deg));
-  transition: transform 0.6s ease;
-  transform-style: preserve-3d;
-}
-
-.jewel-case[data-open='true'] .jewel-case__front {
-  --hinge: -180deg;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .jewel-case[data-open='false'] .jewel-case__toggle:hover .jewel-case__front {
-    --hinge: -12deg;
-  }
-}
-
 /*
  * The clear lid's outer face. Unlike Case.css's .case__front-art, this
  * is never opaque: the booklet underneath is what carries the colour,
@@ -341,24 +213,4 @@
   backface-visibility: hidden;
   background: linear-gradient(100deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 45%, transparent 100%);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-}
-
-.jewel-case__shadow {
-  position: absolute;
-  left: 8%;
-  right: 8%;
-  bottom: -6%;
-  height: 14%;
-  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.5) 0%, transparent 72%);
-  filter: blur(6px);
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .jewel-case__toggle,
-  .jewel-case__spine,
-  .jewel-case__front,
-  .jewel-case__disc-slot {
-    transition: none;
-  }
 }

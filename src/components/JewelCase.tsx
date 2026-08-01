@@ -1,5 +1,6 @@
 import { useState, type CSSProperties, type KeyboardEvent, type RefObject } from 'react'
 import Disc, { DISC_DIAMETER_MM } from './Disc'
+import './caseMechanism.css'
 import './JewelCase.css'
 
 // docs/03-object-spec.md Cases table: CD jewel case, 142 x 125 x 10mm,

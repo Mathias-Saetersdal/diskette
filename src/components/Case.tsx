@@ -3,6 +3,7 @@ import Disc, { DISC_DIAMETER_MM } from './Disc'
 import type { Livery } from '../data/lists'
 import { CASE_GEOMETRY, MAX_CASE_HEIGHT_MM, type SupportedCaseFormat } from './caseGeometry'
 import CaseFrontFace, { BLURAY_LOGO_SRC } from './CaseFrontFace'
+import './caseMechanism.css'
 import './Case.css'
 
 // The tray-resting disc, the tray ring, and the hub boss are all sized off
