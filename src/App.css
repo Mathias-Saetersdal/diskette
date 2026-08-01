@@ -21,12 +21,6 @@
   background: #1a1a1a;
 }
 
-.case-row {
-  display: flex;
-  align-items: flex-end; /* both cases stand on the same shelf line */
-  gap: 32px;
-}
-
 .burned-row {
   display: flex;
   flex-wrap: wrap;

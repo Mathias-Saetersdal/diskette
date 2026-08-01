@@ -50,6 +50,8 @@ from `03-object-spec.md`.
 Only one object holds an open or disc-out state at a time. Closed objects
 render as flat images with no 3D subtree and no filters.
 Produce whole files, not fragments marked "rest unchanged".
+After any change to list or card layout, verify every interaction state, not
+just the resting one. Closed, enlarged, open and disc out.
 
 ## Writing
 

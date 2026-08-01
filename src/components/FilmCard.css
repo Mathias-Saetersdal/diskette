@@ -1,0 +1,32 @@
+/*
+ * The case (or flat case) sizes itself entirely freely here — no wrapping
+ * box, no fixed height. An earlier version pinned a slot to --list-case-h
+ * (the resting DVD height) to line the rank numbers up, but an enlarged
+ * case is taller than that by design, and the fixed slot clamped it back
+ * down to a flat bar with the disc floating over the collapsed body. The
+ * shared baseline both the case and the rank number need instead comes
+ * from bottom-aligning this whole stack as one unit within the row (see
+ * .films-list .film-card in FilmsList.css) — case then rank, in that
+ * order, so a fixed rank height and gap sit below whichever height the
+ * case happens to be, DVD or Blu-ray, open or closed, enlarged or not.
+ */
+.film-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/*
+ * A plain flow sibling below the case, not a box around it: this is what
+ * lets the case grow past its own resting height (enlarged, open) without
+ * anything here constraining it. The gap above is fixed regardless of
+ * format or state, which is what keeps the number itself landing on a
+ * consistent baseline once the whole .film-card stack is bottom-aligned.
+ */
+.film-card__rank {
+  margin-top: 6px;
+  font-family: system-ui, sans-serif;
+  font-size: 0.75rem;
+  color: #888;
+  line-height: 1;
+}

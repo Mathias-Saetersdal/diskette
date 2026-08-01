@@ -1,25 +1,9 @@
-import { useEffect, useState, type CSSProperties, type KeyboardEvent } from 'react'
+import { useEffect, useState, type CSSProperties, type KeyboardEvent, type RefObject } from 'react'
 import Disc, { DISC_DIAMETER_MM } from './Disc'
-import type { CaseFormat, Livery } from '../data/lists'
+import type { Livery } from '../data/lists'
+import { CASE_GEOMETRY, MAX_CASE_HEIGHT_MM, type SupportedCaseFormat } from './caseGeometry'
+import CaseFrontFace, { BLURAY_LOGO_SRC } from './CaseFrontFace'
 import './Case.css'
-
-// Only the two film case formats are built here — jewel, ps5 and switch
-// are other media/livery's job (step 7), not this component yet.
-type SupportedCaseFormat = Extract<CaseFormat, 'dvd' | 'bluray'>
-
-// docs/03-object-spec.md Cases table: H x W x D per format.
-const CASE_GEOMETRY: Record<SupportedCaseFormat, { heightMm: number; widthMm: number; depthMm: number }> = {
-  dvd: { heightMm: 184, widthMm: 130, depthMm: 14 },
-  bluray: { heightMm: 148, widthMm: 128.5, depthMm: 12 },
-}
-
-// The tallest case in the table sets the on-screen scale: --case-h in
-// Case.css is capped in viewport units, and every format's actual height
-// is that cap times its own heightMm over this figure. A fixed reference,
-// not one derived from whatever happens to be on screen at once — so a
-// Blu-ray case is always ~80% of a DVD case's height, alone or side by
-// side, per "Dimensions are real millimetres, used as ratios" (03-object-spec.md).
-const MAX_CASE_HEIGHT_MM = Math.max(...Object.values(CASE_GEOMETRY).map((format) => format.heightMm))
 
 // The tray-resting disc, the tray ring, and the hub boss are all sized off
 // the panel width in mm, so they need to be recomputed per format too —
@@ -50,6 +34,25 @@ interface CaseProps {
   discAlt: string
   caseFormat: SupportedCaseFormat
   livery: Livery
+  /**
+   * Controlled, not internal: a list of many cases needs exactly one open
+   * at a time, which means the state that decides open/closed has to live
+   * above whichever Case currently exists — see FilmsList. discOut stays
+   * internal below, since Case only ever mounts for the one active entry
+   * and unmounting already clears it for free.
+   */
+  open: boolean
+  onToggleOpen: () => void
+  /**
+   * Also controlled, also owned by the sequencing in FilmCard: a case
+   * grows to twice its list size before it opens, not at the same time.
+   * Kept as its own boolean rather than folded into `open` because the two
+   * states are visually independent (scale on .case itself vs. the hinge
+   * rotation on .case__toggle) and reach true a beat apart.
+   */
+  enlarged: boolean
+  /** Focused once this Case mounts as the newly-active entry. */
+  toggleRef?: RefObject<HTMLButtonElement | null>
 }
 
 interface SpineColors {
@@ -143,44 +146,38 @@ function useSpineColors(src: string): SpineColors {
   return colors
 }
 
-// No physical spec for these — there's no real case to measure a header
-// zone or inset margin against in mm, unlike the case/disc figures
-// elsewhere in this file. Design proportions, sourced from the pixel
-// geometry of reference/blue-ray.png instead: header ~6% of panel height
-// before the oval mark's own overlap, inset ~3-4% on the outer edges.
-const FRONT_HEADER_HEIGHT_PCT = 9
-const FRONT_INSET_PCT = 3
-
-// docs/02-asset-sources.md: shared UI marks live under public/assets, same
-// as fetched cover/disc assets, not bundled through src/. This is a real
-// grayscale+alpha PNG (reference/blu-ray-disc-logo-black-and-white.png) —
-// the earlier .svg under this same name was a vector trace of a flattened
-// checkerboard-transparency preview, not real logo artwork, and never
-// rendered correctly.
-const BLURAY_LOGO_SRC = '/assets/marks/blu-ray-disc-white.png'
-
-export default function Case({ title, coverSrc, coverAlt, discSrc, discAlt, caseFormat, livery }: CaseProps) {
-  const [open, setOpen] = useState(false)
+export default function Case({
+  title,
+  coverSrc,
+  coverAlt,
+  discSrc,
+  discAlt,
+  caseFormat,
+  livery,
+  open,
+  enlarged,
+  onToggleOpen,
+  toggleRef,
+}: CaseProps) {
   const [discOut, setDiscOut] = useState(false)
+  // A closed case can't have a floating disc. open is now the caller's
+  // state, not ours, so enforcing that invariant has to watch the prop
+  // rather than branch inside a toggle handler — done as a direct
+  // render-time check (React state synchronizing with React state, not
+  // with anything external), not an effect.
+  if (!open && discOut) setDiscOut(false)
+
   const spine = useSpineColors(coverSrc)
   const geometry = useCaseGeometry(caseFormat)
 
   // "standard" livery isn't one look — for films it's whatever the
   // natural, unbranded case for that format is (docs/03-object-spec.md,
   // Livery). ps2/ps3/ps4/ps5 liveries are format-independent and not
-  // handled here yet (step 7, games).
+  // handled here yet (step 7, games). Only the spine mark and the
+  // .case--bluray-livery class need this here now — the front face's own
+  // copy of this check lives in CaseFrontFace, which also renders closed
+  // inside FlatCase.
   const isStandardBluray = livery === 'standard' && caseFormat === 'bluray'
-  const isStandardDvd = livery === 'standard' && caseFormat === 'dvd'
-  const showHeader = isStandardBluray
-  const frontArtModifier = isStandardBluray ? ' case__front-art--bluray' : isStandardDvd ? ' case__front-art--dvd' : ''
-
-  const toggleOpen = () => {
-    setOpen((wasOpen) => {
-      const next = !wasOpen
-      if (!next) setDiscOut(false) // a closed case can't have a floating disc
-      return next
-    })
-  }
 
   const toggleDiscOut = () => setDiscOut((was) => !was)
 
@@ -203,18 +200,22 @@ export default function Case({ title, coverSrc, coverAlt, discSrc, discAlt, case
     '--tray-ring-inner': geometry.trayRingInnerRatio,
     '--tray-ring-outer': geometry.trayRingOuterRatio,
     '--hub-boss-ratio': geometry.hubBossRatio,
-    '--front-header-height': showHeader ? `${FRONT_HEADER_HEIGHT_PCT}%` : '0%',
-    '--front-inset': showHeader ? `${FRONT_INSET_PCT}%` : '0%',
   } as CSSProperties
 
   return (
-    <div className={`case${isStandardBluray ? ' case--bluray-livery' : ''}`} data-open={open} style={style}>
+    <div
+      className={`case${isStandardBluray ? ' case--bluray-livery' : ''}`}
+      data-open={open}
+      data-enlarged={enlarged}
+      style={style}
+    >
       <button
+        ref={toggleRef}
         type="button"
         className="case__toggle"
         aria-expanded={open}
         aria-label={`${open ? 'Close' : 'Open'} case: ${title}`}
-        onClick={toggleOpen}
+        onClick={onToggleOpen}
       >
         <div className="case__spine">
           {isStandardBluray && (
@@ -282,42 +283,7 @@ export default function Case({ title, coverSrc, coverAlt, discSrc, discAlt, case
            * 180deg so it faces the viewer exactly when the leaf has swung
            * open, and mirrors that of the leaf so it isn't itself flipped.
            */}
-          <div className={`case__front-art${frontArtModifier}`}>
-            {/*
-             * The blue is the case body's own full-bleed background, not a
-             * banner sitting on top of the poster — the poster is the
-             * layer that's inset, with a small even margin on three sides
-             * and a taller margin at the top for the header marks.
-             * --front-header-height/--front-inset are 0 for DVD, so this
-             * is inset:0 there and full bleed.
-             */}
-            <div className="case__front-poster">
-              <img src={coverSrc} alt={coverAlt} />
-            </div>
-            {showHeader && (
-              <div className="case__front-header" aria-hidden="true">
-                <span className="case__front-mark">
-                  <img className="case__front-mark-logo" src={BLURAY_LOGO_SRC} alt="" />
-                  <span className="case__front-mark-text">
-                    BLU-RAY<sup>TM</sup> DISC
-                  </span>
-                </span>
-                {/*
-                 * Centred horizontally, not confined inside the header
-                 * strip: bottom: 0 puts its own bottom edge on the
-                 * header/poster boundary, then translateY(33%) — a shift
-                 * of a third of its own height, which is what percentage
-                 * transforms resolve against — carries it down so a third
-                 * of it overlaps the artwork instead of sitting flush
-                 * above it.
-                 */}
-                <span className="case__front-ellipse">
-                  <img className="case__front-ellipse-logo" src={BLURAY_LOGO_SRC} alt="" />
-                </span>
-              </div>
-            )}
-            <div className="case__front-gloss" aria-hidden="true" />
-          </div>
+          <CaseFrontFace coverSrc={coverSrc} coverAlt={coverAlt} caseFormat={caseFormat} livery={livery} />
           <div className="case__front-interior">
             <div className="case__panel-frame" aria-hidden="true" />
             <div className="case__panel-sheen" aria-hidden="true" />

@@ -64,7 +64,7 @@ export const films: Entry[] = [
     livery: "standard",
     cover: "/assets/film/the-dark-knight/cover.png",
     disc: "/assets/film/the-dark-knight/disc.png",
-    note: "",
+    note: "Mest ikoniske startscenen jeg har opplevd sammen med beste prestasjonen av en skuespiller gjennom tidene (Joker). Fantastisk plot, action og enestående skuespillere gjør dette til Nolan sit beste verk og dermed beste filmen gjennom tidene.",
   },
   {
     id: "interstellar",
@@ -78,7 +78,7 @@ export const films: Entry[] = [
     livery: "standard",
     cover: "/assets/film/interstellar/cover.png",
     disc: "/assets/film/interstellar/disc.png",
-    note: "",
+    note: "Beste scifi filmen laget, men en helt unik måte å fortelle den på. For en cast, musikk, skuespillere, og ikke minst visuals.",
   },
   {
     id: "fight-club",
@@ -92,7 +92,7 @@ export const films: Entry[] = [
     livery: "standard",
     cover: "/assets/film/fight-club/cover.png",
     disc: "/assets/film/fight-club/disc.png",
-    note: "",
+    note: "Må ha den beste plot-twisten gjennom tidene. Brad pitt på sitt beste med en av de kuleste historiene fortalt gjør denne filmen ikonisk.",
   },
   {
     id: "the-matrix",
@@ -106,7 +106,7 @@ export const films: Entry[] = [
     livery: "standard",
     cover: "/assets/film/the-matrix/cover.png",
     disc: "/assets/film/the-matrix/disc.png",
-    note: "",
+    note: "Kuleste konsept på en film, sitter på kanten av setet gjennom hele filmen. Unik action og storytelling med faktastiske skuespillere gjør denne filmen ikonisk.",
   },
   {
     id: "spider-man-2",
@@ -120,7 +120,7 @@ export const films: Entry[] = [
     livery: "standard",
     cover: "/assets/film/spider-man-2/cover.png",
     disc: "/assets/film/spider-man-2/disc.png",
-    note: "",
+    note: "Peter sliter med å balansere livet som helt, student, venn og kjæreste, noe som mange kan relatere til. Filmen har et godt budskap og er vel gjennomført med mange ikoniske scener og karakterer som sammen gjør dette til beste Spiderman filmen gjennom tidene",
   },
   {
     id: "spirited-away",
@@ -134,7 +134,7 @@ export const films: Entry[] = [
     livery: "standard",
     cover: "/assets/film/spirited-away/cover.png",
     disc: "/assets/film/spirited-away/disc.png",
-    note: "",
+    note: "Denne filmen er ren kunst, og åpnet øynene mine for anime som jeg er uendelig takknemlig for. Miyazaki og Studio Ghibili er på mange måter japan sin disney, bare MYE bedre",
   },
   {
     id: "blade-runner-2049",
@@ -148,7 +148,7 @@ export const films: Entry[] = [
     livery: "standard",
     cover: "/assets/film/blade-runner-2049/cover.png",
     disc: "/assets/film/blade-runner-2049/disc.png",
-    note: "",
+    note: "For en visuell opplevelse. Dette er slik en scifi film skal lages, full av action, mysterie og en unik verdenbygging",
   },
   {
     id: "this-is-the-end",
@@ -162,7 +162,7 @@ export const films: Entry[] = [
     livery: "standard",
     cover: "/assets/film/this-is-the-end/cover.png",
     disc: "/assets/film/this-is-the-end/disc.png",
-    note: "",
+    note: "Virkelig min favoritt komedie, med alle mine favoritt skuespillere. Hver eneste scene i denne filmen er skammelig tidig, og det at de fleste scener er bare de som kødder rundt gjør det 100 ganger bedre.",
   },
   {
     id: "inception",
@@ -176,7 +176,7 @@ export const films: Entry[] = [
     livery: "standard",
     cover: "/assets/film/inception/cover.png",
     disc: "/assets/film/inception/disc.png",
-    note: "",
+    note: "For en mindfuck av en film, for en cast, for et album av Hans Zimmer. Denne filmen kan være litt forvirrende første gang man ser den, men når man først skjønner, så innser du hvor fantastisk storytelling kan være.",
   },
   {
     id: "superbad",
@@ -190,7 +190,7 @@ export const films: Entry[] = [
     livery: "standard",
     cover: "/assets/film/superbad/cover.png",
     disc: "/assets/film/superbad/disc.png",
-    note: "",
+    note: "For en ikonisk komedie, dette var starten på en komedie sjanger som har ført til så mange andre gode komedier. Denne filmen kan sees uendelig ganger uten at man blir lei",
   },
 ];
 

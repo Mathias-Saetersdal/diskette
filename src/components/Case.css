@@ -32,6 +32,67 @@
   overflow: visible;
   perspective: 2600px;
   perspective-origin: 50% 50%;
+  /*
+   * Grows the whole case by 100% before it opens (FilmCard sequences
+   * enlarged before open). A transform on this outer box, scaled around
+   * its own centre, not a change to --case-h itself: every hinge dimension
+   * inside .case__toggle is a calc() off --case-h, most without a
+   * transition of their own, so changing --case-h directly would make
+   * them all snap instead of grow smoothly. Scaling the already-rendered
+   * subtree as one composited unit sidesteps that.
+   */
+  --enlarge: 1;
+  /* Single source for the duration both here and in FilmsList.css's
+     margin transitions — see the transition declaration below for why
+     that second declaration exists at all. */
+  --enlarge-duration: 1.5s;
+  transform: scale(var(--enlarge));
+  /*
+   * Anchored at the bottom edge, not the centre: .case already sits on a
+   * shelf line (align-self: flex-end in FilmsList.css), and growing from
+   * centre pushed the bottom edge down by half the extra height on every
+   * enlarge, straight into the detail text sitting below the row. Growing
+   * up from a fixed bottom edge instead means the row's own footprint
+   * never changes, so that text never has to move or get covered.
+   */
+  transform-origin: 50% 100%;
+  /*
+   * ease-in-out, not ease-out: ease-out front-loads most of the growth
+   * into the first fraction of the duration, then spends the rest visibly
+   * tapering off — reads as a quick snap to nearly full size followed by a
+   * slow creep, not the steady, even grow the object should have. ease-out
+   * (or the sharper start of Case.css's other transitions) makes sense for
+   * something that's already moving and settling into place; this is
+   * starting from a dead stop, so both ends of the curve should ease.
+   *
+   * This declaration only takes effect for a standalone Case (outside
+   * FilmsList). Nested in the list, FilmsList.css's own, more specific
+   * .films-list .case rule also sets transition — and since cascade
+   * resolves the whole transition-property list per selector match, not
+   * per individual property, that rule's list fully replaces this one
+   * rather than merging with it. FilmsList.css's copy repeats `transform`
+   * for exactly this reason: leaving it out there silently drops this
+   * transition the moment Case is used inside a list.
+   */
+  transition: transform var(--enlarge-duration) ease-in-out;
+  /*
+   * The un-scaled visual half-width from centre, before --enlarge is
+   * applied: half the closed footprint at rest, the front panel's own
+   * width once open (.case[data-open='true'] below — matches the extent
+   * the lid and the recentred tray-unit actually reach at .case's own
+   * scale of 1). FilmsList.css multiplies this by --enlarge to reserve
+   * exactly enough margin at every point in both animations, not just the
+   * resting and fully-open-and-enlarged states.
+   */
+  --extent: calc((var(--depth) + var(--front-w)) / 2);
+}
+
+.case[data-enlarged='true'] {
+  --enlarge: 2;
+}
+
+.case[data-open='true'] {
+  --extent: var(--front-w);
 }
 
 .case__toggle {
@@ -442,6 +503,18 @@
   /* Plain default edge, overridden per livery below — this is what a
      format without a defined livery treatment falls back to. */
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  /*
+   * Self-contained --front-w: this element's own inline size, exposed as a
+   * usable length for the header marks below. Not inherited from .case —
+   * that only exists when this is mounted inside Case's 3D leaf, and this
+   * same markup (via CaseFrontFace) also mounts flat inside FlatCase, with
+   * no such ancestor. Numerically identical to the old inherited value
+   * when it does sit inside Case: this box's own width already equals
+   * .case__front's var(--front-w) by inset:0, so 100cqi of itself resolves
+   * to the same figure.
+   */
+  container-type: inline-size;
+  --front-w: 100cqi;
 }
 
 /*
@@ -702,6 +775,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .case,
   .case__toggle,
   .case__spine,
   .case__front,

@@ -1,0 +1,22 @@
+/*
+ * --list-case-h comes from the containing list (FilmsList.css), a small
+ * fallback here only so this component doesn't collapse to nothing if it's
+ * ever rendered outside that context.
+ */
+.flat-case {
+  all: unset;
+  position: relative; /* containing block for CaseFrontFace's inset:0 */
+  cursor: pointer;
+  display: block;
+  width: calc(var(--list-case-h, 140px) * var(--height-scale, 1) * var(--front-face-ratio));
+  height: calc(var(--list-case-h, 140px) * var(--height-scale, 1));
+  overflow: hidden;
+  /* A plain contact shadow, not filter: drop-shadow — cheaper to
+     composite, which matters with several of these mounted at once. */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.45);
+}
+
+.flat-case:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
