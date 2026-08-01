@@ -1,0 +1,457 @@
+{
+  "the-dark-knight": {
+    "cover": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/movie/155",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "backdrop": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/movie/155",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "disc": {
+      "source": "fanart.tv",
+      "url": "https://assets.fanart.tv/fanart/the-dark-knight-51f843029ec20.png",
+      "licence": "fanart.tv, attribution required"
+    }
+  },
+  "interstellar": {
+    "cover": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/movie/157336",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "backdrop": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/movie/157336",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "disc": {
+      "source": "fanart.tv",
+      "url": "https://assets.fanart.tv/fanart/interstellar-544fc7176aba4.png",
+      "licence": "fanart.tv, attribution required"
+    }
+  },
+  "fight-club": {
+    "cover": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/movie/550",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "backdrop": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/movie/550",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "disc": {
+      "source": "fanart.tv",
+      "url": "https://assets.fanart.tv/fanart/fight-club-4f96e9a42937b.png",
+      "licence": "fanart.tv, attribution required"
+    }
+  },
+  "the-matrix": {
+    "cover": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/movie/603",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "backdrop": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/movie/603",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "disc": {
+      "source": "fanart.tv",
+      "url": "https://assets.fanart.tv/fanart/the-matrix-4f75fe6254b5b.png",
+      "licence": "fanart.tv, attribution required"
+    }
+  },
+  "spider-man-2": {
+    "cover": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/movie/558",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "backdrop": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/movie/558",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "disc": {
+      "source": "fanart.tv",
+      "url": "https://assets.fanart.tv/fanart/spider-man-2-503ca3ebee8b0.png",
+      "licence": "fanart.tv, attribution required"
+    }
+  },
+  "spirited-away": {
+    "cover": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/movie/129",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "backdrop": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/movie/129",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "disc": {
+      "source": "fanart.tv",
+      "url": "https://assets.fanart.tv/fanart/spirited-away-50e9c6919531c.png",
+      "licence": "fanart.tv, attribution required"
+    }
+  },
+  "this-is-the-end": {
+    "cover": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/movie/109414",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "backdrop": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/movie/109414",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "disc": {
+      "source": "fanart.tv",
+      "url": "https://assets.fanart.tv/fanart/this-is-the-end-52340cdd6f937.png",
+      "licence": "fanart.tv, attribution required"
+    }
+  },
+  "inception": {
+    "cover": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/movie/27205",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "backdrop": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/movie/27205",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "disc": {
+      "source": "fanart.tv",
+      "url": "https://assets.fanart.tv/fanart/inception-513c63d75a0eb.png",
+      "licence": "fanart.tv, attribution required"
+    }
+  },
+  "superbad": {
+    "cover": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/movie/8363",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "backdrop": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/movie/8363",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "disc": {
+      "source": "fanart.tv",
+      "url": "https://assets.fanart.tv/fanart/superbad-50278d5c84b04.png",
+      "licence": "fanart.tv, attribution required"
+    }
+  },
+  "one-piece": {
+    "cover": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/tv/37854",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "backdrop": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/tv/37854",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "disc": {
+      "source": "Generated from cover art",
+      "url": "https://www.themoviedb.org/tv/37854",
+      "licence": "Derived from TMDB cover, see cover credit"
+    }
+  },
+  "breaking-bad": {
+    "cover": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/tv/1396",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "backdrop": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/tv/1396",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "disc": {
+      "source": "Generated from cover art",
+      "url": "https://www.themoviedb.org/tv/1396",
+      "licence": "Derived from TMDB cover, see cover credit"
+    }
+  },
+  "game-of-thrones": {
+    "cover": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/tv/1399",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "backdrop": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/tv/1399",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "disc": {
+      "source": "Generated from cover art",
+      "url": "https://www.themoviedb.org/tv/1399",
+      "licence": "Derived from TMDB cover, see cover credit"
+    }
+  },
+  "invincible": {
+    "cover": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/tv/95557",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "backdrop": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/tv/95557",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "disc": {
+      "source": "Generated from cover art",
+      "url": "https://www.themoviedb.org/tv/95557",
+      "licence": "Derived from TMDB cover, see cover credit"
+    }
+  },
+  "vinland-saga": {
+    "cover": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/tv/88803",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "backdrop": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/tv/88803",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "disc": {
+      "source": "Generated from cover art",
+      "url": "https://www.themoviedb.org/tv/88803",
+      "licence": "Derived from TMDB cover, see cover credit"
+    }
+  },
+  "berserk": {
+    "cover": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/tv/35935",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "backdrop": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/tv/35935",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "disc": {
+      "source": "Generated from cover art",
+      "url": "https://www.themoviedb.org/tv/35935",
+      "licence": "Derived from TMDB cover, see cover credit"
+    }
+  },
+  "its-always-sunny-in-philadelphia": {
+    "cover": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/tv/2710",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "backdrop": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/tv/2710",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "disc": {
+      "source": "Generated from cover art",
+      "url": "https://www.themoviedb.org/tv/2710",
+      "licence": "Derived from TMDB cover, see cover credit"
+    }
+  },
+  "eastbound-and-down": {
+    "cover": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/tv/8624",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "backdrop": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/tv/8624",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "disc": {
+      "source": "Generated from cover art",
+      "url": "https://www.themoviedb.org/tv/8624",
+      "licence": "Derived from TMDB cover, see cover credit"
+    }
+  },
+  "south-park": {
+    "cover": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/tv/2190",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "backdrop": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/tv/2190",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "disc": {
+      "source": "Generated from cover art",
+      "url": "https://www.themoviedb.org/tv/2190",
+      "licence": "Derived from TMDB cover, see cover credit"
+    }
+  },
+  "man-on-the-moon-iii-the-chosen": {
+    "cover": {
+      "source": "Cover Art Archive",
+      "url": "https://coverartarchive.org/release-group/a595c7b0-1c4e-4396-8a32-22fe9d6d908c/front",
+      "licence": "Cover Art Archive / Internet Archive"
+    },
+    "disc": {
+      "source": "Generated from cover art",
+      "url": "https://coverartarchive.org/release-group/a595c7b0-1c4e-4396-8a32-22fe9d6d908c/front",
+      "licence": "Derived from Cover Art Archive cover, see cover credit"
+    }
+  },
+  "blade-runner-2049": {
+    "cover": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/movie/335984",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "backdrop": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/movie/335984",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "disc": {
+      "source": "fanart.tv",
+      "url": "https://assets.fanart.tv/fanart/blade-runner-2049-59a93d69c8ca4.png",
+      "licence": "fanart.tv, attribution required"
+    }
+  },
+  "avatar-the-last-airbender": {
+    "cover": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/tv/246",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "backdrop": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/tv/246",
+      "licence": "TMDB, free tier, non-commercial, attribution required"
+    },
+    "disc": {
+      "source": "fanart.tv",
+      "url": "https://assets.fanart.tv/fanart/zatoichi-the-blind-swordsman-5ac01c9e4a724.png",
+      "licence": "fanart.tv, attribution required"
+    }
+  },
+  "currents": {
+    "cover": {
+      "source": "Cover Art Archive",
+      "url": "https://coverartarchive.org/release-group/08aa7a6c-3e43-4459-87b2-e47faf3a088a/front",
+      "licence": "Cover Art Archive / Internet Archive"
+    },
+    "disc": {
+      "source": "Generated from cover art",
+      "url": "https://coverartarchive.org/release-group/08aa7a6c-3e43-4459-87b2-e47faf3a088a/front",
+      "licence": "Derived from Cover Art Archive cover, see cover credit"
+    }
+  },
+  "at-long-last-asap": {
+    "cover": {
+      "source": "Cover Art Archive",
+      "url": "https://coverartarchive.org/release-group/10a526a7-9d24-463f-8c0b-16ac98027460/front",
+      "licence": "Cover Art Archive / Internet Archive"
+    },
+    "disc": {
+      "source": "Generated from cover art",
+      "url": "https://coverartarchive.org/release-group/10a526a7-9d24-463f-8c0b-16ac98027460/front",
+      "licence": "Derived from Cover Art Archive cover, see cover credit"
+    }
+  },
+  "the-life-of-pablo": {
+    "cover": {
+      "source": "Cover Art Archive",
+      "url": "https://coverartarchive.org/release-group/8c18657a-6338-490d-a952-897663596b96/front",
+      "licence": "Cover Art Archive / Internet Archive"
+    }
+  },
+  "damn": {
+    "cover": {
+      "source": "Cover Art Archive",
+      "url": "https://coverartarchive.org/release-group/b88655ba-7469-48b8-a296-b9011ab73ef3/front",
+      "licence": "Cover Art Archive / Internet Archive"
+    },
+    "disc": {
+      "source": "Generated from cover art",
+      "url": "https://coverartarchive.org/release-group/b88655ba-7469-48b8-a296-b9011ab73ef3/front",
+      "licence": "Derived from Cover Art Archive cover, see cover credit"
+    }
+  },
+  "astroworld": {
+    "cover": {
+      "source": "Cover Art Archive",
+      "url": "https://coverartarchive.org/release-group/c0704c7d-dc5b-43cd-b372-8056a3bf7bb2/front",
+      "licence": "Cover Art Archive / Internet Archive"
+    },
+    "disc": {
+      "source": "Generated from cover art",
+      "url": "https://coverartarchive.org/release-group/c0704c7d-dc5b-43cd-b372-8056a3bf7bb2/front",
+      "licence": "Derived from Cover Art Archive cover, see cover credit"
+    }
+  },
+  "konnichiwa": {
+    "cover": {
+      "source": "Cover Art Archive",
+      "url": "https://coverartarchive.org/release-group/7f10475f-794c-4612-9f9c-71446a5c3fdf/front",
+      "licence": "Cover Art Archive / Internet Archive"
+    },
+    "disc": {
+      "source": "Generated from cover art",
+      "url": "https://coverartarchive.org/release-group/7f10475f-794c-4612-9f9c-71446a5c3fdf/front",
+      "licence": "Derived from Cover Art Archive cover, see cover credit"
+    }
+  },
+  "one-of-wun": {
+    "cover": {
+      "source": "Cover Art Archive",
+      "url": "https://coverartarchive.org/release-group/c23cfd44-b731-4b68-bf6b-40b3def0db1c/front",
+      "licence": "Cover Art Archive / Internet Archive"
+    },
+    "disc": {
+      "source": "Generated from cover art",
+      "url": "https://coverartarchive.org/release-group/c23cfd44-b731-4b68-bf6b-40b3def0db1c/front",
+      "licence": "Derived from Cover Art Archive cover, see cover credit"
+    }
+  },
+  "2014-forest-hills-drive": {
+    "cover": {
+      "source": "Cover Art Archive",
+      "url": "https://coverartarchive.org/release-group/5995738d-4b6f-4db6-847b-310a9dc67085/front",
+      "licence": "Cover Art Archive / Internet Archive"
+    },
+    "disc": {
+      "source": "Generated from cover art",
+      "url": "https://coverartarchive.org/release-group/5995738d-4b6f-4db6-847b-310a9dc67085/front",
+      "licence": "Derived from Cover Art Archive cover, see cover credit"
+    }
+  },
+  "rommet": {
+    "cover": {
+      "source": "Cover Art Archive",
+      "url": "https://coverartarchive.org/release-group/58b66059-cd24-4773-b0e8-bff5a76162e2/front",
+      "licence": "Cover Art Archive / Internet Archive"
+    },
+    "disc": {
+      "source": "Generated from cover art",
+      "url": "https://coverartarchive.org/release-group/58b66059-cd24-4773-b0e8-bff5a76162e2/front",
+      "licence": "Derived from Cover Art Archive cover, see cover credit"
+    }
+  }
+}
