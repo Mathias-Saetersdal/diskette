@@ -25,6 +25,19 @@ Cover art that wraps around the spine needs the whole unfolded sheet, not just t
 - DVD keep case: 273 × 183mm overall. 130mm front and back panels either side of a 14mm spine, folding at 47.6% and 52.7% of the width.
 - Blu-ray case: 264 × 148mm overall. 126mm front and back panels either side of a 12mm spine, folding at 47.7% and 52.3% of the width.
 
+### Livery
+
+Colour and format marks over the case geometry, not a new shape. `standard` livery isn't one look — it's whatever the natural, unbranded case for that format actually was.
+
+- **Blu-ray, standard.** Solid Blu-ray blue (`#0b77be`), full bleed across the whole front face — the case body's own colour, not a translucent overlay. The poster sits inset on top of it: a small even margin on the left, right and bottom, and a taller margin at the top for a header zone. That header carries two marks: a small Blu-ray Disc mark at the left with the format name in white caps beside it, and a larger oval Blu-ray Disc mark at the right. The oval is centred on the boundary between the header and the poster rather than confined inside the header strip, so it overlaps the artwork's top edge slightly — that overlap is what makes it read as printed on the sleeve rather than a layer floating above it.
+- **DVD, standard.** Opaque black case body. No banner, no translucency effect — DVD cases don't carry one.
+- **PS2.** Black body, no band.
+- **PS3.** Black body with the platform band.
+- **PS4.** Blue body.
+- **PS5.** White body with a blue band.
+
+The four PlayStation liveries are documented here but not yet built — that's step 7 (games), a colour-and-band layer over the existing case component rather than four separate ones. Blu-ray and DVD standard liveries are built.
+
 ## Interactions
 
 Three states per object. Closed, open, disc out.
@@ -96,6 +109,7 @@ Whatever else is true, the objects have to look like plastic and paper rather th
 - Cover art: printed on paper behind clear plastic. A very slight gloss layer over the artwork, not a heavy one.
 - Tray: opaque black or grey, with the visible hub teeth.
 - Shadow: one soft contact shadow under the object. Not a drop shadow on the artwork.
+- Stage background: neutral grey at 10% lightness (`#1a1a1a`), not pure black. The contact shadow needs something to darken against, and pure black gives it nothing to read on.
 
 ## Build order
 

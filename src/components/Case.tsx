@@ -1,31 +1,46 @@
 import { useEffect, useState, type CSSProperties, type KeyboardEvent } from 'react'
 import Disc, { DISC_DIAMETER_MM } from './Disc'
+import type { CaseFormat, Livery } from '../data/lists'
 import './Case.css'
 
-// Blu-ray case, docs/03-object-spec.md Cases table: 148 x 128.5 x 12mm,
-// front face ratio (w/h) 0.868. Only Blu-ray is built here — a generic
-// multi-format case is step 7 (livery), not this one.
-const CASE_HEIGHT_MM = 148
-const CASE_WIDTH_MM = 128.5
-const CASE_DEPTH_MM = 12
+// Only the two film case formats are built here — jewel, ps5 and switch
+// are other media/livery's job (step 7), not this component yet.
+type SupportedCaseFormat = Extract<CaseFormat, 'dvd' | 'bluray'>
 
-const frontFaceRatio = CASE_WIDTH_MM / CASE_HEIGHT_MM // 0.868
-const depthRatio = CASE_DEPTH_MM / CASE_HEIGHT_MM // 0.0811, kept thin per Materials
+// docs/03-object-spec.md Cases table: H x W x D per format.
+const CASE_GEOMETRY: Record<SupportedCaseFormat, { heightMm: number; widthMm: number; depthMm: number }> = {
+  dvd: { heightMm: 184, widthMm: 130, depthMm: 14 },
+  bluray: { heightMm: 148, widthMm: 128.5, depthMm: 12 },
+}
 
-// The tray-resting disc is sized against one panel (128.5mm), not the
-// open case's full 257mm width: a 120mm disc leaves ~4mm margin all round.
-const discToPanelRatio = DISC_DIAMETER_MM / CASE_WIDTH_MM // 120 / 128.5
+// The tallest case in the table sets the on-screen scale: --case-h in
+// Case.css is capped in viewport units, and every format's actual height
+// is that cap times its own heightMm over this figure. A fixed reference,
+// not one derived from whatever happens to be on screen at once — so a
+// Blu-ray case is always ~80% of a DVD case's height, alone or side by
+// side, per "Dimensions are real millimetres, used as ratios" (03-object-spec.md).
+const MAX_CASE_HEIGHT_MM = Math.max(...Object.values(CASE_GEOMETRY).map((format) => format.heightMm))
 
-// The raised glossy ring the disc actually sits on, not the disc's own
-// silhouette: roughly 100 to 118mm diameter, same 128.5mm panel reference.
-const TRAY_RING_INNER_MM = 100
+// The tray-resting disc, the tray ring, and the hub boss are all sized off
+// the panel width in mm, so they need to be recomputed per format too —
+// see useCaseGeometry below, which does the same division CASE_WIDTH_MM
+// used to do as a module constant.
+const TRAY_RING_INNER_MM = 100 // the raised glossy ring the disc rests on
 const TRAY_RING_OUTER_MM = 118
-const trayRingInnerRatio = TRAY_RING_INNER_MM / CASE_WIDTH_MM
-const trayRingOuterRatio = TRAY_RING_OUTER_MM / CASE_WIDTH_MM
+const HUB_BOSS_MM = 30 // the centre boss the disc clips onto
 
-// The centre boss the disc clips onto, about 30mm across.
-const HUB_BOSS_MM = 30
-const hubBossRatio = HUB_BOSS_MM / CASE_WIDTH_MM
+function useCaseGeometry(caseFormat: SupportedCaseFormat) {
+  const { heightMm, widthMm, depthMm } = CASE_GEOMETRY[caseFormat]
+  return {
+    frontFaceRatio: widthMm / heightMm,
+    depthRatio: depthMm / heightMm, // kept thin per Materials, not nudged up for visibility
+    discToPanelRatio: DISC_DIAMETER_MM / widthMm, // a 120mm disc in this panel, ~4mm margin on Blu-ray
+    trayRingInnerRatio: TRAY_RING_INNER_MM / widthMm,
+    trayRingOuterRatio: TRAY_RING_OUTER_MM / widthMm,
+    hubBossRatio: HUB_BOSS_MM / widthMm,
+    heightScale: heightMm / MAX_CASE_HEIGHT_MM,
+  }
+}
 
 interface CaseProps {
   title: string
@@ -33,6 +48,8 @@ interface CaseProps {
   coverAlt: string
   discSrc: string
   discAlt: string
+  caseFormat: SupportedCaseFormat
+  livery: Livery
 }
 
 interface SpineColors {
@@ -126,10 +143,28 @@ function useSpineColors(src: string): SpineColors {
   return colors
 }
 
-export default function Case({ title, coverSrc, coverAlt, discSrc, discAlt }: CaseProps) {
+// No physical spec for these — there's no real case to measure a header
+// zone or inset margin against in mm, unlike the case/disc figures
+// elsewhere in this file. Design proportions, sourced from the pixel
+// geometry of reference/blue-ray.png instead: header ~6% of panel height
+// before the oval mark's own overlap, inset ~3-4% on the outer edges.
+const FRONT_HEADER_HEIGHT_PCT = 9
+const FRONT_INSET_PCT = 3
+
+export default function Case({ title, coverSrc, coverAlt, discSrc, discAlt, caseFormat, livery }: CaseProps) {
   const [open, setOpen] = useState(false)
   const [discOut, setDiscOut] = useState(false)
   const spine = useSpineColors(coverSrc)
+  const geometry = useCaseGeometry(caseFormat)
+
+  // "standard" livery isn't one look — for films it's whatever the
+  // natural, unbranded case for that format is (docs/03-object-spec.md,
+  // Livery). ps2/ps3/ps4/ps5 liveries are format-independent and not
+  // handled here yet (step 7, games).
+  const isStandardBluray = livery === 'standard' && caseFormat === 'bluray'
+  const isStandardDvd = livery === 'standard' && caseFormat === 'dvd'
+  const showHeader = isStandardBluray
+  const frontArtModifier = isStandardBluray ? ' case__front-art--bluray' : isStandardDvd ? ' case__front-art--dvd' : ''
 
   const toggleOpen = () => {
     setOpen((wasOpen) => {
@@ -151,14 +186,17 @@ export default function Case({ title, coverSrc, coverAlt, discSrc, discAlt }: Ca
   }
 
   const style = {
-    '--front-face-ratio': frontFaceRatio,
-    '--depth-ratio': depthRatio,
+    '--front-face-ratio': geometry.frontFaceRatio,
+    '--depth-ratio': geometry.depthRatio,
+    '--height-scale': geometry.heightScale,
     '--spine-bg': spine.background,
     '--spine-fg': spine.foreground,
-    '--disc-ratio': discToPanelRatio,
-    '--tray-ring-inner': trayRingInnerRatio,
-    '--tray-ring-outer': trayRingOuterRatio,
-    '--hub-boss-ratio': hubBossRatio,
+    '--disc-ratio': geometry.discToPanelRatio,
+    '--tray-ring-inner': geometry.trayRingInnerRatio,
+    '--tray-ring-outer': geometry.trayRingOuterRatio,
+    '--hub-boss-ratio': geometry.hubBossRatio,
+    '--front-header-height': showHeader ? `${FRONT_HEADER_HEIGHT_PCT}%` : '0%',
+    '--front-inset': showHeader ? `${FRONT_INSET_PCT}%` : '0%',
   } as CSSProperties
 
   return (
@@ -233,8 +271,39 @@ export default function Case({ title, coverSrc, coverAlt, discSrc, discAlt }: Ca
            * 180deg so it faces the viewer exactly when the leaf has swung
            * open, and mirrors that of the leaf so it isn't itself flipped.
            */}
-          <div className="case__front-art">
-            <img src={coverSrc} alt={coverAlt} />
+          <div className={`case__front-art${frontArtModifier}`}>
+            {/*
+             * The blue is the case body's own full-bleed background, not a
+             * banner sitting on top of the poster — the poster is the
+             * layer that's inset, with a small even margin on three sides
+             * and a taller margin at the top for the header marks.
+             * --front-header-height/--front-inset are 0 for DVD, so this
+             * is inset:0 there and full bleed.
+             */}
+            <div className="case__front-poster">
+              <img src={coverSrc} alt={coverAlt} />
+            </div>
+            {showHeader && (
+              <div className="case__front-header" aria-hidden="true">
+                <span className="case__front-mark">
+                  <span className="case__front-mark-ring" />
+                  <span className="case__front-mark-text">Blu-ray Disc</span>
+                </span>
+                {/*
+                 * Centred on the header/poster boundary (bottom: 0 plus a
+                 * translateY of half its own height) rather than confined
+                 * inside the header strip — printed over the top edge of
+                 * the artwork, which is what makes it read as printed
+                 * rather than a layer floating above it.
+                 */}
+                <span className="case__front-oval">
+                  <span className="case__front-oval-text">
+                    <strong>Blu-ray</strong>
+                    <em>Disc</em>
+                  </span>
+                </span>
+              </div>
+            )}
             <div className="case__front-gloss" aria-hidden="true" />
           </div>
           <div className="case__front-interior">

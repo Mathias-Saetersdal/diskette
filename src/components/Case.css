@@ -3,8 +3,11 @@
   /* Base unit: the on-screen height of the case's front face. Everything
      else is a ratio of it, per docs/03-object-spec.md's "used as ratios
      rather than absolute sizes." --front-face-ratio and --depth-ratio come
-     from Case.tsx, computed from the Blu-ray row of the Cases table. */
-  --case-h: min(64vmin, 460px);
+     from Case.tsx, computed from the format's own row of the Cases table.
+     --height-scale (also from Case.tsx) is that format's heightMm over the
+     tallest format in the table, so a DVD case renders taller on screen
+     than a Blu-ray case sitting next to it, not just narrower. */
+  --case-h: calc(min(64vmin, 460px) * var(--height-scale, 1));
   --front-w: calc(var(--case-h) * var(--front-face-ratio));
   /*
    * Doubles as the spine face's own local width before it turns to face
@@ -379,17 +382,141 @@
   inset: 0;
   overflow: hidden;
   backface-visibility: hidden;
-  /* Translucent-edge read: a soft inset rim rather than modelled edge
-     geometry, since the leaf itself is a single plane. */
+  /* Plain default edge, overridden per livery below — this is what a
+     format without a defined livery treatment falls back to. */
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
-.case__front-art img {
+/*
+ * Blu-ray: solid case-body blue, full bleed behind the poster — not a
+ * translucent overlay on top of it. #0b77be sampled from
+ * reference/blue-ray.png, the print template showing the real
+ * construction of a retail sleeve.
+ */
+.case__front-art--bluray {
+  background: #0b77be;
+  box-shadow: inset 0 0 0 1px rgba(150, 200, 255, 0.35);
+}
+
+/* DVD: opaque black case body, no blue, no header — the poster stays full
+   bleed, per docs/03-object-spec.md's Livery section. */
+.case__front-art--dvd {
+  background: #0a0a0a;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.45);
+}
+
+/*
+ * The poster's own box: inset from the full-bleed background by a small
+ * even margin on three sides and a taller margin at the top, where the
+ * header marks sit. --front-header-height and --front-inset are both 0%
+ * off-Blu-ray, so this is inset:0 there — full bleed.
+ */
+.case__front-poster {
+  position: absolute;
+  top: var(--front-header-height, 0%);
+  left: var(--front-inset, 0%);
+  right: var(--front-inset, 0%);
+  bottom: var(--front-inset, 0%);
+  overflow: hidden;
+}
+
+.case__front-poster img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
+}
+
+/*
+ * The header zone: background colour showing through above the poster
+ * inset, carrying the two marks. overflow: visible on purpose — the oval
+ * mark below is positioned to cross this box's own bottom edge and sit
+ * on top of the poster, per the reference template.
+ */
+.case__front-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--front-header-height, 0%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-inline: 5%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.case__front-mark {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--front-w) * 0.012);
+}
+
+.case__front-mark-ring {
+  width: calc(var(--front-w) * 0.03);
+  height: calc(var(--front-w) * 0.03);
+  border-radius: 50%;
+  border: calc(var(--front-w) * 0.005) solid #fff;
+  flex-shrink: 0;
+}
+
+.case__front-mark-text {
+  color: #fff;
+  font-family: system-ui, sans-serif;
+  font-weight: 700;
+  font-size: calc(var(--front-w) * 0.022);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/*
+ * The larger oval mark, centred on the header/poster boundary rather than
+ * confined inside the header strip: bottom: 0 puts its own bottom edge on
+ * that line, then translateY(50%) — a shift of half its own height, which
+ * transforms resolve against rather than the containing block — carries
+ * it down so the line crosses its centre instead. That's what prints it
+ * over the artwork's top edge rather than floating above it.
+ */
+.case__front-oval {
+  position: absolute;
+  bottom: 0;
+  right: 5%;
+  transform: translateY(50%);
+  width: calc(var(--front-w) * 0.19);
+  aspect-ratio: 1.6 / 1;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #3a8ce8 0%, #1c5fc4 100%);
+  box-shadow: 0 calc(var(--front-w) * 0.006) calc(var(--front-w) * 0.016) rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.case__front-oval-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+  color: #fff;
+  font-family: system-ui, sans-serif;
+}
+
+.case__front-oval-text strong {
+  font-size: calc(var(--front-w) * 0.034);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.case__front-oval-text em {
+  font-style: normal;
+  font-size: calc(var(--front-w) * 0.02);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.9;
 }
 
 .case__front-gloss {

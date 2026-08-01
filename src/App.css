@@ -15,7 +15,16 @@
   gap: 56px;
   min-height: 100svh;
   padding-block: 48px;
-  background: #0b0b0d;
+  /* Neutral grey at 10% lightness, not pure black — the contact shadow in
+     Case.css needs something to darken against. docs/03-object-spec.md,
+     Materials. */
+  background: #1a1a1a;
+}
+
+.case-row {
+  display: flex;
+  align-items: flex-end; /* both cases stand on the same shelf line */
+  gap: 32px;
 }
 
 .burned-row {
