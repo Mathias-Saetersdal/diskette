@@ -94,7 +94,23 @@
   width: var(--depth);
   height: 100%;
   transform-origin: left center;
-  transform: rotateY(90deg);
+  /*
+   * scaleY and translateY correct a real top-and-bottom edge mismatch,
+   * not a cosmetic nudge: the spine, tray unit and front panel all share
+   * top:0/height:100% in their own local box (checked directly, they're
+   * identical), but the spine's own rotateY(90deg) pivots around a
+   * different point in 3D space than the front panel's translateX/
+   * translateZ chain, so once .case__toggle's shelf tilt (rotateX/
+   * rotateY) is composed on top, the spine renders measurably shorter
+   * than the front panel, not just offset — its top AND bottom both land
+   * short of the front panel's. A real case is one moulded shell with one
+   * continuous top edge and one height across every face.
+   * --spine-scale/--spine-translate-ratio (Case.tsx, SPINE_CORRECTION)
+   * are solved exactly from live-measured top/bottom deltas against the
+   * front panel, not eyeballed, and set per format since each one's own
+   * depth-to-height ratio changes the correction needed.
+   */
+  transform: translateY(calc(var(--depth) * var(--spine-translate-ratio))) rotateY(90deg) scaleY(var(--spine-scale));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -105,6 +121,28 @@
   /* The title runs the spine's height (sideways-lr), not its width, so it
      scales off container query height rather than width. */
   container-type: size;
+}
+
+/*
+ * Blu-ray: the case body's own blue continues onto the spine, not the
+ * colour sampled from the cover — darker than the front face because the
+ * spine sits in shadow on a real shelf (Materials, docs/03-object-spec.md).
+ */
+.case--bluray-livery .case__spine {
+  background: linear-gradient(180deg, #0a5e97 0%, #084877 100%);
+}
+
+.case--bluray-livery .case__spine-title {
+  color: #fff;
+}
+
+.case__spine-mark {
+  position: absolute;
+  top: 4%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: auto;
 }
 
 .case[data-open='true'] .case__spine {
@@ -136,6 +174,15 @@
   top: 0;
   width: var(--front-w);
   height: 100%;
+  /*
+   * Same edge correction as .case__spine, much smaller here since this
+   * unit isn't carrying an extra rotation of its own the way the spine
+   * is — just left:var(--depth) rather than a transform, which still
+   * renders fractionally short and offset from the front panel once the
+   * shared shelf tilt is composed on top. Empirically measured at the
+   * current tilt angles, same reasoning as the spine's correction above.
+   */
+  transform: translateY(calc(var(--depth) * -0.0993)) scaleY(1.0115);
   /* Without this, the lifted disc (a descendant here) gets flattened into
      DOM paint order against .case__front's children instead of sorting by
      actual 3D depth, and loses to whatever comes later in the markup. */
@@ -152,6 +199,12 @@
    * gradient, not from a different fill colour.
    */
   background: radial-gradient(circle at 50% 46%, #2e2e32 0%, #26262a 55%, #1e1e21 100%);
+}
+
+/* Blu-ray: the tray half is the "back" of the case body — same blue,
+   not just the front face. */
+.case--bluray-livery .case__tray {
+  background: radial-gradient(circle at 50% 46%, #1c6ea8 0%, #135483 55%, #0c3f66 100%);
 }
 
 /*
@@ -424,15 +477,23 @@
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  /*
+   * contain, not cover: the poster keeps its own aspect ratio and the
+   * livery background (blue for Blu-ray, black for DVD) fills whatever
+   * space is left over. cover was cropping into the artwork — on a
+   * portrait poster inset into a taller box it clipped the title off the
+   * bottom — which the inset margins should never do.
+   */
+  object-fit: contain;
   object-position: center;
 }
 
 /*
  * The header zone: background colour showing through above the poster
- * inset, carrying the two marks. overflow: visible on purpose — the oval
+ * inset, carrying the marks. overflow: visible on purpose — the ellipse
  * mark below is positioned to cross this box's own bottom edge and sit
- * on top of the poster, per the reference template.
+ * on top of the poster, per docs/reference/blue-ray.png. Left-aligned
+ * only, not space-between: nothing sits at the right of the header.
  */
 .case__front-header {
   position: absolute;
@@ -442,7 +503,6 @@
   height: var(--front-header-height, 0%);
   display: flex;
   align-items: center;
-  justify-content: space-between;
   padding-inline: 5%;
   overflow: visible;
   pointer-events: none;
@@ -451,14 +511,12 @@
 .case__front-mark {
   display: flex;
   align-items: center;
-  gap: calc(var(--front-w) * 0.012);
+  gap: calc(var(--front-w) * 0.01);
 }
 
-.case__front-mark-ring {
-  width: calc(var(--front-w) * 0.03);
-  height: calc(var(--front-w) * 0.03);
-  border-radius: 50%;
-  border: calc(var(--front-w) * 0.005) solid #fff;
+.case__front-mark-logo {
+  width: calc(var(--front-w) * 0.085);
+  height: auto;
   flex-shrink: 0;
 }
 
@@ -466,57 +524,43 @@
   color: #fff;
   font-family: system-ui, sans-serif;
   font-weight: 700;
-  font-size: calc(var(--front-w) * 0.022);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-size: calc(var(--front-w) * 0.02);
+  letter-spacing: 0.02em;
   white-space: nowrap;
 }
 
+.case__front-mark-text sup {
+  font-size: 0.55em;
+  letter-spacing: normal;
+}
+
 /*
- * The larger oval mark, centred on the header/poster boundary rather than
- * confined inside the header strip: bottom: 0 puts its own bottom edge on
- * that line, then translateY(50%) — a shift of half its own height, which
- * transforms resolve against rather than the containing block — carries
- * it down so the line crosses its centre instead. That's what prints it
- * over the artwork's top edge rather than floating above it.
+ * Centred horizontally in the header band. Vertically: bottom: 0 puts its
+ * own bottom edge on the header/poster boundary, then the translate's Y
+ * component — a third of the ellipse's own height, which is what
+ * percentage transforms resolve against, not the containing block —
+ * carries it down so a third of it overlaps the artwork rather than
+ * sitting flush above it. docs/reference/blue-ray.png.
  */
-.case__front-oval {
+.case__front-ellipse {
   position: absolute;
+  left: 50%;
   bottom: 0;
-  right: 5%;
-  transform: translateY(50%);
-  width: calc(var(--front-w) * 0.19);
-  aspect-ratio: 1.6 / 1;
+  transform: translate(-50%, 33%);
+  width: calc(var(--front-w) * 0.24);
+  aspect-ratio: 1.5 / 1;
   border-radius: 50%;
-  background: linear-gradient(180deg, #3a8ce8 0%, #1c5fc4 100%);
+  /* Slightly lighter than the #0b77be case body, per the reference. */
+  background: #2f8fdb;
   box-shadow: 0 calc(var(--front-w) * 0.006) calc(var(--front-w) * 0.016) rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.case__front-oval-text {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  line-height: 1;
-  color: #fff;
-  font-family: system-ui, sans-serif;
-}
-
-.case__front-oval-text strong {
-  font-size: calc(var(--front-w) * 0.034);
-  font-weight: 800;
-  letter-spacing: -0.01em;
-}
-
-.case__front-oval-text em {
-  font-style: normal;
-  font-size: calc(var(--front-w) * 0.02);
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  opacity: 0.9;
+.case__front-ellipse-logo {
+  width: 74%;
+  height: auto;
 }
 
 .case__front-gloss {
@@ -546,6 +590,12 @@
      .case__tray. A gentler, more directional gradient stands in for this
      panel catching light more evenly than the recessed tray does. */
   background: linear-gradient(100deg, #34343a 0%, #2c2c30 45%, #232326 100%);
+}
+
+/* Blu-ray: the visible inner edge — the front leaf's own back side, seen
+   once the case is open — is the same case-body blue too. */
+.case--bluray-livery .case__front-interior {
+  background: linear-gradient(100deg, #1c6ea8 0%, #135483 45%, #0c3f66 100%);
 }
 
 /*

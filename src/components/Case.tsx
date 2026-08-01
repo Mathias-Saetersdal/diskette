@@ -29,6 +29,34 @@ const TRAY_RING_INNER_MM = 100 // the raised glossy ring the disc rests on
 const TRAY_RING_OUTER_MM = 118
 const HUB_BOSS_MM = 30 // the centre boss the disc clips onto
 
+// The spine, tray unit and front panel all share top:0/height:100% in
+// their own local box — checked directly, they're identical. But the
+// spine's rotateY(90deg) pivots around a different point in 3D space than
+// the front panel's translateX/translateZ chain, so once the shared
+// shelf tilt is composed on top, the spine renders shorter than the front
+// panel, not just offset — real cases are one moulded shell with one
+// continuous top edge and one height across every face. scale/translateRatio
+// are the exact correction (solved from live-measured top/bottom deltas
+// against the front panel, not eyeballed) that makes the spine's rendered
+// height and position match the front panel's exactly, at the current
+// tilt angles (6deg/-24deg). They differ slightly per format because
+// each format's own depth-to-height ratio changes how much the spine's
+// rotation shortens it — DVD's 14mm-into-184mm spine forwards a different
+// fraction than Blu-ray's 12mm-into-148mm one.
+//
+// These numbers are empirical, not derived: they exist because the
+// spine's rendered height did not match its geometric height, and the
+// underlying cause is upstream of this fix — likely a difference in
+// perspective or transform-origin handling between the spine and the
+// front face's own transform chain, not something intrinsic to a spine
+// needing correction at all. If the case is ever restructured, remove
+// this correction first and check whether it's still needed before
+// re-deriving it.
+const SPINE_CORRECTION: Record<SupportedCaseFormat, { scale: number; translateRatio: number }> = {
+  bluray: { scale: 1.076, translateRatio: -0.5511 },
+  dvd: { scale: 1.073, translateRatio: -0.526 },
+}
+
 function useCaseGeometry(caseFormat: SupportedCaseFormat) {
   const { heightMm, widthMm, depthMm } = CASE_GEOMETRY[caseFormat]
   return {
@@ -39,6 +67,7 @@ function useCaseGeometry(caseFormat: SupportedCaseFormat) {
     trayRingOuterRatio: TRAY_RING_OUTER_MM / widthMm,
     hubBossRatio: HUB_BOSS_MM / widthMm,
     heightScale: heightMm / MAX_CASE_HEIGHT_MM,
+    spineCorrection: SPINE_CORRECTION[caseFormat],
   }
 }
 
@@ -151,6 +180,14 @@ function useSpineColors(src: string): SpineColors {
 const FRONT_HEADER_HEIGHT_PCT = 9
 const FRONT_INSET_PCT = 3
 
+// docs/02-asset-sources.md: shared UI marks live under public/assets, same
+// as fetched cover/disc assets, not bundled through src/. This is a real
+// grayscale+alpha PNG (reference/blu-ray-disc-logo-black-and-white.png) —
+// the earlier .svg under this same name was a vector trace of a flattened
+// checkerboard-transparency preview, not real logo artwork, and never
+// rendered correctly.
+const BLURAY_LOGO_SRC = '/assets/marks/blu-ray-disc-white.png'
+
 export default function Case({ title, coverSrc, coverAlt, discSrc, discAlt, caseFormat, livery }: CaseProps) {
   const [open, setOpen] = useState(false)
   const [discOut, setDiscOut] = useState(false)
@@ -195,12 +232,14 @@ export default function Case({ title, coverSrc, coverAlt, discSrc, discAlt, case
     '--tray-ring-inner': geometry.trayRingInnerRatio,
     '--tray-ring-outer': geometry.trayRingOuterRatio,
     '--hub-boss-ratio': geometry.hubBossRatio,
+    '--spine-scale': geometry.spineCorrection.scale,
+    '--spine-translate-ratio': geometry.spineCorrection.translateRatio,
     '--front-header-height': showHeader ? `${FRONT_HEADER_HEIGHT_PCT}%` : '0%',
     '--front-inset': showHeader ? `${FRONT_INSET_PCT}%` : '0%',
   } as CSSProperties
 
   return (
-    <div className="case" data-open={open} style={style}>
+    <div className={`case${isStandardBluray ? ' case--bluray-livery' : ''}`} data-open={open} style={style}>
       <button
         type="button"
         className="case__toggle"
@@ -209,6 +248,9 @@ export default function Case({ title, coverSrc, coverAlt, discSrc, discAlt, case
         onClick={toggleOpen}
       >
         <div className="case__spine">
+          {isStandardBluray && (
+            <img className="case__spine-mark" src={BLURAY_LOGO_SRC} alt="" aria-hidden="true" />
+          )}
           <span className="case__spine-title">{title}</span>
         </div>
 
@@ -286,21 +328,22 @@ export default function Case({ title, coverSrc, coverAlt, discSrc, discAlt, case
             {showHeader && (
               <div className="case__front-header" aria-hidden="true">
                 <span className="case__front-mark">
-                  <span className="case__front-mark-ring" />
-                  <span className="case__front-mark-text">Blu-ray Disc</span>
+                  <img className="case__front-mark-logo" src={BLURAY_LOGO_SRC} alt="" />
+                  <span className="case__front-mark-text">
+                    BLU-RAY<sup>TM</sup> DISC
+                  </span>
                 </span>
                 {/*
-                 * Centred on the header/poster boundary (bottom: 0 plus a
-                 * translateY of half its own height) rather than confined
-                 * inside the header strip — printed over the top edge of
-                 * the artwork, which is what makes it read as printed
-                 * rather than a layer floating above it.
+                 * Centred horizontally, not confined inside the header
+                 * strip: bottom: 0 puts its own bottom edge on the
+                 * header/poster boundary, then translateY(33%) — a shift
+                 * of a third of its own height, which is what percentage
+                 * transforms resolve against — carries it down so a third
+                 * of it overlaps the artwork instead of sitting flush
+                 * above it.
                  */}
-                <span className="case__front-oval">
-                  <span className="case__front-oval-text">
-                    <strong>Blu-ray</strong>
-                    <em>Disc</em>
-                  </span>
+                <span className="case__front-ellipse">
+                  <img className="case__front-ellipse-logo" src={BLURAY_LOGO_SRC} alt="" />
                 </span>
               </div>
             )}
