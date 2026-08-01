@@ -91,7 +91,7 @@ The burned disc is nostalgic because it is what a shelf looked like when you cou
 
 Whatever else is true, the objects have to look like plastic and paper rather than flat rectangles.
 
-- Case body: slightly translucent at the edges, with a visible thickness. A 12mm depth on a 171mm case is thin, and rendering it too thick is the most common way this kind of thing looks wrong.
+- Case body: slightly translucent at the edges, with a visible thickness. A 12mm depth on a 148mm case is thin, and rendering it too thick is the most common way this kind of thing looks wrong.
 - Spine: darker than the front face, because it sits in shadow on a real shelf.
 - Cover art: printed on paper behind clear plastic. A very slight gloss layer over the artwork, not a heavy one.
 - Tray: opaque black or grey, with the visible hub teeth.

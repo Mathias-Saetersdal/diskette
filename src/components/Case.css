@@ -1,0 +1,530 @@
+.case {
+  position: relative;
+  /* Base unit: the on-screen height of the case's front face. Everything
+     else is a ratio of it, per docs/03-object-spec.md's "used as ratios
+     rather than absolute sizes." --front-face-ratio and --depth-ratio come
+     from Case.tsx, computed from the Blu-ray row of the Cases table. */
+  --case-h: min(64vmin, 460px);
+  --front-w: calc(var(--case-h) * var(--front-face-ratio));
+  /*
+   * Doubles as the spine face's own local width before it turns to face
+   * the viewer, and as how far the front leaf sits forward of the back
+   * plane when closed. Materials: "A 12mm depth on a 148mm case is thin,
+   * and rendering it too thick is the most common way this kind of thing
+   * looks wrong" — so this stays a straight ratio, not nudged up for
+   * visibility.
+   */
+  --depth: calc(var(--case-h) * var(--depth-ratio));
+  /*
+   * This box stays sized to the closed footprint always. It does not grow
+   * to the open 257mm width (docs/03-object-spec.md's Full wrap section):
+   * growing it pulled .case__tray-unit along too (it was right-anchored,
+   * so a widening box dragged it sideways every frame), which is what
+   * made the whole left half look like it was swinging instead of just
+   * the lid. The open lid overflows this box to the left instead —
+   * overflow stays visible, and tray-unit's own position never changes.
+   */
+  width: calc(var(--depth) + var(--front-w));
+  height: var(--case-h);
+  overflow: visible;
+  perspective: 2600px;
+  perspective-origin: 50% 50%;
+}
+
+.case__toggle {
+  all: unset;
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  /*
+   * Constant "on a shelf" presentation angle when closed. Open relaxes
+   * to near flat — the point of fixing the aspect ratio is defeated if
+   * heavy perspective is left to foreshorten it back out of true.
+   * --recenter is a single uniform shift for the whole rigid group
+   * (spine + tray unit + the lid's own pivot), not a per-part
+   * adjustment: .case's own box stays sized to the closed footprint
+   * (see .case), so the open lid overflows it to the left. Without this
+   * the open spread reads visually off-centre, dragged left by that
+   * overflow. Applying it to the whole group rather than to
+   * .case__tray-unit alone moves everything together with zero
+   * relative motion between them — the lid's rotation is still the
+   * only thing that isn't shared.
+   * (This used to target a .case__stage wrapper that no longer exists
+   * in the markup, which meant none of it was ever actually applied.)
+   */
+  --tilt-x: 6deg;
+  --tilt-y: -24deg;
+  --recenter: 0px;
+  transform: translateX(var(--recenter)) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  transition: transform 0.6s ease;
+}
+
+.case[data-open='true'] .case__toggle {
+  --tilt-x: 2deg;
+  --tilt-y: -4deg;
+  --recenter: calc((var(--front-w) - var(--depth)) / 2);
+}
+
+/*
+ * Outlining the button itself would draw the ring pre-rotation, on a box
+ * that's mostly not facing the viewer once open. The outer .case box is
+ * flat and untransformed, so its outline stays a plain, reliable rectangle
+ * in every state.
+ */
+.case:has(.case__toggle:focus-visible) {
+  outline: 2px solid #fff;
+  outline-offset: 6px;
+}
+
+/*
+ * The spine: a true left-facing face, not a flat cheat, depth x case-h,
+ * turned 90deg so its local width becomes the Z-span from the back plane
+ * out to the closed front leaf. Open has no separate spine strip — the
+ * fold between the two panels sits flush at the join, so this just fades
+ * out rather than being repositioned.
+ */
+.case__spine {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--depth);
+  height: 100%;
+  transform-origin: left center;
+  transform: rotateY(90deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--spine-bg, #26262b);
+  opacity: 1;
+  transition: opacity 0.25s ease;
+  /* The title runs the spine's height (sideways-lr), not its width, so it
+     scales off container query height rather than width. */
+  container-type: size;
+}
+
+.case[data-open='true'] .case__spine {
+  opacity: 0;
+}
+
+.case__spine-title {
+  writing-mode: sideways-lr;
+  font-family: system-ui, sans-serif;
+  font-weight: 600;
+  font-size: clamp(0.55rem, 3.6cqh, 0.85rem);
+  letter-spacing: 0.03em;
+  color: var(--spine-fg, #eee);
+  white-space: nowrap;
+  /* Darker than the front face because it sits in shadow (Materials). The
+     colours themselves are sampled from the cover at runtime. */
+}
+
+/*
+ * The tray half — the rigid, motionless part of the case. Fixed at
+ * left: depth always, in both states: this is what "the rest of the
+ * case stays still" means concretely. It used to be right-anchored,
+ * which tied its position to .case's own width and made it visibly
+ * slide as that width animated open. Never state-dependent.
+ */
+.case__tray-unit {
+  position: absolute;
+  left: var(--depth);
+  top: 0;
+  width: var(--front-w);
+  height: 100%;
+  /* Without this, the lifted disc (a descendant here) gets flattened into
+     DOM paint order against .case__front's children instead of sorting by
+     actual 3D depth, and loses to whatever comes later in the markup. */
+  transform-style: preserve-3d;
+}
+
+.case__tray {
+  position: absolute;
+  inset: 0;
+  /*
+   * Same moulded plastic as the interior panel — within a few percent in
+   * both hue and lightness. The read as "different parts" comes from the
+   * tray's recessed vignette versus the interior's flatter, top-lit
+   * gradient, not from a different fill colour.
+   */
+  background: radial-gradient(circle at 50% 46%, #2e2e32 0%, #26262a 55%, #1e1e21 100%);
+}
+
+/*
+ * The raised glossy ring the disc actually rests on — 100 to 118mm
+ * diameter against the 128.5mm panel (Case.tsx). Sized off var(--front-w)
+ * for BOTH width and height rather than a percentage of .case__tray's own
+ * box: that box is front-w x case-h, not square, so the same percentage
+ * on each axis produced an ellipse. Using the same length twice can't.
+ * Segment gaps break the ring rather than it reading as a full circle.
+ * Sits well inside the disc's own 120mm footprint, mostly covered by it —
+ * this is what the disc actually sits on, not a rim traced around it.
+ */
+.case__tray-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--tray-ring-outer) * var(--front-w));
+  height: calc(var(--tray-ring-outer) * var(--front-w));
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: repeating-conic-gradient(
+    rgba(210, 212, 218, 0.5) 0deg 52deg,
+    rgba(120, 122, 128, 0.28) 52deg 56deg,
+    rgba(210, 212, 218, 0.5) 56deg 108deg,
+    rgba(120, 122, 128, 0.28) 108deg 112deg,
+    rgba(210, 212, 218, 0.5) 112deg 164deg,
+    rgba(120, 122, 128, 0.28) 164deg 168deg,
+    rgba(210, 212, 218, 0.5) 168deg 220deg,
+    rgba(120, 122, 128, 0.28) 220deg 224deg,
+    rgba(210, 212, 218, 0.5) 224deg 276deg,
+    rgba(120, 122, 128, 0.28) 276deg 280deg,
+    rgba(210, 212, 218, 0.5) 280deg 332deg,
+    rgba(120, 122, 128, 0.28) 332deg 360deg
+  );
+  -webkit-mask-image: radial-gradient(
+    circle closest-side,
+    transparent 0 calc(var(--tray-ring-inner) / var(--tray-ring-outer) * 100%),
+    black calc(var(--tray-ring-inner) / var(--tray-ring-outer) * 100% + 1%) 100%
+  );
+  mask-image: radial-gradient(
+    circle closest-side,
+    transparent 0 calc(var(--tray-ring-inner) / var(--tray-ring-outer) * 100%),
+    black calc(var(--tray-ring-inner) / var(--tray-ring-outer) * 100% + 1%) 100%
+  );
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.25),
+    inset 0 -2px 3px rgba(0, 0, 0, 0.5);
+}
+
+/*
+ * Four rounded tabs at the ring's own edge — 118mm, the same
+ * --tray-ring-outer as .case__tray-ring above, not a separately invented
+ * size. That was the actual bug behind the disc/tabs overflowing the
+ * panel: this used a hardcoded 0.975 (~125mm) instead of the sourced
+ * 118mm ratio, so it read as wider than the panel leaves room for.
+ * Sized off var(--front-w) for both axes, same reasoning as the ring.
+ */
+.case__tray-tabs {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--tray-ring-outer) * var(--front-w));
+  height: calc(var(--tray-ring-outer) * var(--front-w));
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  background-image:
+    radial-gradient(ellipse 12% 6% at 50% 2%, rgba(225, 227, 232, 0.9) 0%, rgba(225, 227, 232, 0.45) 55%, transparent 78%),
+    radial-gradient(ellipse 6% 12% at 98% 50%, rgba(225, 227, 232, 0.9) 0%, rgba(225, 227, 232, 0.45) 55%, transparent 78%),
+    radial-gradient(ellipse 12% 6% at 50% 98%, rgba(225, 227, 232, 0.9) 0%, rgba(225, 227, 232, 0.45) 55%, transparent 78%),
+    radial-gradient(ellipse 6% 12% at 2% 50%, rgba(225, 227, 232, 0.9) 0%, rgba(225, 227, 232, 0.45) 55%, transparent 78%);
+}
+
+/*
+ * The centre boss: ~30mm across, raised, marked PUSH, what the disc
+ * actually clips onto — not a decorative rosette. Two curved finger
+ * cutouts flank it, each built as a dark hole partly covered by a second,
+ * offset circle matching the tray floor, leaving a crescent of the hole
+ * showing on the side facing the boss.
+ */
+.case__hub-boss {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--hub-boss-ratio) * var(--front-w));
+  height: calc(var(--hub-boss-ratio) * var(--front-w));
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 35% 28%, #48484e 0%, #34343a 55%, #222225 100%);
+  box-shadow:
+    inset 0 2px 2px rgba(255, 255, 255, 0.3),
+    inset 0 -2px 3px rgba(0, 0, 0, 0.55),
+    0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.case__hub-push {
+  font-family: system-ui, sans-serif;
+  font-weight: 700;
+  font-size: calc(var(--front-w) * 0.013);
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.32);
+}
+
+.case__hub-cutout {
+  position: absolute;
+  top: 50%;
+  width: 40%;
+  height: 66%;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  background: #131316;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.9);
+  overflow: hidden;
+}
+
+.case__hub-cutout::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #27272b;
+}
+
+.case__hub-cutout--left {
+  right: 100%;
+  margin-right: 5%;
+}
+
+.case__hub-cutout--left::after {
+  transform: translateX(-32%);
+}
+
+.case__hub-cutout--right {
+  left: 100%;
+  margin-left: 5%;
+}
+
+.case__hub-cutout--right::after {
+  transform: translateX(32%);
+}
+
+/*
+ * A thin moulded edge, not a separate black bezel bolted on top: a 1px
+ * catch-light line plus a soft overall inset shadow. The case body ends
+ * at the panel edge — an earlier version added a thick dark inset band
+ * on all four sides that read as an extra strip along the outer edge
+ * rather than part of the same surface. .case__panel-sheen below now
+ * carries most of the "this is moulded plastic" read instead.
+ */
+.case__panel-frame {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+    inset 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+/*
+ * Sheen: a soft diagonal highlight sweeping across the whole floor, the
+ * light-catching read the reference photos have and a flat fill can't.
+ * Low opacity, screen-blended, so it doesn't lighten the base fill —
+ * it's the same colour, just catching light unevenly.
+ */
+.case__panel-sheen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    128deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.03) 30%,
+    transparent 55%,
+    rgba(255, 255, 255, 0.05) 85%,
+    rgba(255, 255, 255, 0.12) 100%
+  );
+  mix-blend-mode: screen;
+}
+
+/*
+ * The one animated 3D piece. Closed: flush against the tray unit, offset
+ * forward by the case depth, transform-origin at the spine. Open: the
+ * pivot itself moves out to front-w (the fold, now that the case has
+ * widened to two panels) and forward offset drops to 0, so the leaf ends
+ * up coplanar with the tray unit at x:[0, front-w] instead of trailing
+ * off at an oblique angle.
+ */
+.case__front {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--front-w);
+  height: 100%;
+  transform-origin: left center;
+  /*
+   * translateX/translateZ are constant — the pivot sits at depth (the
+   * fold, matching .case__tray-unit's own fixed left edge) in both
+   * states and never moves. --hinge is the only thing that changes
+   * between open and closed: rotation is the entire difference, exactly
+   * "the lid rotates on the hinge, the rest of the case stays still."
+   * Closed (0deg): the leaf sits flush at [depth, depth+front-w], z:depth,
+   * directly in front of the tray unit. Open (-180deg): it swings to
+   * [depth-front-w, depth], landing flush against the tray unit's left
+   * edge with zero gap.
+   */
+  transform: translateX(var(--depth)) translateZ(var(--depth)) rotateY(var(--hinge, 0deg));
+  transition: transform 0.6s ease;
+  transform-style: preserve-3d;
+}
+
+.case[data-open='true'] .case__front {
+  --hinge: -180deg;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .case[data-open='false'] .case__toggle:hover .case__front {
+    --hinge: -12deg;
+  }
+}
+
+/* Outer face: the cover art. Hides itself once rotated past 90deg instead
+   of showing a mirrored copy of the same texture. */
+.case__front-art {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  backface-visibility: hidden;
+  /* Translucent-edge read: a soft inset rim rather than modelled edge
+     geometry, since the leaf itself is a single plane. */
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.case__front-art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.case__front-gloss {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0.14) 0%,
+    rgba(255, 255, 255, 0.03) 22%,
+    transparent 45%
+  );
+  pointer-events: none;
+}
+
+/*
+ * Inner face: the left/interior panel. Pre-rotated 180deg so it faces the
+ * viewer exactly when the leaf has swung fully open (parent -180 + this
+ * +180 nets to facing forward, unmirrored), and hides itself the rest of
+ * the time the same way the art face does.
+ */
+.case__front-interior {
+  position: absolute;
+  inset: 0;
+  transform: rotateY(180deg);
+  backface-visibility: hidden;
+  /* Same moulded plastic as the tray, within a few percent — see
+     .case__tray. A gentler, more directional gradient stands in for this
+     panel catching light more evenly than the recessed tray does. */
+  background: linear-gradient(100deg, #34343a 0%, #2c2c30 45%, #232326 100%);
+}
+
+/*
+ * Booklet clips: a raised plastic tab with a rectangular slot cut through
+ * it, catching a highlight along its top edge. All three sit on the
+ * outer edge (interior panel's local left, away from the fold) per the
+ * reference photos, stacked top/middle/bottom, protruding slightly past
+ * the panel's own edge into the frame rather than sitting flush inside it.
+ */
+.case__booklet-clip {
+  position: absolute;
+  left: calc(var(--front-w) * -0.01);
+  width: 9%;
+  height: 3%;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #46464c 0%, #34343a 55%, #2a2a2e 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.4),
+    -1px 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.case__booklet-clip-slot {
+  position: absolute;
+  inset: 30% 20%;
+  background: #1a1a1c;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8);
+  border-radius: 1px;
+}
+
+.case__booklet-clip--top {
+  top: 20%;
+}
+
+.case__booklet-clip--bottom {
+  bottom: 20%;
+}
+
+/*
+ * Sized against the tray unit's own 128.5mm width, not the full open
+ * case: --disc-ratio (Case.tsx) is 120 / 128.5, so the disc leaves the
+ * real ~4mm margin all round rather than an eyeballed percentage, and it
+ * must stay within the panel — it never crosses the fold at rest.
+ */
+.case__disc-slot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--disc-ratio) * 100%);
+  cursor: pointer;
+  transform: translate(-50%, -50%) translateZ(1px) scale(1);
+  transition:
+    left 0.6s ease,
+    top 0.6s ease,
+    transform 0.6s ease,
+    width 0.6s ease;
+}
+
+.case__disc-slot:focus-visible {
+  outline: none;
+}
+
+.case__disc-slot:focus-visible .disc {
+  outline: 2px solid #fff;
+  outline-offset: 6px;
+  border-radius: 50%;
+}
+
+.case__disc-slot .disc {
+  width: 100%;
+}
+
+/* A disc resting in the tray does not spin. Only a lifted disc does. Fully
+   off rather than paused, so it rests at a fixed, upright orientation
+   instead of freezing wherever the animation happened to be. */
+.case__disc-slot:not(.is-out) .disc__art,
+.case__disc-slot:not(.is-out) .disc__sweep {
+  animation: none;
+}
+
+/* Lifted: shifts left to the centre of the whole open case (the tray
+   unit's own left edge, in its local coordinates, is the case's
+   horizontal midpoint) and grows slightly beyond its resting size. */
+.case__disc-slot.is-out {
+  left: 0%;
+  top: 46%;
+  width: 105%;
+  transform: translate(-50%, -50%) translateZ(90px) scale(1);
+}
+
+.case__shadow {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: -6%;
+  height: 14%;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.5) 0%, transparent 72%);
+  filter: blur(6px);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .case__toggle,
+  .case__spine,
+  .case__front,
+  .case__disc-slot {
+    transition: none;
+  }
+}

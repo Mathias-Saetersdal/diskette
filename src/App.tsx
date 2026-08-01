@@ -1,4 +1,4 @@
-import Disc from './components/Disc'
+import Case from './components/Case'
 import BurnedDisc from './components/BurnedDisc'
 import { albums, games } from './data/lists'
 import './App.css'
@@ -10,9 +10,12 @@ const burnedEntries = [...albums, ...games].filter(
 function App() {
   return (
     <main className="stage">
-      <Disc
-        src="/assets/film/the-dark-knight/disc.png"
-        alt="The Dark Knight disc"
+      <Case
+        title="The Dark Knight"
+        coverSrc="/assets/film/the-dark-knight/cover.png"
+        coverAlt="The Dark Knight cover"
+        discSrc="/assets/film/the-dark-knight/disc.png"
+        discAlt="The Dark Knight disc"
       />
       <div className="burned-row">
         {burnedEntries.map((entry) => (

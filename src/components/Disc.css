@@ -9,6 +9,18 @@
   container-type: inline-size;
 }
 
+.disc--interactive {
+  /* The real guard against page scroll during a drag — preventDefault on
+     pointermove is a backstop, this is what stops the gesture starting
+     in the first place. */
+  touch-action: none;
+  cursor: grab;
+}
+
+.disc--interactive:active {
+  cursor: grabbing;
+}
+
 .disc__art {
   position: absolute;
   inset: 0;
@@ -33,6 +45,12 @@
     black calc(var(--hub-hole-ratio) * 100% + 0.5%) 100%
   );
   animation: disc-spin 6s linear infinite;
+}
+
+/* JS (useDragSpin) owns rotation once interactive — the ambient keyframes
+   would otherwise fight the inline transform it sets every frame. */
+.disc__art--interactive {
+  animation: none;
 }
 
 .disc__art > img {
