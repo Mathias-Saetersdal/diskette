@@ -23,9 +23,10 @@
   --case-h: calc(var(--list-case-h) * var(--height-scale, 1));
 }
 
-/* Same class name for both FilmCard and AlbumCard's wrapper div, so one
-   selector already covers both — no dual selector needed here. */
-.media-list .film-card {
+/* Same class name for every card's wrapper div (KeepCaseCard and
+   AlbumCard both use MediaCard.css), so one selector already covers both
+   — no dual selector needed here. */
+.media-list .media-card {
   align-self: flex-end;
 }
 

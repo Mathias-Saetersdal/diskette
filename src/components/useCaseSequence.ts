@@ -22,10 +22,10 @@ interface UseCaseSequenceArgs {
  * closed, grow, then open — and the exact reverse on deactivation, staying
  * mounted as the full case for the reversal's real duration rather than
  * swapping back the instant each step is triggered. Extracted from
- * FilmCard.tsx once AlbumCard needed the identical sequence for a jewel
- * case: none of this logic ever referenced Case specifically, only
- * open/enlarged/closing state and focus handoff between two refs the
- * caller owns.
+ * KeepCaseCard.tsx (then still named FilmCard.tsx) once AlbumCard needed
+ * the identical sequence for a jewel case: none of this logic ever
+ * referenced Case specifically, only open/enlarged/closing state and
+ * focus handoff between two refs the caller owns.
  */
 export function useCaseSequence({ active, onDeactivate }: UseCaseSequenceArgs) {
   const [enlarged, setEnlarged] = useState(false)

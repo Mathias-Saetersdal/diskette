@@ -336,7 +336,21 @@ async function saveGeneratedDisc(coverPath: string, outPath: string): Promise<vo
   // at render time by Disc.css regardless of source shape (see its
   // comments), so this only needs to produce a clean square crop, not
   // re-implement that pipeline here.
-  await sharp(coverPath).resize(DISC_CANVAS, DISC_CANVAS, { fit: 'cover' }).png().toFile(outPath)
+  //
+  // position: attention (libvips' saliency-based crop, not a plain centre
+  // crop) instead of the default centre position: docs/03-object-spec.md's
+  // Generated step 1 asks the crop to keep a title block or logo in frame
+  // rather than cut it, and this script has no OCR or layout model to find
+  // one deliberately. Attention scores the image for edge density and
+  // detail and crops toward whichever region scores highest — text and
+  // logos are typically high-detail, high-contrast regions relative to
+  // plain background, so this is a real, working approximation of "keep
+  // the title visible," not a guess, but it is still a heuristic: it can
+  // just as easily centre on a face or a busy background element instead.
+  await sharp(coverPath)
+    .resize(DISC_CANVAS, DISC_CANVAS, { fit: 'cover', position: sharp.strategy.attention })
+    .png()
+    .toFile(outPath)
 }
 
 async function saveCover(buffer: Buffer, outPath: string): Promise<void> {

@@ -2,13 +2,13 @@ import JewelCase from './JewelCase'
 import FlatJewelCase from './FlatJewelCase'
 import { useCaseSequence } from './useCaseSequence'
 import type { Entry } from '../data/lists'
-// Reuses FilmCard's own layout rules unchanged: the case (or flat case)
-// plus a rank number below it, bottom-aligned as one stack, has nothing
-// film-specific in it. Renaming the film-card/film-card__rank classes to
-// something medium-neutral isn't needed for this to work and would touch
-// more files for a cosmetic-only gain, so the names stay as they are — a
-// known minor imperfection, not a silent one.
-import './FilmCard.css'
+// The layout rules (case, then a rank number below it, bottom-aligned as
+// one stack) have nothing case-shape-specific in them, so they live in
+// their own medium-neutral file rather than KeepCaseCard's — this is a
+// jewel case, not a keep case, and importing something named after the
+// other geometry here would be exactly the kind of misleading reuse
+// KeepCaseCard itself was renamed to stop being.
+import './MediaCard.css'
 
 interface AlbumCardProps {
   entry: Entry
@@ -18,9 +18,9 @@ interface AlbumCardProps {
 }
 
 /**
- * The album equivalent of FilmCard: the switch between FlatJewelCase
+ * The album equivalent of KeepCaseCard: the switch between FlatJewelCase
  * (closed, no 3D subtree) and JewelCase (the full interactive object),
- * using the same useCaseSequence choreography FilmCard uses for keep
+ * using the same useCaseSequence choreography KeepCaseCard uses for keep
  * cases. Every jewel case is one fixed size with no livery, so there's no
  * caseFormat/livery to pass through here, unlike Case's props.
  */
@@ -31,7 +31,7 @@ export default function AlbumCard({ entry, active, onActivate, onDeactivate }: A
   })
 
   return (
-    <div className="film-card">
+    <div className="media-card">
       {showCase ? (
         <JewelCase
           title={entry.title}
@@ -54,7 +54,7 @@ export default function AlbumCard({ entry, active, onActivate, onDeactivate }: A
           buttonRef={flatButtonRef}
         />
       )}
-      <span className="film-card__rank">{entry.rank}</span>
+      <span className="media-card__rank">{entry.rank}</span>
     </div>
   )
 }

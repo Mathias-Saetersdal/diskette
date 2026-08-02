@@ -3,9 +3,9 @@ import FlatCase from './FlatCase'
 import { useCaseSequence } from './useCaseSequence'
 import type { SupportedCaseFormat } from './caseGeometry'
 import type { Entry } from '../data/lists'
-import './FilmCard.css'
+import './MediaCard.css'
 
-interface FilmCardProps {
+interface KeepCaseCardProps {
   entry: Entry
   active: boolean
   onActivate: () => void
@@ -13,22 +13,27 @@ interface FilmCardProps {
 }
 
 /**
- * The switch between the two representations a film or series entry can
- * have: FlatCase (closed, no 3D subtree) for every entry that isn't the
- * list's one active one, Case (the full interactive object) for the one
- * that is. Which one is active lives in MediaList, not here — this only
- * owns which Case props come from the entry, plus the rank number that
- * sits below whichever representation is showing. The enlarge/open/close
- * choreography itself lives in useCaseSequence, shared with AlbumCard.
+ * The switch between the two representations a keep-case entry can have:
+ * FlatCase (closed, no 3D subtree) for every entry that isn't the list's
+ * one active one, Case (the full interactive object) for the one that is.
+ * Films and series both use it — both are dvd/bluray keep-case geometry,
+ * the exact restriction Case itself is scoped to (docs/04-lists.md). Games
+ * are not: PS5 and Switch aren't keep cases, so a future game card needs
+ * its own component rather than reusing this one under a name that would
+ * no longer describe what it renders. Which one is active lives in
+ * MediaList, not here — this only owns which Case props come from the
+ * entry, plus the rank number that sits below whichever representation is
+ * showing. The enlarge/open/close choreography itself lives in
+ * useCaseSequence, shared with AlbumCard.
  */
-export default function FilmCard({ entry, active, onActivate, onDeactivate }: FilmCardProps) {
+export default function KeepCaseCard({ entry, active, onActivate, onDeactivate }: KeepCaseCardProps) {
   const { open, enlarged, showCase, caseToggleRef, flatButtonRef, onToggleOpen } = useCaseSequence({
     active,
     onDeactivate,
   })
 
   return (
-    <div className="film-card">
+    <div className="media-card">
       {showCase ? (
         <Case
           title={entry.title}
@@ -50,15 +55,13 @@ export default function FilmCard({ entry, active, onActivate, onDeactivate }: Fi
           title={entry.title}
           coverSrc={entry.cover}
           coverAlt={`${entry.title} cover`}
-          // Films and series only ever use dvd/bluray (docs/04-lists.md) —
-          // the same restriction Case itself is scoped to.
           caseFormat={entry.case as SupportedCaseFormat}
           livery={entry.livery}
           onClick={onActivate}
           buttonRef={flatButtonRef}
         />
       )}
-      <span className="film-card__rank">{entry.rank}</span>
+      <span className="media-card__rank">{entry.rank}</span>
     </div>
   )
 }

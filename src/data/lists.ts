@@ -3,8 +3,14 @@
 //
 // discSource is optional. Leave it out and scripts/fetch-assets.ts resolves it
 // down the ladder in docs/02-asset-sources.md: retail, then generated, then
-// burned. Set it explicitly only to force a result, which currently means the
-// three entries that never had a physical release.
+// burned. The script only prints the tier it landed on, it never writes back
+// here, so a resolved-but-unforced result (retail) can still read as absent —
+// harmless, since nothing downstream needs to distinguish "unresolved" from
+// "resolved to the ladder's default." Set it explicitly to force a result
+// (burned, for the three entries with no physical release), or to record one
+// the render layer needs and the ladder's own default doesn't supply (generated,
+// for entries whose disc is a cropped cover rather than a scan — see
+// credits.json for provenance per entry).
 //
 // note is written by Matti, one entry at a time. Films are done. Series,
 // albums and games hold the placeholder "TODO: Her vil jeg skrive to
@@ -217,6 +223,7 @@ export const series: Entry[] = [
     livery: "standard",
     cover: "/assets/series/one-piece/cover.png",
     disc: "/assets/series/one-piece/disc.png",
+    discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
@@ -232,6 +239,7 @@ export const series: Entry[] = [
     livery: "standard",
     cover: "/assets/series/breaking-bad/cover.png",
     disc: "/assets/series/breaking-bad/disc.png",
+    discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
@@ -262,6 +270,7 @@ export const series: Entry[] = [
     livery: "standard",
     cover: "/assets/series/game-of-thrones/cover.png",
     disc: "/assets/series/game-of-thrones/disc.png",
+    discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
@@ -276,6 +285,7 @@ export const series: Entry[] = [
     livery: "standard",
     cover: "/assets/series/invincible/cover.png",
     disc: "/assets/series/invincible/disc.png",
+    discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
@@ -290,6 +300,7 @@ export const series: Entry[] = [
     livery: "standard",
     cover: "/assets/series/vinland-saga/cover.png",
     disc: "/assets/series/vinland-saga/disc.png",
+    discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
@@ -306,6 +317,7 @@ export const series: Entry[] = [
     livery: "standard",
     cover: "/assets/series/berserk/cover.png",
     disc: "/assets/series/berserk/disc.png",
+    discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
@@ -320,6 +332,7 @@ export const series: Entry[] = [
     livery: "standard",
     cover: "/assets/series/its-always-sunny-in-philadelphia/cover.png",
     disc: "/assets/series/its-always-sunny-in-philadelphia/disc.png",
+    discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
@@ -335,6 +348,7 @@ export const series: Entry[] = [
     livery: "standard",
     cover: "/assets/series/eastbound-and-down/cover.png",
     disc: "/assets/series/eastbound-and-down/disc.png",
+    discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
@@ -349,6 +363,7 @@ export const series: Entry[] = [
     livery: "standard",
     cover: "/assets/series/south-park/cover.png",
     disc: "/assets/series/south-park/disc.png",
+    discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
 ];
@@ -356,7 +371,8 @@ export const series: Entry[] = [
 /**
  * Every album is a CD jewel case: 142 x 125 x 10mm, front face ratio 0.880.
  * The Life of Pablo never had a physical release, so it is burned by
- * definition rather than by fallback.
+ * definition rather than by fallback. fanart.tv cdart coverage came back
+ * thin across the board — every other album resolved to generated.
  */
 export const albums: Entry[] = [
   {
@@ -371,6 +387,7 @@ export const albums: Entry[] = [
     livery: "standard",
     cover: "/assets/album/currents/cover.png",
     disc: "/assets/album/currents/disc.png",
+    discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
@@ -385,6 +402,7 @@ export const albums: Entry[] = [
     livery: "standard",
     cover: "/assets/album/man-on-the-moon-iii-the-chosen/cover.png",
     disc: "/assets/album/man-on-the-moon-iii-the-chosen/disc.png",
+    discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
@@ -399,6 +417,7 @@ export const albums: Entry[] = [
     livery: "standard",
     cover: "/assets/album/one-of-wun/cover.png",
     disc: "/assets/album/one-of-wun/disc.png",
+    discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
@@ -413,6 +432,7 @@ export const albums: Entry[] = [
     livery: "standard",
     cover: "/assets/album/at-long-last-asap/cover.png",
     disc: "/assets/album/at-long-last-asap/disc.png",
+    discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
@@ -427,6 +447,7 @@ export const albums: Entry[] = [
     livery: "standard",
     cover: "/assets/album/2014-forest-hills-drive/cover.png",
     disc: "/assets/album/2014-forest-hills-drive/disc.png",
+    discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
@@ -456,6 +477,7 @@ export const albums: Entry[] = [
     livery: "standard",
     cover: "/assets/album/damn/cover.png",
     disc: "/assets/album/damn/disc.png",
+    discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
@@ -470,6 +492,7 @@ export const albums: Entry[] = [
     livery: "standard",
     cover: "/assets/album/astroworld/cover.png",
     disc: "/assets/album/astroworld/disc.png",
+    discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
@@ -485,6 +508,7 @@ export const albums: Entry[] = [
     livery: "standard",
     cover: "/assets/album/rommet/cover.png",
     disc: "/assets/album/rommet/disc.png",
+    discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
@@ -499,6 +523,7 @@ export const albums: Entry[] = [
     livery: "standard",
     cover: "/assets/album/konnichiwa/cover.png",
     disc: "/assets/album/konnichiwa/disc.png",
+    discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
 ];

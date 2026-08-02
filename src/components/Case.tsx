@@ -50,7 +50,7 @@ interface CaseProps {
   open: boolean
   onToggleOpen: () => void
   /**
-   * Also controlled, also owned by the sequencing in FilmCard: a case
+   * Also controlled, also owned by the sequencing in KeepCaseCard: a case
    * grows to twice its list size before it opens, not at the same time.
    * Kept as its own boolean rather than folded into `open` because the two
    * states are visually independent (scale on .case itself vs. the hinge

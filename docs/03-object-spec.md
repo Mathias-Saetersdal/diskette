@@ -14,9 +14,9 @@ Dimensions from print.dvdcover.com and coverstitch.io.
 | PS5 case (?) | 148 × 135 × 14 | 0.912 | PS5 games |
 | Switch case (?) | 170 × 105 × 11 | 0.618 | Switch games |
 
-The disc is the same object across all of them: 120mm diameter, 15mm centre hole. The clear polycarbonate inner ring runs from the hole out to roughly 46mm diameter, where the printed area begins. A stacking ring sits at about 26 to 33mm.
+The disc is the same object across all of them: 120mm diameter, 15mm centre hole. A real retail disc also has a clear polycarbonate inner ring running from the hole out to roughly 46mm diameter, where its printed area begins, and a stacking ring at about 26 to 33mm.
 
-That inner ring is the detail that makes a rendered disc read as real. Retail disc scans usually include it as transparency. Do not fill it.
+That inner ring is the detail that makes a retail scan read as real. Retail disc scans usually include it as transparency. Do not fill it. Generated and burned discs have no scan to preserve this from, and are printed (or drawn) all the way out from the hub instead — see Disc rendering, Generated and Burned, below.
 
 ### Full wrap
 
@@ -64,9 +64,9 @@ Composite the transparent PNG onto the tray. Add a specular sweep on top: a low-
 
 For entries with no retail scan.
 
-1. Take the cover art. Crop to a square from the centre, then to a circle at 120mm.
-2. The ring from the hub hole out to 46mm carries no printed artwork — cover art is masked out of it, not punched through it. It is transparent polycarbonate, not a hole, and renders as clear plastic: a slight tint, a specular highlight that moves with the sweep, and the stacking ring visible at 26 to 33mm. Only the 15mm hub hole itself is punched to true transparency, independent of source, the same guarantee retail discs get.
-3. Overlay the specular sweep over the printed area.
+1. Take the cover art. Crop to a square, then to a circle at 120mm. Bias the crop toward keeping a title block or logo visible rather than a strict centre crop: if the artwork carries one near the top or bottom edge, keep it in frame over cutting it to force a perfect centre.
+2. Punch the 15mm hub hole to true transparency, the same guarantee retail discs get. Nothing else is masked. The cover fills the face out to the 120mm edge exactly as a retail scan's own printed area does — no separate clear-ring cut. An earlier version of this step masked the 15-46mm band out as clear plastic; in practice that read as a large empty hub with only a thin surviving ring of artwork, not as reflective plastic, so the band is gone rather than tuned.
+3. Overlay the specular sweep over the printed area, the same treatment a retail disc gets. This is what sells the plastic read, not a separate ring effect.
 4. Optional: a thin printed ring at the outer edge, 2mm in, which is how most retail discs are trimmed.
 
 The result is honest. It does not pretend to be a retail scan, and it looks like the disc a print-on-demand release would have shipped.

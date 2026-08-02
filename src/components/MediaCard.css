@@ -6,11 +6,13 @@
  * down to a flat bar with the disc floating over the collapsed body. The
  * shared baseline both the case and the rank number need instead comes
  * from bottom-aligning this whole stack as one unit within the row (see
- * .media-list .film-card in MediaList.css) — case then rank, in that
+ * .media-list .media-card in MediaList.css) — case then rank, in that
  * order, so a fixed rank height and gap sit below whichever height the
- * case happens to be, DVD or Blu-ray, open or closed, enlarged or not.
+ * case happens to be, any format, open or closed, enlarged or not. Shared
+ * by every card regardless of case geometry — KeepCaseCard and AlbumCard
+ * both use it unchanged, since none of this reads case shape at all.
  */
-.film-card {
+.media-card {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -21,9 +23,9 @@
  * lets the case grow past its own resting height (enlarged, open) without
  * anything here constraining it. The gap above is fixed regardless of
  * format or state, which is what keeps the number itself landing on a
- * consistent baseline once the whole .film-card stack is bottom-aligned.
+ * consistent baseline once the whole .media-card stack is bottom-aligned.
  */
-.film-card__rank {
+.media-card__rank {
   margin-top: 6px;
   font-family: system-ui, sans-serif;
   font-size: 0.75rem;

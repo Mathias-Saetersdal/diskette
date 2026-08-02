@@ -29,8 +29,8 @@
   /*
    * Guarantees the 15mm centre hole reads as transparent (docs/03-object-spec.md,
    * "120mm diameter, 15mm centre hole"), independent of how clean the face
-   * mounted inside is. A real hole either way, unlike the clear ring beyond
-   * it — see .disc__art--generated and .disc__clear-ring below for that.
+   * mounted inside is — a real hole either way, retail scan or generated
+   * crop, the only thing either source has punched out of it.
    */
   mask-image: radial-gradient(
     circle closest-side,
@@ -57,94 +57,6 @@
   height: 100%;
 }
 
-/*
- * A generated face is a cover crop, not a disc photo — it never had
- * artwork printed in the 15-46mm ring, so masking it out there (rather
- * than leaving whatever the crop happened to land on) is what makes this
- * read as clear plastic instead of an off-centre label. docs/03-object-spec.md,
- * Disc rendering, Generated, step 2.
- */
-.disc__art--generated > img {
-  mask-image: radial-gradient(
-    circle closest-side,
-    transparent 0 calc(var(--clear-ring-ratio) * 100%),
-    black calc(var(--clear-ring-ratio) * 100% + 0.5%) 100%
-  );
-  -webkit-mask-image: radial-gradient(
-    circle closest-side,
-    transparent 0 calc(var(--clear-ring-ratio) * 100%),
-    black calc(var(--clear-ring-ratio) * 100% + 0.5%) 100%
-  );
-}
-
-/*
- * What shows through that masked-out ring: clear plastic, not a hole — a
- * faint tint plus the stacking ring at 26 to 33mm (docs/03-object-spec.md,
- * Cases table), a soft moulded groove rather than printed artwork. Confined
- * to the same 15-46mm band the mask above opens up; .disc__art's own mask
- * still cuts the true 15mm hole out of this too.
- */
-.disc__clear-ring {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  mask-image: radial-gradient(
-    circle closest-side,
-    transparent 0 calc(var(--hub-hole-ratio) * 100%),
-    black calc(var(--hub-hole-ratio) * 100% + 0.5%) calc(var(--clear-ring-ratio) * 100% - 0.5%),
-    transparent calc(var(--clear-ring-ratio) * 100%) 100%
-  );
-  -webkit-mask-image: radial-gradient(
-    circle closest-side,
-    transparent 0 calc(var(--hub-hole-ratio) * 100%),
-    black calc(var(--hub-hole-ratio) * 100% + 0.5%) calc(var(--clear-ring-ratio) * 100% - 0.5%),
-    transparent calc(var(--clear-ring-ratio) * 100%) 100%
-  );
-  background:
-    radial-gradient(
-      circle closest-side,
-      transparent calc(var(--stack-ring-inner) * 100% - 1%),
-      rgba(255, 255, 255, 0.14) calc(var(--stack-ring-inner) * 100%),
-      rgba(255, 255, 255, 0.14) calc(var(--stack-ring-outer) * 100%),
-      transparent calc(var(--stack-ring-outer) * 100% + 1%)
-    ),
-    radial-gradient(circle, rgba(205, 215, 225, 0.12), rgba(170, 180, 190, 0.04));
-}
-
-/*
- * The specular highlight for that same ring — same disc-sweep keyframes
- * and timing as .disc__sweep, so it moves with it rather than as a
- * separate, unsynced light source, per "a specular highlight that moves
- * with the sweep."
- */
-.disc__clear-ring-sheen {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  mask-image: radial-gradient(
-    circle closest-side,
-    transparent 0 calc(var(--hub-hole-ratio) * 100%),
-    black calc(var(--hub-hole-ratio) * 100% + 0.5%) calc(var(--clear-ring-ratio) * 100% - 0.5%),
-    transparent calc(var(--clear-ring-ratio) * 100%) 100%
-  );
-  -webkit-mask-image: radial-gradient(
-    circle closest-side,
-    transparent 0 calc(var(--hub-hole-ratio) * 100%),
-    black calc(var(--hub-hole-ratio) * 100% + 0.5%) calc(var(--clear-ring-ratio) * 100% - 0.5%),
-    transparent calc(var(--clear-ring-ratio) * 100%) 100%
-  );
-  background: conic-gradient(
-    from 0deg,
-    transparent 0deg,
-    transparent 55deg,
-    rgba(255, 255, 255, 0.55) 95deg,
-    transparent 135deg,
-    transparent 360deg
-  );
-  mix-blend-mode: screen;
-  animation: disc-sweep 9s linear infinite reverse;
-}
-
 .disc__sweep {
   position: absolute;
   inset: 0;
@@ -160,10 +72,12 @@
     transparent 360deg
   );
   /*
-   * The clear ring runs from the hub hole out to 46mm on a 120mm disc
-   * (docs/03-object-spec.md, "Disc rendering"). The highlight is masked out
-   * of that whole clear zone so it only plays over the printed area, which
-   * is where a real reflection would actually land.
+   * A retail scan's own clear ring (docs/03-object-spec.md, Cases table:
+   * hub hole out to 46mm on a 120mm disc) has nothing reflective for a
+   * highlight to land on, so this stays masked out of that zone regardless
+   * of source — a generated disc is printed there too now, not clear, but
+   * shares the same mask rather than branching per source for a highlight
+   * that already reaches the printed majority of the face either way.
    */
   mask-image: radial-gradient(
     circle closest-side,
@@ -198,8 +112,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .disc__art,
-  .disc__sweep,
-  .disc__clear-ring-sheen {
+  .disc__sweep {
     animation: none;
   }
 }

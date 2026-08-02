@@ -12,16 +12,17 @@ import './Disc.css'
 // Geometry from docs/03-object-spec.md, "Cases" table and "Disc rendering" section.
 export const DISC_DIAMETER_MM = 120
 export const HUB_HOLE_DIAMETER_MM = 15
-export const CLEAR_RING_DIAMETER_MM = 46 // where the printed area begins
-export const STACKING_RING_INNER_MM = 26 // "A stacking ring sits at about 26 to 33mm"
-export const STACKING_RING_OUTER_MM = 33
+// Retail scans carry real transparency out to about here (docs/03-object-spec.md,
+// Cases table) — used only to keep .disc__sweep's own highlight off that
+// genuinely clear band, not to mask any printed artwork. Generated and
+// burned discs are printed (or drawn) all the way out from the hub, so
+// nothing else in this file keys off this ratio.
+export const CLEAR_RING_DIAMETER_MM = 46
 
 // All diameter-over-diameter, which equals radius-over-radius, so they
 // double as fractions of the disc's radius for the masks in Disc.css.
 export const hubHoleRatio = HUB_HOLE_DIAMETER_MM / DISC_DIAMETER_MM // 15mm hole / 120mm disc
 export const clearRingRatio = CLEAR_RING_DIAMETER_MM / DISC_DIAMETER_MM // 46mm ring / 120mm disc
-export const stackingRingInnerRatio = STACKING_RING_INNER_MM / DISC_DIAMETER_MM
-export const stackingRingOuterRatio = STACKING_RING_OUTER_MM / DISC_DIAMETER_MM
 
 // Matches the ambient disc-spin keyframes below: 360deg over 6000ms. This is
 // also the velocity a drag decays back toward, so a release never just
@@ -153,34 +154,26 @@ interface DiscShellProps {
   sweepHighlight?: number
   /** Lifted-out state: enables drag-to-spin. Off, it's the plain ambient CSS spin. */
   interactive?: boolean
-  /**
-   * No retail scan: the mounted face is a cover crop, not a real disc
-   * photo. The 15–46mm ring is masked out of that cover art (it is clear
-   * polycarbonate, not printed area) and rendered as clear plastic instead
-   * — tint, a sweep-synced highlight, the stacking ring — rather than left
-   * as a hole or covered by artwork that was never printed there.
-   * docs/03-object-spec.md, Disc rendering, Generated.
-   */
-  generated?: boolean
 }
 
 /**
  * Shared disc geometry: sizing, the hub hole mask and the specular sweep.
  * Disc and BurnedDisc each mount their own face inside .disc__art and share
- * everything else, so the geometry and sweep are defined once.
+ * everything else, so the geometry and sweep are defined once. No source
+ * distinction here — a generated face (a cover crop) fills the disc out to
+ * its edge exactly like a retail scan does, punched only at the true 15mm
+ * hub; the specular sweep is what sells the plastic read either way, per
+ * docs/03-object-spec.md, Disc rendering, Generated.
  */
 export function DiscShell({
   children,
   sweepOpacity = 0.5,
   sweepHighlight = 0.4,
   interactive = false,
-  generated = false,
 }: DiscShellProps) {
   const style = {
     '--hub-hole-ratio': hubHoleRatio,
     '--clear-ring-ratio': clearRingRatio,
-    '--stack-ring-inner': stackingRingInnerRatio,
-    '--stack-ring-outer': stackingRingOuterRatio,
     '--sweep-opacity': sweepOpacity,
     '--sweep-highlight': sweepHighlight,
   } as CSSProperties
@@ -201,21 +194,7 @@ export function DiscShell({
       onPointerCancel={drag.onPointerCancel}
       onClick={drag.onClick}
     >
-      <div
-        className={`disc__art${drag.isActive ? ' disc__art--interactive' : ''}${generated ? ' disc__art--generated' : ''}`}
-        ref={artRef}
-      >
-        {generated && (
-          <>
-            {/*
-             * Sits under the cover art, which is masked out of this same
-             * band by .disc__art--generated's CSS — clear plastic showing
-             * through where there's no printed artwork, not a hole.
-             */}
-            <div className="disc__clear-ring" aria-hidden="true" />
-            <div className="disc__clear-ring-sheen" aria-hidden="true" />
-          </>
-        )}
+      <div className={`disc__art${drag.isActive ? ' disc__art--interactive' : ''}`} ref={artRef}>
         {children}
       </div>
       <div className="disc__sweep" aria-hidden="true" />
@@ -227,12 +206,11 @@ interface DiscProps {
   src: string
   alt: string
   interactive?: boolean
-  generated?: boolean
 }
 
-export default function Disc({ src, alt, interactive, generated }: DiscProps) {
+export default function Disc({ src, alt, interactive }: DiscProps) {
   return (
-    <DiscShell interactive={interactive} generated={generated}>
+    <DiscShell interactive={interactive}>
       <img src={src} alt={alt} />
     </DiscShell>
   )
