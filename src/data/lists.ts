@@ -23,8 +23,14 @@ export type Medium = "film" | "series" | "album" | "game";
 /** Geometry only. Dimensions live in docs/03-object-spec.md. */
 export type CaseFormat = "dvd" | "bluray" | "jewel" | "ps5" | "switch";
 
-/** Colour and band treatment over a case geometry. Not a separate shape. */
-export type Livery = "standard" | "ps2" | "ps3" | "ps4" | "ps5";
+/**
+ * Colour, banner and spine treatment over a case geometry. Not a separate
+ * shape. PS3 split into ps3-early and ps3-late: Sony changed the case
+ * design mid-generation (early: translucent shell, black spine with the
+ * platform wordmark; late: opaque shell, a grey header bar on the front
+ * face), so it isn't one livery the way ps2/ps4/ps5 are.
+ */
+export type Livery = "standard" | "ps2" | "ps3-early" | "ps3-late" | "ps4" | "ps5";
 
 export type DiscSource = "retail" | "generated" | "burned";
 
@@ -565,7 +571,7 @@ export const games: Entry[] = [
     list: "all-time",
     platform: "PS3",
     case: "bluray",
-    livery: "ps3",
+    livery: "ps3-late",
     cover: "/assets/game/call-of-duty-black-ops-ii/cover.png",
     disc: "/assets/game/call-of-duty-black-ops-ii/disc.png",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
@@ -595,7 +601,7 @@ export const games: Entry[] = [
     list: "all-time",
     platform: "PS3",
     case: "bluray",
-    livery: "ps3",
+    livery: "ps3-early",
     cover: "/assets/game/lego-star-wars-the-complete-saga/cover.png",
     disc: "/assets/game/lego-star-wars-the-complete-saga/disc.png",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",

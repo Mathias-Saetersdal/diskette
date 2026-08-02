@@ -180,12 +180,12 @@ export default function Case({
 
   // "standard" livery isn't one look — for films it's whatever the
   // natural, unbranded case for that format is (docs/03-object-spec.md,
-  // Livery). ps2/ps3/ps4/ps5 liveries are format-independent and not
-  // handled here yet (step 7, games). Only the spine mark and the
-  // .case--bluray-livery class need this here now — the front face's own
-  // copy of this check lives in CaseFrontFace, which also renders closed
-  // inside FlatCase.
+  // Livery). Only the spine mark and the case--<livery>-livery class need
+  // this here — the front face's own copy of this check lives in
+  // CaseFrontFace, which also renders closed inside FlatCase.
   const isStandardBluray = livery === 'standard' && caseFormat === 'bluray'
+  const isPs3Early = livery === 'ps3-early'
+  const liveryClass = isStandardBluray ? ' case--bluray-livery' : livery !== 'standard' ? ` case--${livery}-livery` : ''
 
   const toggleDiscOut = () => setDiscOut((was) => !was)
 
@@ -212,7 +212,7 @@ export default function Case({
 
   return (
     <div
-      className={`case${isStandardBluray ? ' case--bluray-livery' : ''}`}
+      className={`case${liveryClass}`}
       data-open={open}
       data-enlarged={enlarged}
       style={style}
@@ -229,7 +229,18 @@ export default function Case({
           {isStandardBluray && (
             <img className="case__spine-mark" src={BLURAY_LOGO_SRC} alt="" aria-hidden="true" />
           )}
-          <span className="case__spine-title">{title}</span>
+          {/*
+           * ps3-early's own marks (the grey badge and the "PLAYSTATION 3"
+           * wordmark) render on the front now, as a flat strip down the
+           * poster's own left edge (CaseFrontFace.tsx) — not on this,
+           * the case's real 3D spine. Rendering them here needed a
+           * Z-push to win a depth comparison against the front leaf's own
+           * poster, and even working, it read as detached from the case
+           * rather than part of it. No title on this spine either way —
+           * it still reads off the front cover itself once the case is
+           * anywhere near open.
+           */}
+          {!isPs3Early && <span className="case__spine-title">{title}</span>}
         </div>
 
         <div className="case__tray-unit">

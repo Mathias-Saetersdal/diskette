@@ -76,9 +76,9 @@ Rommet was released 3 October 2017 on S2OP. Cover Art Archive and fanart.tv `cda
 | # | Title | Year | Studio | Platform | Case | Livery | Disc | Note |
 |---|---|---|---|---|---|---|---|---|
 | 1 | Elden Ring | 2022 | FromSoftware | PS5 | ps5 | ps5 | | |
-| 2 | Call of Duty: Black Ops II | 2012 | Treyarch | PS3 | bluray | ps3 | | |
+| 2 | Call of Duty: Black Ops II | 2012 | Treyarch | PS3 | bluray | ps3-late | | |
 | 3 | Sly 3: Honor Among Thieves | 2005 | Sucker Punch Productions | PS2 | dvd | ps2 | | |
-| 4 | Lego Star Wars: The Complete Saga | 2007 | Traveller's Tales | PS3 | bluray | ps3 | | |
+| 4 | Lego Star Wars: The Complete Saga | 2007 | Traveller's Tales | PS3 | bluray | ps3-early | | |
 | 5 | Call of Duty: Black Ops III | 2015 | Treyarch | PS4 | bluray | ps4 | | |
 | 6 | Elden Ring Nightreign | 2025 | FromSoftware | PS5 | ps5 | ps5 | | |
 | 7 | Dark Souls III | 2016 | FromSoftware | PS4 | bluray | ps4 | | |
@@ -88,9 +88,7 @@ Rommet was released 3 October 2017 on S2OP. Cover Art Archive and fanart.tv `cda
 
 Year is the year of the work. Grand Theft Auto V is 2013 even though the PS5 version arrived in 2022.
 
-GameTDB has paths for `ps3` and earlier Nintendo systems. It has no `ps4` or `ps5`. Entries 2 and 4 are the only two with a route to a retail disc scan. Entry 3 is PS2, which GameTDB also does not cover, so it generates.
-
-Rocket League and Cuphead are fixed to burned. Neither was ever in your hands as a PS5 disc.
+GameTDB has a `ps3` path, but no shared join key ties it to whatever metadata source resolves these entries (no IGDB id, no reliable title match), so entries 2 and 4 need a manual lookup rather than an automated one even though GameTDB nominally covers the platform. GameTDB has no `ps4` or `ps5` path at all, and PS2 (entry 3) isn't covered either. All ten entries resolve to generated except Rocket League and Cuphead, which are fixed to burned — neither was ever in your hands as a PS5 disc. Covers aren't fetched automatically for any game: IGDB needs a Twitch developer account, so covers are sourced by hand.
 
 ## Parked: artists
 

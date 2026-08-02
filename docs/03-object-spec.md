@@ -31,12 +31,16 @@ Colour and format marks over the case geometry, not a new shape. `standard` live
 
 - **Blu-ray, standard.** Solid Blu-ray blue (`#0b77be`), full bleed across the whole front face — the case body's own colour, not a translucent overlay. The poster sits inset on top of it: a small even margin on the left, right and bottom, and a taller margin at the top for a header zone. That header carries two marks: a small Blu-ray Disc mark at the left with the format name in white caps beside it, and a larger oval Blu-ray Disc mark at the right. The oval is centred on the boundary between the header and the poster rather than confined inside the header strip, so it overlaps the artwork's top edge slightly — that overlap is what makes it read as printed on the sleeve rather than a layer floating above it.
 - **DVD, standard.** Opaque black case body. No banner, no translucency effect — DVD cases don't carry one.
-- **PS2.** Black body, no band.
-- **PS3.** Black body with the platform band.
-- **PS4.** Blue body.
-- **PS5.** White body with a blue band.
 
-The four PlayStation liveries are documented here but not yet built — that's step 7 (games), a colour-and-band layer over the existing case component rather than four separate ones. Blu-ray and DVD standard liveries are built.
+The five PlayStation liveries below are sourced from real case photos in `reference/` (Sly 3 for PS2, Lego Star Wars: The Complete Saga and Call of Duty: Black Ops II for the two PS3 designs, Dark Souls III for PS4, Elden Ring and Elden Ring Nightreign for PS5), not guessed. Every one of them is a header bar over an opaque black body plus a printed spine, the same shape as Blu-ray standard's own header-and-inset-poster treatment — not a full-bleed body colour the way Blu-ray standard's blue is. None of these use a real Sony or Blu-ray Disc Association logo image the way standard Blu-ray's marks do; there's no equivalent asset for any of them, so the platform name renders as styled text instead.
+
+- **PS2.** Opaque black body. Black header bar, full width, no colour accent. White "PLAYSTATION 2" wordmark in the header, left-aligned. Spine: black, same as the front, printed with the game title only.
+- **PS3, early.** The design used at PS3's launch, dropped partway through the generation. Case shell reads as translucent smoke-grey rather than opaque black — the reference photo shows the tray's own light grey through the case edges. No front-face header bar; the platform mark lives on the spine instead, alongside the game title: "PLAYSTATION 3" in small caps near the top, then the game title down the rest of the spine.
+- **PS3, late.** The redesign that replaced it, used for the rest of the PS3's life and the shape people mostly remember. Opaque black body again, matching PS2's construction rather than the early design's translucency. Header bar in a light grey-to-black gradient, thin red rule beneath it, "PS3" wordmark left-aligned in the header.
+- **PS4.** Opaque black body. Header bar in Sony's PS4 blue (a mid blue, lighter at the top-left corner of the bar than the rest), white "PS4" wordmark left-aligned.
+- **PS5.** Opaque black body. Header bar in white — the one light-coloured header of the five — black "PS5" wordmark left-aligned, thin blue rule beneath the header separating it from the box art.
+
+Colour and marks over the existing case geometry, not five separate case components. A single colour-and-band layer on top of `Case`, the same way Blu-ray standard's header is already built, covering all five.
 
 ## Interactions
 

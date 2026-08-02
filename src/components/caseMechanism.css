@@ -190,6 +190,18 @@
   transform: rotateY(90deg);
   opacity: 1;
   transition: opacity 0.25s ease;
+  /*
+   * Without this, a spine mark (Blu-ray's small logo image, ps3-early's
+   * PLAYSTATION 3 text) flattens into this element's own rotated plane
+   * before being composited into the case's outer 3D scene, instead of
+   * sorting by real depth against the front leaf's own children —
+   * the front leaf's poster image was winning that flattened paint order
+   * and fully covering the spine's own marks regardless of any
+   * translateZ applied to them, confirmed directly with
+   * elementsFromPoint(). Same fix .case__tray-unit already documents and
+   * uses for the identical problem with a lifted disc.
+   */
+  transform-style: preserve-3d;
 }
 
 .case[data-open='true'] .case__spine,

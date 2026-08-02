@@ -46,6 +46,46 @@
   color: #fff;
 }
 
+/*
+ * PS3's early design: mostly black, unlike the front face, which is clear
+ * on this design (see .case__front-art--ps3-early). No content of its own
+ * on this spine — the grey badge and the "PLAYSTATION 3" wordmark both
+ * render on the front instead, as a flat strip down the poster's own left
+ * edge (CaseFrontFace.tsx) rather than on this, the case's real 3D spine;
+ * that read as detached from the case when tried here, even once it was
+ * correctly depth-sorted against the front leaf's own poster. No game
+ * title either, so this is background colour only.
+ *
+ * The printed black doesn't run to the case's own bottom edge in
+ * reference/lego-star-wars-ps3-old-design.webp — a thin band of the
+ * shell's own lighter, translucent plastic shows below it (the same
+ * material the object spec's "translucent smoke-grey" already describes
+ * for this design), a real margin the printed insert leaves rather than
+ * something to render as flat black all the way down. The gradient's
+ * last stop approximates that margin; not measured to the exact pixel,
+ * since the source photo's own bottom edge is partly cropped, but the
+ * direction (fade, not a hard edge) is.
+ */
+.case--ps3-early-livery .case__spine {
+  background: linear-gradient(180deg, #0a0a0a 0%, #0a0a0a 84%, #3d3d43 91%, #6b6b72 100%);
+}
+
+/*
+ * ps5's header is white (.case__front-art--ps5 .case__front-header below)
+ * — against that, the default sampled-cover spine (dark blue/teal, off
+ * this app's own Dark Knight stand-in cover) reads as an unwanted blue
+ * block sitting directly beside the banner, not a shelf-shadow tone. Its
+ * own reference photo (eldenringnightreignps5) has nothing blue there —
+ * matching black body, same as the front (.case__front-art--ps5). ps2,
+ * ps3-late and ps4 keep the sampled default per the comment above; their
+ * own headers are dark or mid-tone, not stark white, so the same mismatch
+ * doesn't read the same way against them, and none of the three was
+ * flagged against its own reference photo.
+ */
+.case--ps5-livery .case__spine {
+  background: #0a0a0a;
+}
+
 .case__spine-mark {
   position: absolute;
   top: 4%;
@@ -322,6 +362,168 @@
 }
 
 /*
+ * PS2, PS3's later design, PS4 and PS5: opaque black body, same plastic as
+ * DVD standard — colour on these four liveries lives in the header bar,
+ * not the body, unlike Blu-ray standard's full-bleed blue. Sourced from
+ * reference/ photos, not guessed (docs/03-object-spec.md, Livery).
+ */
+.case__front-art--ps2,
+.case__front-art--ps3-late,
+.case__front-art--ps4,
+.case__front-art--ps5 {
+  background: #0a0a0a;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.45);
+}
+
+/*
+ * PS3's early design: full-bleed box art, same as the other three opaque
+ * liveries, not the case body's own colour showing through. A literally
+ * transparent front-art (an earlier version of this rule) let the tray and
+ * the disc sitting in it show straight through wherever the cover's own
+ * aspect ratio didn't reach the case's edges — the actual grey circle
+ * complaint, not the tint this rule used to carry before that. A real
+ * case doesn't have this problem: the printed insert is opaque, so the
+ * shell's own clearness only ever shows at its outer, unprinted edges,
+ * not through the middle of the art. Opaque black is what's actually
+ * behind that insert either way (Case.css's tray materials), so this
+ * matches the other four PlayStation liveries' own body colour rather
+ * than inventing a fifth one. The "clear" quality this design still needs
+ * lives in the strip below, not a translucent body.
+ */
+.case__front-art--ps3-early {
+  background: #0a0a0a;
+  box-shadow: none;
+}
+
+/*
+ * reference/lego-star-wars-ps3-old-design.webp shows the badge and the
+ * wordmark running down the case's real spine — tried there directly
+ * first (a true 3D face, rotateY(90deg) off .case__spine), which needed
+ * a Z-push to win a depth comparison against this very poster and, even
+ * working, still read as detached from the case rather than part of it.
+ * This flat strip down the poster's own left edge gets the same layout
+ * (badge at top, wordmark running the rest of the length) as a normal
+ * front-face element instead — position: absolute against
+ * case__front-art directly, the same way case__front-header sits above
+ * the poster, not a separate 3D plane competing for depth against it.
+ */
+.case__front-ps3-early-strip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  /*
+   * height: 100%, box-sizing: border-box — the strip's own top:0 already
+   * lands flush with the case (checked directly against .case__spine's
+   * own rendered top, the same near-left corner: within 2.5px, the same
+   * tolerance already accepted elsewhere in this file for keep-case
+   * alignment). What actually read as a gap was padding-top pushing the
+   * *badge* down from that already-flush edge, not the strip's own
+   * background falling short — border-box keeps that padding inside the
+   * 100% span instead of adding to it, which is what let the strip
+   * overflow case__front-art's own bottom edge before this.
+   *
+   * The apparent gap when checked against case__front-art's own
+   * getBoundingClientRect().top specifically is a different thing, not a
+   * bug: that box's reported top is its highest corner across its full
+   * width, and under this card's own yaw tilt that's the *far* corner,
+   * not the near-left one this strip actually sits against — comparing a
+   * narrow left-edge element's top against the full-width box's overall
+   * top will always show a gap that isn't really there once you check
+   * against the correct, same-corner reference instead.
+   */
+  height: 100%;
+  box-sizing: border-box;
+  width: calc(var(--front-w) * 0.13);
+  background: #0a0a0a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: calc(var(--front-w) * 0.015);
+}
+
+.case__front-ps3-early-badge {
+  width: calc(var(--front-w) * 0.09);
+  aspect-ratio: 1 / 1;
+  background: #8a8a8f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.case__front-ps3-early-badge-logo {
+  width: 65%;
+  height: auto;
+}
+
+/*
+ * The remaining strip length below the badge — flex: 1 in the strip's own
+ * column claims all the space the badge and its gap don't use, then
+ * centres case__front-ps3-early-wordmark-slot within *that* space (both
+ * axes, since the slot's own width is narrower than the strip's). Without
+ * this wrapper, the strip's own align-items/justify-content centre across
+ * its *full* length, badge included, which biases the visual centre
+ * upward — the badge's own height counts toward that centring even
+ * though it isn't part of what should be centred.
+ */
+.case__front-ps3-early-wordmark-area {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/*
+ * transform never participates in flex layout — a rotated flex item is
+ * still sized and positioned by its own *pre-rotation* box, then rotated
+ * around whatever slot that pre-rotation box got, so a 90deg rotation on
+ * a wide-and-short image renders a tall-and-narrow result that balloons
+ * out around a slot only ever sized for the short dimension. This wrapper
+ * is sized to the wordmark's real, *post*-rotation footprint (width and
+ * height swapped from the image's own pre-rotation numbers) so flex
+ * reserves the space the rotated image actually needs, with the image
+ * centred and rotated inside it rather than being the flex item directly
+ * — without this, the wordmark's own rendered bounding box balloons out
+ * around a flex slot barely sized for its pre-rotation height, spilling
+ * into the badge's own space above it (confirmed the first time this ran,
+ * on the spine).
+ */
+.case__front-ps3-early-wordmark-slot {
+  position: relative;
+  /* Swapped from .case__front-ps3-early-wordmark's own pre-rotation
+     numbers: 0.055 (height) becomes this slot's width, and 0.055 scaled
+     by the source SVG's own ~15.11:1 aspect ratio (1098.1 / 72.638)
+     becomes this slot's height. */
+  width: calc(var(--front-w) * 0.055);
+  height: calc(var(--front-w) * 0.831);
+  flex-shrink: 0;
+}
+
+/*
+ * The real "PLAYSTATION 3" vector (PS3_EARLY_LOGO_SRC, CaseFrontFace.tsx).
+ * Its own viewBox is very wide (1098 x 72.6, ~15:1) — natural for a
+ * horizontal wordmark, which is exactly what makes rotating it a clean
+ * fit for this strip: width:auto preserves that ratio off a single
+ * height, so the long axis becomes the vertical run after the rotate.
+ * Centred in case__front-ps3-early-wordmark-slot above (that wrapper is
+ * what flex actually lays out; this is positioned within it, not a flex
+ * item itself).
+ */
+.case__front-ps3-early-wordmark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: calc(var(--front-w) * 0.055);
+  width: auto;
+  transform: translate(-50%, -50%) rotate(-90deg);
+  /* Fill is #231f20 on the source file, not white — same recolour trick as
+     .case__front-platform-logo below, see that rule for why a filter. */
+  filter: brightness(0) invert(1);
+}
+
+/*
  * The poster's own box: inset from the full-bleed background by a small
  * even margin on three sides and a taller margin at the top, where the
  * header marks sit. --front-header-height and --front-inset are both 0%
@@ -355,8 +557,13 @@
  * The header zone: background colour showing through above the poster
  * inset, carrying the marks. overflow: visible on purpose — the ellipse
  * mark below is positioned to cross this box's own bottom edge and sit
- * on top of the poster, per docs/reference/blue-ray.png. Left-aligned
- * only, not space-between: nothing sits at the right of the header.
+ * on top of the poster, per docs/reference/blue-ray.png. box-sizing:
+ * border-box so a livery's own bottom rule (a real border, not a
+ * box-shadow) is included in --front-header-height rather than added on
+ * top of it — a box-shadow here rendered behind .case__front-poster,
+ * which paints after this element and covers it completely; confirmed
+ * directly in the browser (PS5's blue rule and PS3-late's red rule were
+ * both invisible until switched to a border).
  */
 .case__front-header {
   position: absolute;
@@ -364,6 +571,7 @@
   left: 0;
   right: 0;
   height: var(--front-header-height, 0%);
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   padding-inline: 5%;
@@ -395,6 +603,150 @@
 .case__front-mark-text sup {
   font-size: 0.55em;
   letter-spacing: normal;
+}
+
+/*
+ * The four PlayStation liveries with a header bar (not ps3-early) each
+ * colour it differently — this is where their livery colour actually
+ * lives, not the body. ps3-late's red rule and ps5's blue rule are real
+ * borders (see .case__front-header's own comment for why), which is why
+ * they're declared here rather than as a box-shadow.
+ */
+.case__front-art--ps2 .case__front-header {
+  background: #0a0a0a;
+}
+
+.case__front-art--ps3-late .case__front-header {
+  background: linear-gradient(180deg, #4a4a4e 0%, #1a1a1c 100%);
+  border-bottom: 2px solid #a41e1e;
+}
+
+.case__front-art--ps4 .case__front-header {
+  background: linear-gradient(100deg, #2e6fd9 0%, #1c4fa8 100%);
+}
+
+.case__front-art--ps5 .case__front-header {
+  background: #fff;
+  border-bottom: 2px solid #2f6fd9;
+}
+
+/*
+ * ps3-late, ps4 and ps5's own real vector wordmarks (PS3_LATE_LOGO_SRC,
+ * PS4_LOGO_SRC, PS5_LOGO_SRC — CaseFrontFace.tsx). Sized off height alone
+ * — width: auto keeps each mark's own real aspect ratio rather than a
+ * guessed one, same reasoning as .case__front-ps-family-logo below.
+ * margin-left isn't needed here the way that rule needs it: the header's
+ * flex justify-content stays at its default (flex-start), so these sit
+ * left-aligned automatically, matching every one of their own reference
+ * photos.
+ *
+ * Sized with real clearance above and below rather than to fill the
+ * header's own height — matched to the header at 0.116 (PS_LOGO_HEADER
+ * _HEIGHT_PCT's own 8%), all three had next to no margin left over
+ * (measured directly: header ~46px, mark ~43-45px), which read as
+ * overflowing the bar at both edges once the tilt's own projection was
+ * added on top. 0.085 leaves roughly a third of the header's height as
+ * clearance, split above and below by the header's own align-items:
+ * center.
+ */
+.case__front-platform-logo {
+  height: calc(var(--front-w) * 0.085);
+  width: auto;
+  flex-shrink: 0;
+}
+
+/*
+ * ps3-late's own mark reads heavier than ps4's or ps5's at the same box
+ * height — solid, bold strokes filling more of the same bounding box,
+ * where the other two carry thinner strokes and more of their own
+ * negative space — so the shared figure above still left it looking
+ * larger next to them. Knocked down further here, on top of the shared
+ * rule, rather than raising the other two to match: ps4 and ps5 already
+ * read correctly against their own reference photos at the shared size.
+ * A further 5% off that first reduction (0.068 to 0.065).
+ */
+.case__front-art--ps3-late .case__front-platform-logo {
+  height: calc(var(--front-w) * 0.065);
+}
+
+/*
+ * None of the three source files carry a white fill — ps3-logo-new.svg has
+ * no fill attribute at all (SVG's own default, black); ps4-logo.svg is
+ * style="fill:#333". An <img> can't be reached by an external `fill` or
+ * `color` rule (it's a replaced element, opaque to the page's own CSS), so
+ * recolouring means a bitmap-level filter instead: brightness(0) crushes
+ * every opaque pixel to black regardless of its original shade, then
+ * invert(1) flips that to white, leaving transparent pixels untouched.
+ * ps5-logo.svg is the exception — its own header is white
+ * (.case__front-art--ps5 .case__front-header above), so its default black
+ * fill is already correct and gets no filter at all. PS2's own vector
+ * (PS2_LOGO_SRC) is the same situation as ps3-logo-new.svg — no fill
+ * attribute at all, SVG default black (PS2_LOGO_SRC's own comment has the
+ * full finding on an unrelated, unreachable gradient left in the file).
+ */
+.case__front-art--ps2 .case__front-platform-logo,
+.case__front-art--ps3-late .case__front-platform-logo,
+.case__front-art--ps4 .case__front-platform-logo {
+  filter: brightness(0) invert(1);
+}
+
+/*
+ * Reserves the PlayStation Network mark's own footprint at the header's
+ * right end (CaseFrontFace.tsx's own comment has the full reasoning) —
+ * empty, no visible content, sized roughly to a small badge icon plus
+ * short text. margin-left: auto pushes it there without switching the
+ * whole row to space-between, same pattern as .case__front-ps-family-logo
+ * below — moved here from the row's start once the grey mark and the
+ * wordmark needed that corner for themselves.
+ */
+.case__front-psn-placeholder {
+  margin-left: auto;
+  width: calc(var(--front-w) * 0.1);
+  height: calc(var(--front-w) * 0.045);
+  flex-shrink: 0;
+}
+
+/*
+ * PS2's own reference photo: the four-colour PlayStation family mark at
+ * the header's right end. Real vector logo (PS_LOGO_SRC, CaseFrontFace.tsx)
+ * — checked for genuine paths and a transparent background before use, not
+ * drawn. margin-left: auto is what pushes it to the header's right end
+ * without switching the whole row to space-between.
+ */
+.case__front-ps-family-logo {
+  margin-left: auto;
+  /*
+   * Sized by height, not width, now that PS2 shares the same header
+   * height as ps3-late/ps4/ps5 (PS_LOGO_HEADER_HEIGHT_PCT) — matches
+   * .case__front-platform-logo's own clearance-first height directly, so
+   * this and the wordmark beside it sit at a comparable size and both
+   * clear the header's own top and bottom edges the same way. width:auto
+   * keeps its real proportions (612.092 x 560.54 per the SVG's own
+   * viewBox, ~1.09/1).
+   */
+  height: calc(var(--front-w) * 0.075);
+  width: auto;
+  flex-shrink: 0;
+}
+
+/*
+ * reference/black-ops-2-ps3.jpg: the grey PlayStation family mark sits in
+ * the header's top-left corner, PS3_GREY_LOGO_SRC's own caveats aside (a
+ * 32x32 favicon-sized PNG — expect it to look soft next to the crisp
+ * vector wordmark beside it). First child in the row now (CaseFrontFace
+ * .tsx), so no margin-left is needed to reach the corner — the header's
+ * own padding-inline handles that the same way it already does for every
+ * other livery's first mark. margin-right opens the gap before the
+ * wordmark that follows it. Enlarged from its first pass (0.058 to
+ * 0.08) — reads clearly bigger without threatening the header's own
+ * clearance, since .case__front-platform-logo's own height (0.085) is
+ * still the tallest thing in the row.
+ */
+.case__front-ps3-grey-mark {
+  height: calc(var(--front-w) * 0.08);
+  width: auto;
+  flex-shrink: 0;
+  margin-right: calc(var(--front-w) * 0.02);
 }
 
 /*
