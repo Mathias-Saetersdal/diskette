@@ -559,6 +559,7 @@ export const games: Entry[] = [
     livery: "ps5",
     cover: "/assets/game/elden-ring/cover.png",
     disc: "/assets/game/elden-ring/disc.png",
+    discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
@@ -574,6 +575,7 @@ export const games: Entry[] = [
     livery: "ps3-late",
     cover: "/assets/game/call-of-duty-black-ops-ii/cover.png",
     disc: "/assets/game/call-of-duty-black-ops-ii/disc.png",
+    discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
@@ -589,6 +591,7 @@ export const games: Entry[] = [
     livery: "ps2",
     cover: "/assets/game/sly-3-honor-among-thieves/cover.png",
     disc: "/assets/game/sly-3-honor-among-thieves/disc.png",
+    discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
@@ -604,6 +607,7 @@ export const games: Entry[] = [
     livery: "ps3-early",
     cover: "/assets/game/lego-star-wars-the-complete-saga/cover.png",
     disc: "/assets/game/lego-star-wars-the-complete-saga/disc.png",
+    discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
@@ -619,6 +623,7 @@ export const games: Entry[] = [
     livery: "ps4",
     cover: "/assets/game/call-of-duty-black-ops-iii/cover.png",
     disc: "/assets/game/call-of-duty-black-ops-iii/disc.png",
+    discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
@@ -634,6 +639,7 @@ export const games: Entry[] = [
     livery: "ps5",
     cover: "/assets/game/elden-ring-nightreign/cover.png",
     disc: "/assets/game/elden-ring-nightreign/disc.png",
+    discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
@@ -649,6 +655,7 @@ export const games: Entry[] = [
     livery: "ps4",
     cover: "/assets/game/dark-souls-iii/cover.png",
     disc: "/assets/game/dark-souls-iii/disc.png",
+    discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {
@@ -681,6 +688,7 @@ export const games: Entry[] = [
     livery: "ps5",
     cover: "/assets/game/grand-theft-auto-v/cover.png",
     disc: "/assets/game/grand-theft-auto-v/disc.png",
+    discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {

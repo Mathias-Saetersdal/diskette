@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react'
+import { useState, type CSSProperties } from 'react'
 import type { Livery } from '../data/lists'
 import type { SupportedCaseFormat } from './caseGeometry'
 import './Case.css'
@@ -97,6 +97,15 @@ interface CaseFrontFaceProps {
  * its children) live in Case.css, shared rather than duplicated.
  */
 export default function CaseFrontFace({ coverSrc, coverAlt, caseFormat, livery }: CaseFrontFaceProps) {
+  // Games are the first list built with no assets fetched yet (every
+  // cover 404s until they're sourced by hand — docs/05-build-plan.md).
+  // Nothing else in the codebase handles a broken image src, so a missing
+  // cover would otherwise show the browser's own broken-image icon inside
+  // the poster box. Hiding the <img> on error instead lets the livery's
+  // own front-art background colour (already there for every livery, not
+  // new) show through the poster's own space — no placeholder art
+  // invented, matching the data rule against substituting one.
+  const [coverFailed, setCoverFailed] = useState(false)
   // "standard" livery isn't one look — for films it's whatever the
   // natural, unbranded case for that format is (docs/03-object-spec.md,
   // Livery). The five PlayStation liveries are format-independent (case
@@ -154,7 +163,9 @@ export default function CaseFrontFace({ coverSrc, coverAlt, caseFormat, livery }
        * only the top differs, per --front-header-height.
        */}
       <div className="case__front-poster">
-        <img src={coverSrc} alt={coverAlt} loading="lazy" />
+        {!coverFailed && (
+          <img src={coverSrc} alt={coverAlt} loading="lazy" onError={() => setCoverFailed(true)} />
+        )}
       </div>
       {hasHeader && (
         <div className="case__front-header" aria-hidden="true">

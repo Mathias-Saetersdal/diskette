@@ -32,13 +32,3 @@
 .burned-row .disc {
   width: min(24vmin, 260px);
 }
-
-/* Temporary: livery preview row, closed cases only, so a plain wrap is
-   enough — no swung-open leaf to reserve space for. */
-.livery-preview {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 32px;
-}
