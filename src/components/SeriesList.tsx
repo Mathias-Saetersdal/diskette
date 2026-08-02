@@ -7,5 +7,5 @@ import { series } from '../data/lists'
 // of the ten films, and KeepCaseCard's own props and render already come
 // from generic Entry fields with no film-specific branching.
 export default function SeriesList() {
-  return <MediaList entries={series} CardComponent={KeepCaseCard} ariaLabel="Series, all time" />
+  return <MediaList entries={series} CardComponent={KeepCaseCard} ariaLabel="Series, all time" heading="Serier" />
 }

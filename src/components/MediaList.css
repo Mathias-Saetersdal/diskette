@@ -6,6 +6,16 @@
   width: 100%;
 }
 
+/* Same treatment as .media-card__rank (MediaCard.css) — quiet, not a
+   visual anchor competing with the objects themselves. */
+.media-list-heading {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  font-size: 0.75rem;
+  color: #888;
+  line-height: 1;
+}
+
 .media-list {
   --list-case-h: clamp(95px, 9vw, 180px);
   display: flex;

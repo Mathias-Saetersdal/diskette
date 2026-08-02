@@ -712,3 +712,8 @@ export const games: Entry[] = [
 export const allEntries: Entry[] = [...films, ...series, ...albums, ...games];
 
 export const lists = { films, series, albums, games } as const;
+
+// Site-level intro copy, written by Matti. Same placeholder convention as
+// note above: scripts/check-notes.ts fails the build while this still
+// starts with TODO, so it cannot ship unwritten by accident.
+export const introText = "TODO: Her skriver jeg introen.";

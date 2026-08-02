@@ -13,6 +13,7 @@ interface MediaListProps {
   entries: Entry[]
   CardComponent: ComponentType<MediaCardProps>
   ariaLabel: string
+  heading: string
 }
 
 /**
@@ -27,12 +28,13 @@ interface MediaListProps {
  * only thing that conveys rank here. No badge, no number beyond the rank
  * printed by the card itself: open decision 5 resolved as position only.
  */
-export default function MediaList({ entries, CardComponent, ariaLabel }: MediaListProps) {
+export default function MediaList({ entries, CardComponent, ariaLabel, heading }: MediaListProps) {
   const [activeId, setActiveId] = useState<string | null>(null)
   const activeEntry = entries.find((entry) => entry.id === activeId) ?? null
 
   return (
     <section className="media-list-section" aria-label={ariaLabel}>
+      <h2 className="media-list-heading">{heading}</h2>
       <div className="media-list">
         {entries.map((entry) => (
           <CardComponent

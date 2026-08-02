@@ -1,3 +1,4 @@
+import Intro from './components/Intro'
 import FilmsList from './components/FilmsList'
 import SeriesList from './components/SeriesList'
 import AlbumsList from './components/AlbumsList'
@@ -13,6 +14,7 @@ const burnedEntries = [...albums, ...games].filter(
 function App() {
   return (
     <main className="stage">
+      <Intro />
       <FilmsList />
       <SeriesList />
       <AlbumsList />

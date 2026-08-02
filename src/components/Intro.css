@@ -1,0 +1,14 @@
+/* Same body-text treatment as .media-list-detail (MediaList.css) — plain
+   copy, no card or list mechanics involved. */
+.intro {
+  max-width: 640px;
+  margin-inline: auto;
+  text-align: center;
+  color: #ddd;
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+.intro p {
+  margin: 0;
+}
