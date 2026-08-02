@@ -255,6 +255,7 @@ export const series: Entry[] = [
     livery: "standard",
     cover: "/assets/series/avatar-the-last-airbender/cover.png",
     disc: "/assets/series/avatar-the-last-airbender/disc.png",
+    discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
   {

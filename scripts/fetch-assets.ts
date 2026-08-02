@@ -443,16 +443,26 @@ async function resolveFilmOrSeries(entry: Entry, credits: Credits): Promise<Resu
   }
 
   if (!entry.discSource) {
-    const discs = await fanartMovieDisc(match.id)
-    const chosen = pickBestDisc(discs, entry.case)
     let accepted = false
-    if (chosen) {
-      const buf = await downloadBuffer(chosen.url)
-      if (buf && (await hasRealTransparency(buf))) {
-        await saveRetailDisc(buf, path.join(dir, 'disc.png'))
-        discTier = 'retail'
-        accepted = true
-        assetCredits.disc = { source: 'fanart.tv', url: chosen.url, licence: 'fanart.tv, attribution required' }
+    // fanart.tv has no disc category for TV at all - confirmed directly
+    // against its /v3/tv schema, which has no moviedisc equivalent for any
+    // show, not "thin coverage" for less popular ones. /v3/movies/{id}
+    // does exist and returns a false positive if a TMDB TV id happens to
+    // collide with an unrelated TMDB movie id in fanart's own numbering:
+    // that's exactly how Avatar: The Last Airbender ended up with a
+    // Zatoichi Blu-ray label. Series skip the lookup entirely and resolve
+    // straight to generated; only films query fanart.tv.
+    if (entry.medium === 'film') {
+      const discs = await fanartMovieDisc(match.id)
+      const chosen = pickBestDisc(discs, entry.case)
+      if (chosen) {
+        const buf = await downloadBuffer(chosen.url)
+        if (buf && (await hasRealTransparency(buf))) {
+          await saveRetailDisc(buf, path.join(dir, 'disc.png'))
+          discTier = 'retail'
+          accepted = true
+          assetCredits.disc = { source: 'fanart.tv', url: chosen.url, licence: 'fanart.tv, attribution required' }
+        }
       }
     }
     if (!accepted) {

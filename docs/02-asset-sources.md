@@ -18,7 +18,7 @@ The third tier is also a style option, not only a fallback. See `03-object-spec.
 Posters, backdrops, metadata, search. Free API key, registration required. The free tier is non-commercial and requires attribution. Poster art is the front of the case.
 
 **fanart.tv**
-The disc source. Its `moviedisc` category holds scans and digital recreations of retail DVD, Blu-ray, 3D and UHD Blu-ray discs, served as transparent PNGs. Records are keyed by IMDB or TMDB id, so it joins cleanly to TMDB.
+The disc source for films. Its `moviedisc` category holds scans and digital recreations of retail DVD, Blu-ray, 3D and UHD Blu-ray discs, served as transparent PNGs. Records are keyed by IMDB or TMDB id, so it joins cleanly to TMDB.
 
 - Endpoint shape: `https://webservice.fanart.tv/v3/movies/{tmdb_or_imdb_id}?api_key=KEY`
 - Use v3.2. It returns image dimensions, which matters for picking the highest-resolution disc.
@@ -26,7 +26,7 @@ The disc source. Its `moviedisc` category holds scans and digital recreations of
 - Appending `/preview` to an image URL returns a 200px version. Use it while prototyping so I am not pulling full-size PNGs on every reload.
 - Rate limited with a token bucket and exponential backoff. Fetch in a script with delays, not in a loop from the browser.
 
-Coverage: strong for well-known films, thin for obscure ones and for TV. Expect to generate discs for several series entries.
+Coverage: strong for well-known films, thin for obscure ones. Films only — fanart.tv's `/v3/tv/{thetvdb_id}` endpoint exists (posters, banners, backgrounds, logos) but has no `moviedisc` equivalent in its schema, for any show. This isn't thin coverage that might improve, it's a category the TV side of the API doesn't have. Series always resolve to generated; the fetch script never queries fanart.tv for them. Do not query `/v3/movies/{id}` with a TMDB TV id as a workaround — TMDB's film and TV id numbering are separate, so a TV id can land on a real but unrelated film in fanart's movie catalogue and return a false-positive match, which is exactly what happened once before this line was corrected.
 
 ## Albums
 
