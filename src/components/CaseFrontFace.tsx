@@ -43,16 +43,29 @@ export const BLURAY_LOGO_SRC = '/assets/marks/blu-ray-disc-white.png'
 // is still unusable (no real alpha channel); PS3-late's badge stays
 // styled text until a working one is sourced.
 export const PS_LOGO_SRC = '/assets/marks/playstation-logo.svg'
-// Three more real vectors, checked the same way before use: genuine <path>
+// Two more real vectors, checked the same way before use: genuine <path>
 // data (not an <image> wrapping a raster), no background rect, and every
 // corner pixel of a rasterised check came back alpha:0 — confirmed with
-// sharp, not assumed. All three carry a hardcoded dark fill (ps3-logo-new
-// none at all, defaulting to SVG's own black; ps4-logo style="fill:#333")
-// rather than white, which .case__front-platform-logo's filter corrects —
-// see that rule for why a CSS filter rather than editing the SVG.
+// sharp, not assumed. Both carry a hardcoded dark fill (ps3-logo-new none
+// at all, defaulting to SVG's own black) rather than white, which the
+// filter rules below correct — see those rules for why a CSS filter
+// rather than editing the SVG.
 export const PS3_LATE_LOGO_SRC = '/assets/marks/ps3-logo-new.svg'
-export const PS4_LOGO_SRC = '/assets/marks/ps4-logo.svg'
-export const PS5_LOGO_SRC = '/assets/marks/ps5-logo.svg'
+// ps4-logo.svg and ps5-logo.svg (the files these constants used to point
+// at) turned out to be full lockups — the PlayStation button icon and the
+// platform wordmark baked into one image, confirmed by rendering both and
+// looking, not by reading the path data. Every place in this codebase
+// that used either file was already drawing its own separate PS_LOGO_SRC
+// mark alongside it, so the icon rendered twice. reference/ps4-cropped.png
+// and reference/ps5-cropped.png are the same wordmarks with the icon
+// cropped out, copied into public/assets/marks unmodified — these
+// constants point there now. Both are opaque PNGs, not transparent SVGs
+// like the rest of this file's marks (no alpha channel, solid white
+// background baked in — confirmed with sharp) — see Case.css's and
+// FlatCase.css's own mix-blend-mode rules for how that's handled without
+// editing the files.
+export const PS4_WORDMARK_SRC = '/assets/marks/ps4-wordmark.png'
+export const PS5_WORDMARK_SRC = '/assets/marks/ps5-wordmark.png'
 // ps3-logo-old.svg: the full "PLAYSTATION 3" wordmark, not the shorter "PS3"
 // mark above — ps3-early's own reference photo carries this one on the
 // spine, not the front (Case.tsx renders it, not this file). Same
@@ -116,6 +129,7 @@ export default function CaseFrontFace({ coverSrc, coverAlt, caseFormat, livery }
   const isStandardDvd = livery === 'standard' && caseFormat === 'dvd'
   const isPsLivery = livery !== 'standard'
   const isPs3Early = livery === 'ps3-early'
+  const isPs4OrPs5 = livery === 'ps4' || livery === 'ps5'
   // ps3-early has no front header at all — reference/lego-star-wars-ps3-old
   // -design.webp's top edge (the thin Blu-ray-blue strip this used to
   // stand in for) turned out not worth simplifying onto the front this
@@ -144,6 +158,13 @@ export default function CaseFrontFace({ coverSrc, coverAlt, caseFormat, livery }
 
   const style = {
     '--front-header-height': `${headerHeightPct}%`,
+    // Same figure as --front-header-height, as a bare number rather than a
+    // percentage string — Case.css's ps4/ps5 lockup sizing needs to
+    // multiply it against the front face's own true height (--front-w /
+    // --front-face-ratio) to size off the header's real height rather
+    // than an unrelated dimension, and calc() can't pull the numeric part
+    // back out of a "8%" string.
+    '--header-height-frac': headerHeightPct / 100,
     // Full bleed below the header for every PlayStation livery and DVD
     // standard — every reference photo runs the box art to the case's own
     // left, right and bottom edges with no margin. Only standard Blu-ray
@@ -187,18 +208,23 @@ export default function CaseFrontFace({ coverSrc, coverAlt, caseFormat, livery }
                 BLU-RAY<sup>TM</sup> DISC
               </span>
             </span>
+          ) : isPs4OrPs5 ? (
+            // PS4_WORDMARK_SRC/PS5_WORDMARK_SRC no longer carry the PS
+            // icon (see the export comment above) — this mark is what
+            // used to be baked into that same file, now drawn alongside
+            // it instead of twice.
+            <span className={`case__front-platform-lockup case__front-platform-lockup--${livery}`}>
+              <img className="case__front-platform-mark" src={PS_LOGO_SRC} alt="" />
+              <img
+                className="case__front-platform-wordmark"
+                src={livery === 'ps4' ? PS4_WORDMARK_SRC : PS5_WORDMARK_SRC}
+                alt=""
+              />
+            </span>
           ) : (
             <img
               className={`case__front-platform-logo case__front-platform-logo--${livery}`}
-              src={
-                livery === 'ps2'
-                  ? PS2_LOGO_SRC
-                  : livery === 'ps3-late'
-                    ? PS3_LATE_LOGO_SRC
-                    : livery === 'ps4'
-                      ? PS4_LOGO_SRC
-                      : PS5_LOGO_SRC
-              }
+              src={livery === 'ps2' ? PS2_LOGO_SRC : PS3_LATE_LOGO_SRC}
               alt=""
             />
           )}

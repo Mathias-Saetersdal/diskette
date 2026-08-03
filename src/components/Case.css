@@ -631,23 +631,28 @@
 }
 
 /*
- * ps3-late, ps4 and ps5's own real vector wordmarks (PS3_LATE_LOGO_SRC,
- * PS4_LOGO_SRC, PS5_LOGO_SRC — CaseFrontFace.tsx). Sized off height alone
- * — width: auto keeps each mark's own real aspect ratio rather than a
- * guessed one, same reasoning as .case__front-ps-family-logo below.
- * margin-left isn't needed here the way that rule needs it: the header's
- * flex justify-content stays at its default (flex-start), so these sit
- * left-aligned automatically, matching every one of their own reference
- * photos.
+ * ps3-late and ps2's own real vector wordmarks (PS3_LATE_LOGO_SRC,
+ * PS2_LOGO_SRC — CaseFrontFace.tsx). ps4 and ps5 used to share this too,
+ * but their own source files turned out to be full lockups (icon baked
+ * in alongside the wordmark) rather than a wordmark alone — they moved to
+ * their own .case__front-platform-lockup/-mark/-wordmark rules below,
+ * sized off the header's real height instead of --front-w, once that
+ * became a second mark to draw rather than the whole logo.
+ *
+ * Sized off height alone — width: auto keeps each mark's own real aspect
+ * ratio rather than a guessed one, same reasoning as
+ * .case__front-ps-family-logo below. margin-left isn't needed here the
+ * way that rule needs it: the header's flex justify-content stays at its
+ * default (flex-start), so these sit left-aligned automatically, matching
+ * every one of their own reference photos.
  *
  * Sized with real clearance above and below rather than to fill the
  * header's own height — matched to the header at 0.116 (PS_LOGO_HEADER
- * _HEIGHT_PCT's own 8%), all three had next to no margin left over
- * (measured directly: header ~46px, mark ~43-45px), which read as
- * overflowing the bar at both edges once the tilt's own projection was
- * added on top. 0.085 leaves roughly a third of the header's height as
- * clearance, split above and below by the header's own align-items:
- * center.
+ * _HEIGHT_PCT's own 8%), both had next to no margin left over (measured
+ * directly: header ~46px, mark ~43-45px), which read as overflowing the
+ * bar at both edges once the tilt's own projection was added on top.
+ * 0.085 leaves roughly a third of the header's height as clearance, split
+ * above and below by the header's own align-items: center.
  */
 .case__front-platform-logo {
   height: calc(var(--front-w) * 0.085);
@@ -670,24 +675,100 @@
 }
 
 /*
- * None of the three source files carry a white fill — ps3-logo-new.svg has
- * no fill attribute at all (SVG's own default, black); ps4-logo.svg is
- * style="fill:#333". An <img> can't be reached by an external `fill` or
+ * Neither source file carries a white fill — ps3-logo-new.svg has no fill
+ * attribute at all (SVG's own default, black); PS2_LOGO_SRC is the same
+ * situation (no fill attribute, SVG default black — that constant's own
+ * comment has the full finding on an unrelated, unreachable gradient left
+ * in the file). An <img> can't be reached by an external `fill` or
  * `color` rule (it's a replaced element, opaque to the page's own CSS), so
  * recolouring means a bitmap-level filter instead: brightness(0) crushes
  * every opaque pixel to black regardless of its original shade, then
  * invert(1) flips that to white, leaving transparent pixels untouched.
- * ps5-logo.svg is the exception — its own header is white
- * (.case__front-art--ps5 .case__front-header above), so its default black
- * fill is already correct and gets no filter at all. PS2's own vector
- * (PS2_LOGO_SRC) is the same situation as ps3-logo-new.svg — no fill
- * attribute at all, SVG default black (PS2_LOGO_SRC's own comment has the
- * full finding on an unrelated, unreachable gradient left in the file).
  */
 .case__front-art--ps2 .case__front-platform-logo,
-.case__front-art--ps3-late .case__front-platform-logo,
-.case__front-art--ps4 .case__front-platform-logo {
+.case__front-art--ps3-late .case__front-platform-logo {
   filter: brightness(0) invert(1);
+}
+
+/*
+ * ps4 and ps5's logo lockup: the PS mark (PS_LOGO_SRC, upright) and the
+ * platform wordmark (PS4_WORDMARK_SRC/PS5_WORDMARK_SRC, cropped to text
+ * only — CaseFrontFace.tsx's own export comment has the full story on why
+ * a second file exists here now) side by side, sized off the header's own
+ * real height rather than --front-w: --header-height-frac (CaseFrontFace.
+ * tsx) is the header-height-as-fraction-of-front-height companion to
+ * --front-header-height, needed here since calc() can't pull a bare
+ * number back out of a percentage string. (--front-w / --front-face-ratio)
+ * is the front face's own true height; multiplying that by
+ * --header-height-frac gives the header's real on-screen height in the
+ * same unit as --front-w, which the old --front-w-only formula never
+ * referenced at all — that mismatch, not any one tuned number, was why
+ * the mark clipped and the wordmark overran once the header's actual
+ * height didn't match what 0.085 * --front-w happened to produce.
+ *
+ * Left-aligned, same as every other livery's own header content — the
+ * header's own justify-content stays at its default (flex-start), no
+ * override needed here.
+ */
+.case__front-platform-lockup {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--front-w) * 0.012);
+}
+
+.case__front-platform-mark,
+.case__front-platform-wordmark {
+  height: calc((var(--front-w) / var(--front-face-ratio)) * var(--header-height-frac, 0.08) * 0.6);
+  width: auto;
+  flex-shrink: 0;
+}
+
+/*
+ * ps5: PS5_WORDMARK_SRC is an opaque PNG (white background, dark text —
+ * CaseFrontFace.tsx's own export comment), not a transparent SVG like
+ * every other mark here, so a plain filter can't make its background
+ * disappear the way it recolours a transparent one — brightness(0) would
+ * crush the background and the text to the same black, losing the shape
+ * entirely. mix-blend-mode: multiply instead: a white source pixel
+ * multiplies against whatever is behind it and reads as that colour (the
+ * white header, so effectively invisible), while the dark text pixels
+ * multiply toward black regardless of the backdrop and stay visible. No
+ * filter needed on top — the source's own dark grey already reads as
+ * near-black against white. PS_LOGO_SRC (the mark) is a real transparent
+ * vector but carries its own multi-colour PlayStation button-symbol fill
+ * (confirmed by rendering it, not assumed) rather than a single tone — a
+ * real PS5 case's own mark is flat black, so brightness(0) forces that
+ * regardless of the source's colours.
+ */
+.case__front-art--ps5 .case__front-platform-mark {
+  filter: brightness(0);
+}
+
+.case__front-art--ps5 .case__front-platform-wordmark {
+  mix-blend-mode: multiply;
+}
+
+/*
+ * ps4: same opaque-PNG problem as ps5's wordmark, but the target colour
+ * is white text on this livery's own blue header, not black on white, so
+ * multiply alone won't do it (multiplying toward a blue backdrop doesn't
+ * produce white). filter: invert(1) first turns the white background
+ * black and the dark text white (still fully opaque, invert doesn't
+ * touch alpha); mix-blend-mode: screen then reads that inverted black as
+ * transparent (screen of black-on-anything = the backdrop, i.e. the blue
+ * header shows through) while the inverted white text stays opaque white
+ * regardless of backdrop. PS_LOGO_SRC (the mark) keeps the existing
+ * brightness(0) invert(1) treatment already used elsewhere in this file
+ * for forcing a mark white — no blend-mode needed there since it's a
+ * genuinely transparent SVG.
+ */
+.case__front-art--ps4 .case__front-platform-mark {
+  filter: brightness(0) invert(1);
+}
+
+.case__front-art--ps4 .case__front-platform-wordmark {
+  filter: invert(1);
+  mix-blend-mode: screen;
 }
 
 /*

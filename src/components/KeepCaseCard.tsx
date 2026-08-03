@@ -16,11 +16,9 @@ interface KeepCaseCardProps {
  * The switch between the two representations a keep-case entry can have:
  * FlatCase (closed, no 3D subtree) for every entry that isn't the list's
  * one active one, Case (the full interactive object) for the one that is.
- * Films and series both use it — both are dvd/bluray keep-case geometry,
- * the exact restriction Case itself is scoped to (docs/04-lists.md). Games
- * are not: PS5 and Switch aren't keep cases, so a future game card needs
- * its own component rather than reusing this one under a name that would
- * no longer describe what it renders. Which one is active lives in
+ * Films, series and games all use it — Case itself is scoped to
+ * dvd/bluray/ps5 (caseGeometry.ts's SupportedCaseFormat), which every
+ * entry in all three lists falls under. Which one is active lives in
  * MediaList, not here — this only owns which Case props come from the
  * entry, plus the rank number that sits below whichever representation is
  * showing. The enlarge/open/close choreography itself lives in
@@ -59,6 +57,8 @@ export default function KeepCaseCard({ entry, active, onActivate, onDeactivate }
           livery={entry.livery}
           onClick={onActivate}
           buttonRef={flatButtonRef}
+          restTilt={entry.medium === 'game'}
+          spineTone={entry.spineTone}
         />
       )}
       <span className="media-card__rank">{entry.rank}</span>

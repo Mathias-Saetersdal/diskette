@@ -53,6 +53,13 @@ export interface Entry {
   livery: Livery;
   cover: string;
   spine?: string;
+  /**
+   * Games row only. The printed insert's dominant tone as a plain CSS
+   * colour, hand-picked against each cover rather than sampled — no
+   * canvas per instance (FlatCase.tsx). Absent falls back to no visible
+   * insert band on the spine.
+   */
+  spineTone?: string;
   back?: string;
   /** Absent for a burned entry: there is no disc PNG, ever, for those. */
   disc?: string;
@@ -558,6 +565,9 @@ export const games: Entry[] = [
     case: "ps5",
     livery: "ps5",
     cover: "/assets/game/elden-ring/cover.png",
+    // Hand-picked against the cover: muted gold-bronze, off the ring and
+    // the title lettering. Not sampled.
+    spineTone: "#7a5a2e",
     disc: "/assets/game/elden-ring/disc.png",
     discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
@@ -574,6 +584,8 @@ export const games: Entry[] = [
     case: "bluray",
     livery: "ps3-late",
     cover: "/assets/game/call-of-duty-black-ops-ii/cover.png",
+    // Hand-picked: the monochrome cover's neutral grey. Not sampled.
+    spineTone: "#3a3a3a",
     disc: "/assets/game/call-of-duty-black-ops-ii/disc.png",
     discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
@@ -590,6 +602,8 @@ export const games: Entry[] = [
     case: "dvd",
     livery: "ps2",
     cover: "/assets/game/sly-3-honor-among-thieves/cover.png",
+    // Hand-picked: the comic-art night sky's dominant blue. Not sampled.
+    spineTone: "#2a4d8f",
     disc: "/assets/game/sly-3-honor-among-thieves/disc.png",
     discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
@@ -606,6 +620,8 @@ export const games: Entry[] = [
     case: "bluray",
     livery: "ps3-early",
     cover: "/assets/game/lego-star-wars-the-complete-saga/cover.png",
+    // Hand-picked: the gold "LEGO STAR WARS" title lettering. Not sampled.
+    spineTone: "#c9a227",
     disc: "/assets/game/lego-star-wars-the-complete-saga/disc.png",
     discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
@@ -622,6 +638,9 @@ export const games: Entry[] = [
     case: "bluray",
     livery: "ps4",
     cover: "/assets/game/call-of-duty-black-ops-iii/cover.png",
+    // Hand-picked: the dark, warm ash/fire tones behind the soldier. Not
+    // sampled.
+    spineTone: "#332a24",
     disc: "/assets/game/call-of-duty-black-ops-iii/disc.png",
     discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
@@ -638,6 +657,9 @@ export const games: Entry[] = [
     case: "ps5",
     livery: "ps5",
     cover: "/assets/game/elden-ring-nightreign/cover.png",
+    // Hand-picked: the cold, pale moonlit blue behind the figure. Not
+    // sampled.
+    spineTone: "#5a7a9e",
     disc: "/assets/game/elden-ring-nightreign/disc.png",
     discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
@@ -654,6 +676,9 @@ export const games: Entry[] = [
     case: "bluray",
     livery: "ps4",
     cover: "/assets/game/dark-souls-iii/cover.png",
+    // Hand-picked: the amber-brown fire and ash around the knight. Not
+    // sampled.
+    spineTone: "#7a5a26",
     disc: "/assets/game/dark-souls-iii/disc.png",
     discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
@@ -671,6 +696,8 @@ export const games: Entry[] = [
     case: "bluray",
     livery: "ps4",
     cover: "/assets/game/rocket-league/cover.png",
+    // Hand-picked: the dominant cyan-blue racing streak. Not sampled.
+    spineTone: "#1a9fd9",
     discSource: "burned",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },
@@ -687,6 +714,9 @@ export const games: Entry[] = [
     case: "ps5",
     livery: "ps5",
     cover: "/assets/game/grand-theft-auto-v/cover.png",
+    // Hand-picked: a warm tan-orange averaged off the mosaic panels. Not
+    // sampled.
+    spineTone: "#a8763f",
     disc: "/assets/game/grand-theft-auto-v/disc.png",
     discSource: "generated",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
@@ -704,6 +734,8 @@ export const games: Entry[] = [
     case: "ps5",
     livery: "ps5",
     cover: "/assets/game/cuphead/cover.png",
+    // Hand-picked: the dominant bright yellow background. Not sampled.
+    spineTone: "#f4c542",
     discSource: "burned",
     note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
   },

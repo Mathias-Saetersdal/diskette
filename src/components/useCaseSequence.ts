@@ -14,7 +14,21 @@ const HINGE_DURATION_MS = 600
 interface UseCaseSequenceArgs {
   active: boolean
   onDeactivate: () => void
+  /**
+   * Games row only (GameCard passes true; every other caller omits it,
+   * getting today's exact instant swap). Delays showCase's own rising edge
+   * by SHOW_CASE_DELAY_MS after activation, instead of it flipping true in
+   * the same render active does — see the comment on showCase below for
+   * why the games row specifically needs that gap and no other list does.
+   */
+  delayShowCase?: boolean
 }
+
+// Shorter than the enlarge effect's own 50ms activation delay, so the full
+// case has already mounted and painted its closed pose by the time that
+// timer fires and the enlarge actually starts — the ordering this delay
+// exists to guarantee, not just an arbitrary small number.
+const SHOW_CASE_DELAY_MS = 30
 
 /**
  * The enlarge/open/close choreography shared by every card that swaps
@@ -27,9 +41,13 @@ interface UseCaseSequenceArgs {
  * referenced Case specifically, only open/enlarged/closing state and
  * focus handoff between two refs the caller owns.
  */
-export function useCaseSequence({ active, onDeactivate }: UseCaseSequenceArgs) {
+export function useCaseSequence({ active, onDeactivate, delayShowCase = false }: UseCaseSequenceArgs) {
   const [enlarged, setEnlarged] = useState(false)
   const [open, setOpen] = useState(false)
+  // Whether the swap from the flat placeholder to the full case has
+  // actually fired yet, on the activation side only. Separate from
+  // showCase itself (below), which also has to answer for closing.
+  const [showCaseNow, setShowCaseNow] = useState(false)
   // Tracks the close sequence's own lifetime, separately from open and
   // enlarged: those two reach their end state (false) the instant each
   // step is triggered, not when it's finished playing. Deriving showCase
@@ -62,6 +80,18 @@ export function useCaseSequence({ active, onDeactivate }: UseCaseSequenceArgs) {
     setEnlarged(false)
     setClosing(false)
   }
+  // showCaseNow's rising edge: instant for every caller except a delayed
+  // one under real motion — which is every caller today except the games
+  // row (delayShowCase defaults to false) and every caller once reduced
+  // motion is on (there's no gap to hold open at all, matching the cuts
+  // above). The one case that's genuinely NOT instant — delayShowCase
+  // true, real motion — is left to the effect below instead.
+  if (active && (!delayShowCase || prefersReducedMotion) && !showCaseNow) setShowCaseNow(true)
+  // Falling edge, unconditional: closing (below) is what keeps the full
+  // case mounted through the reverse animation's real duration regardless
+  // of what this flag does, so this only has to answer "has the forward
+  // swap begun," not "how long should the case stay around afterward."
+  if (!active && showCaseNow) setShowCaseNow(false)
   // Reactivating cancels any close sequence still in flight, so a quick
   // reopen doesn't leave closing stuck true — which would otherwise block
   // the "closing begins" cut below from ever firing again on a later,
@@ -94,6 +124,20 @@ export function useCaseSequence({ active, onDeactivate }: UseCaseSequenceArgs) {
     const enlargeId = setTimeout(() => setEnlarged(true), 50)
     return () => clearTimeout(enlargeId)
   }, [active, prefersReducedMotion])
+
+  // The one path the cut above leaves alone: delayShowCase true, real
+  // motion. Holds the flat placeholder mounted a beat longer so the full
+  // case has mounted and taken its closed pose — this timer fires before
+  // the enlarge effect's own 50ms one does — rather than the two swapping
+  // in the same render activation happens in. A reopen or a deactivation
+  // before this fires cleans it up via the dependency change below; the
+  // falling-edge cut above already reset showCaseNow synchronously in that
+  // case, so there's nothing left for a late timer to do anyway.
+  useEffect(() => {
+    if (!active || !delayShowCase || prefersReducedMotion) return
+    const showCaseId = setTimeout(() => setShowCaseNow(true), SHOW_CASE_DELAY_MS)
+    return () => clearTimeout(showCaseId)
+  }, [active, delayShowCase, prefersReducedMotion])
 
   useEffect(() => {
     if (!active || !enlarged || prefersReducedMotion) return
@@ -129,11 +173,13 @@ export function useCaseSequence({ active, onDeactivate }: UseCaseSequenceArgs) {
     return () => clearTimeout(finishId)
   }, [active, open, enlarged, closing, prefersReducedMotion])
 
-  // Stays mounted as the full case for as long as it's the active entry,
-  // or for as long as closing is still running its full sequence — not
-  // just until open/enlarged first reach false, which happens the instant
-  // each step is triggered rather than when it's finished playing.
-  const showCase = active || closing
+  // Stays mounted as the full case for as long as it's the active entry
+  // and showCaseNow has actually risen (immediately, unless delayShowCase
+  // held it back a beat), or for as long as closing is still running its
+  // full sequence — not just until open/enlarged first reach false, which
+  // happens the instant each step is triggered rather than when it's
+  // finished playing.
+  const showCase = showCaseNow || closing
 
   // Focus follows the actual swap, in both directions — not the intent to
   // swap. Without this, activating a card drops focus to <body> the

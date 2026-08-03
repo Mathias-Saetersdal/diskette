@@ -12,11 +12,475 @@
   height: calc(var(--list-case-h, 140px) * var(--height-scale, 1));
   overflow: hidden;
   /* A plain contact shadow, not filter: drop-shadow — cheaper to
-     composite, which matters with several of these mounted at once. */
+     composite, which matters with several of these mounted at once.
+     Games override this to none below: their shadow moves to
+     .flat-case-shadow, a separate, unrotated element. */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.45);
 }
 
 .flat-case:focus-visible {
   outline: 2px solid #fff;
   outline-offset: 3px;
+}
+
+/*
+ * Games row only (FlatCase's restTilt prop, set from entry.medium ===
+ * 'game' in KeepCaseCard). A real spine, not a gradient painted over the
+ * front artwork.
+ *
+ * Four elements:
+ *
+ *   .flat-case-stage — sized to fit BOTH faces side by side before the
+ *     fold: front width, plus the spine's own width alongside it
+ *     (--spine-ratio * front width). Same shape as caseMechanism.css's
+ *     own .case box (width: depth + front-w). Untransformed, so the
+ *     shadow below has a stable, unrotated place to sit.
+ *
+ *   .flat-case-wrap — the only new rotation on the whole assembly:
+ *     transform-origin at its own left edge (the spine's outer edge) and
+ *     transform: rotateY(-36deg), transform-style: preserve-3d. flex, not
+ *     absolute positioning, lays the two faces out side by side pre-fold.
+ *
+ *   .flat-case-spine — flex:none, width from --spine-ratio (FlatCase.tsx).
+ *     transform-origin: right center; transform: rotateY(90deg) — the
+ *     exact technique caseMechanism.css's own .case__spine uses: pivot at
+ *     the edge glued to the front face (this element's own right edge,
+ *     the corner), so rotating swings the outer (left) edge back into
+ *     depth rather than sideways off the corner.
+ *
+ *   .flat-case — unchanged base rule above. Its own box-shadow turns off
+ *     in this path only; flex:none here so it can't be shrunk to fit.
+ *
+ * At the row's own rotateY(-36deg) rest tilt, a spine sized against a
+ * 140px-wide bluray front face (--spine-ratio 0.093) projects to
+ * 140 * 0.093 * sin(36deg) ≈ 7.6px on screen.
+ */
+.flat-case-stage {
+  position: relative;
+  --front-w: calc(var(--list-case-h, 140px) * var(--height-scale, 1) * var(--front-face-ratio));
+  width: calc(var(--front-w) * (1 + var(--spine-ratio, 0)));
+  height: calc(var(--list-case-h, 140px) * var(--height-scale, 1));
+  /*
+   * Decorative only, transform only — scale doesn't affect this element's
+   * own box (MediaList.css's row layout, the sibling rank number below it
+   * in MediaCard.css) so nothing else in the row reflows. :hover and
+   * :focus-visible both, so tabbing to a card gets the same feedback a
+   * mouse hovering it does — see the button's own :focus-visible ring
+   * above, which this doesn't replace, only adds to. Never the only route
+   * into the open interaction: the button underneath is a real, always-
+   * clickable/focusable control regardless of hover state.
+   */
+  transition: transform 180ms ease-out;
+}
+
+.flat-case-stage:hover,
+.flat-case-stage:has(.flat-case:focus-visible) {
+  transform: scale(1.12);
+  /* Above its row neighbours once scaled, so the enlarged edge doesn't
+     sit under the next card's own box. */
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flat-case-stage {
+    transition: none;
+  }
+
+  .flat-case-stage:hover,
+  .flat-case-stage:has(.flat-case:focus-visible) {
+    transform: none;
+  }
+}
+
+/*
+ * Set once GameCard's own showCase (useCaseSequence) has risen and the
+ * full Case has taken over elsewhere (portaled out of the scrolling row —
+ * GamesList.tsx). visibility, not display: none, so this element keeps
+ * its layout box — the row doesn't reflow and the rank number below it
+ * (MediaCard.css) doesn't shift — while dropping out of view, hit-testing
+ * and the tab order, the same three things display: none would remove,
+ * without the layout cost. Mirrors the delay on the way in
+ * (useCaseSequence's showCaseNow): this card was visible a moment into
+ * its own opening animation, and disappears the instant the full case
+ * genuinely takes its place, not before.
+ */
+.flat-case-stage--hidden {
+  visibility: hidden;
+}
+
+.flat-case-wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  transform-origin: left center;
+  transform: rotateY(-36deg);
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flat-case-wrap {
+    transition: none;
+  }
+}
+
+/*
+ * The spine's fallback material: --spine-body alone, full height, one flat
+ * colour or gradient. Liveries whose spine has more than one zone
+ * (standard's printed insert; ps5/ps4's plastic caps + header + insert;
+ * ps2's header, insert and bottom block; ps3-late's badge-area tint)
+ * override background entirely rather than layering onto this — their
+ * zones don't share this rule's simple single-colour shape, so overriding
+ * is clearer than parameterising one gradient to fit every case.
+ *
+ * --spine-h mirrors --spine-w (both defined here): .flat-case-stage's own
+ * height formula, repeated so the wordmark below can bound its own
+ * rotated length against the spine's height, not just its width.
+ */
+.flat-case-spine {
+  position: relative;
+  flex: none;
+  --spine-w: calc(var(--front-w) * var(--spine-ratio, 0));
+  --spine-h: calc(var(--list-case-h, 140px) * var(--height-scale, 1));
+  width: var(--spine-w);
+  height: 100%;
+  transform-origin: right center;
+  transform: rotateY(90deg);
+  background: var(--spine-body, #0a0a0a);
+}
+
+/*
+ * standard (bluray) — Case.css's own .case--bluray-livery .case__spine
+ * gradient, the real Case component's translucent-blue spine, plus the
+ * printed insert (spineTone, hand-picked per entry in lists.ts — no
+ * canvas) from 14-92% of the height: a bluray spine really is printed in
+ * the film's own colours, unlike a console case's fixed livery.
+ */
+.flat-case-spine--standard {
+  --spine-body: linear-gradient(180deg, #0a5e97 0%, #084877 100%);
+  background:
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      transparent 14%,
+      var(--spine-insert, transparent) 14%,
+      var(--spine-insert, transparent) 92%,
+      transparent 92%,
+      transparent 100%
+    ),
+    var(--spine-body);
+}
+
+/*
+ * ps5 and ps4 — a real case spine here is four zones, not one flat
+ * colour: the case's own translucent-blue plastic shows at both ends as
+ * a cap (0-1.5%, 98.5-100% — half the thickness of an earlier pass, the
+ * same generic case-blue standard uses above, not either livery's own
+ * header colour), a platform header (1.5-20%, white for ps5 per Case.
+ * css's own .case__front-art--ps5 .case__front-header, blue for ps4 per
+ * that file's ps4 equivalent) with the logo lockup on it, then the
+ * game's own printed insert (spineTone, hand-picked per entry in
+ * lists.ts — no canvas) filling the majority, 20-98.5%. The header's own
+ * start and the insert's own end both moved with the cap's shrink (was
+ * 3%/97%) so nothing opens a gap between zones.
+ */
+.flat-case-spine--ps5 {
+  --spine-body: #0a5e97;
+  background: linear-gradient(
+    to bottom,
+    #0a5e97 0%,
+    #0a5e97 1.5%,
+    #fff 1.5%,
+    #fff 20%,
+    var(--spine-insert, #fff) 20%,
+    var(--spine-insert, #fff) 98.5%,
+    #0a5e97 98.5%,
+    #0a5e97 100%
+  );
+}
+
+.flat-case-spine--ps4 {
+  --spine-body: #0a5e97;
+  background: linear-gradient(
+    to bottom,
+    #0a5e97 0%,
+    #0a5e97 1.5%,
+    #1c4fa8 1.5%,
+    #1c4fa8 20%,
+    var(--spine-insert, #1c4fa8) 20%,
+    var(--spine-insert, #1c4fa8) 98.5%,
+    #0a5e97 98.5%,
+    #0a5e97 100%
+  );
+}
+
+/*
+ * ps3-late (Call of Duty: Black Ops II) — black, full height, no band and
+ * no printed insert: this livery's spine is the fixed console livery.
+ * The bottom ~10% gets a marginally lighter tint, not a separate colour —
+ * where a rating badge sits on the real case, per its own reference
+ * photo, without rendering the badge itself as a shape or the rating as
+ * type (item 4: dark bands, not glyphs). Gets the same mark+wordmark
+ * lockup as ps5/ps4 now (below) — no separate header colour needed for
+ * that, since this livery's body is already black top to bottom.
+ */
+.flat-case-spine--ps3-late {
+  --spine-body: #0a0a0a;
+  background: linear-gradient(to bottom, transparent 0%, transparent 90%, #141414 90%, #141414 100%), var(--spine-body);
+}
+
+/*
+ * ps3-early (Lego Star Wars: The Complete Saga) — a distinct livery from
+ * ps3-late, not a variant, resolved off the same entry.livery value
+ * ('ps3-early' vs 'ps3-late' — Livery already carries both, no new
+ * resolution mechanism). Silver-grey across the top ~12%, black for the
+ * rest, per the reference photo (reference/lego-star-wars-ps3-old-
+ * design.webp) — a soft-edged transition rather than a hard cut, matching
+ * how a real translucent shell's own moulded plastic reads.
+ */
+.flat-case-spine--ps3-early {
+  --spine-body: linear-gradient(180deg, #8a8a90 0%, #8a8a90 10%, #0a0a0a 14%, #0a0a0a 100%);
+}
+
+/*
+ * ps2 (Sly 3) — the one console livery here where the spine really does
+ * carry the game's own art (reference/sly3-ps2.jpg): a black header
+ * across the top ~24% (with its own white block for the PlayStation mark
+ * in the first ~6%), the printed insert (spineTone) from 24-86%, then a
+ * dark bottom block from 86-97% and a thin, marginally lighter band from
+ * 97-100% — a product-code area and the band below it, per the reference,
+ * rendered as flat dark zones rather than type (item 4).
+ *
+ * White block shrunk from an earlier 9% to 6%: the header's own total
+ * height (24%) is fixed, and the wordmark below needed more of it than a
+ * 9%-white/15%-black split left. PS_LOGO_SRC (the mark) only needs ~4% at
+ * its own 0.42-of-spine-width size (612x560.54 viewBox, close to square)
+ * — 6% still clears it with margin. See the wordmark's own comment below
+ * for why 15% of the black remainder is the number that matters.
+ */
+.flat-case-spine--ps2 {
+  --spine-body: #12141f;
+  background: linear-gradient(
+    to bottom,
+    #fff 0%,
+    #fff 6%,
+    #0a0a0a 6%,
+    #0a0a0a 24%,
+    var(--spine-insert, var(--spine-body)) 24%,
+    var(--spine-insert, var(--spine-body)) 86%,
+    #08080c 86%,
+    #08080c 97%,
+    #1c1c1f 97%,
+    #1c1c1f 100%
+  );
+}
+
+/*
+ * The PS logo lockup. Two separate elements rather than one composited/
+ * rastered lockup image: a rotated raster goes soft as the card scales
+ * and becomes a file to maintain, where two plain <img>s rotated in CSS
+ * stay exactly as sharp as their own source SVGs at any size, and cost
+ * nothing extra to mount across ten of these (no canvas, no per-instance
+ * work). FlatCase.tsx only renders whichever of the two exists for a
+ * given livery — ps3-early gets neither (its own marks are on the front
+ * face, not the spine, matching Case.tsx's real spine), standard gets
+ * neither (no lockup asset exists for a plain bluray spine).
+ *
+ * Both sized off --spine-w/--spine-h (defined above), not px, so they
+ * hold their proportion to the spine at every card size — including
+ * illegibly small, which is correct at the low end of this row's own
+ * size range rather than something to compensate for by scaling up past
+ * the actual proportion.
+ *
+ * ps4/ps5 mark rendering twice turned out to be two separate causes, both
+ * fixed now. The real one: the old PS4_LOGO_SRC/PS5_LOGO_SRC files
+ * (CaseFrontFace.tsx's export comment has the discovery) turned out to be
+ * full lockups — the PS button icon baked into the same file as the
+ * wordmark — so drawing this element's own separate mark above alongside
+ * that wordmark drew the icon twice. FlatCase.tsx now points the
+ * wordmark at PS4_WORDMARK_SRC/PS5_WORDMARK_SRC, the same files cropped
+ * to text only. The wordmark's width stays bounded (calc against
+ * --spine-h) rather than auto for a second, independent reason: at a
+ * fixed thickness, even the cropped file's own aspect ratio produces an
+ * on-screen (post-rotation) length past the 3-20% header's own remaining
+ * space below the mark, which read as the same overlap even with the
+ * duplicate icon gone. The length here is deliberately constrained to
+ * the space actually available, at the cost of a mild stretch away from
+ * the source file's own proportions.
+ */
+.flat-case-spine-mark {
+  position: absolute;
+  top: 6%;
+  left: 50%;
+  /* 55% of the spine's own width — upright, so this is literally the
+     dimension that has to fit inside the spine's narrow footprint. */
+  width: calc(var(--spine-w) * 0.55);
+  height: auto;
+  transform: translateX(-50%);
+}
+
+.flat-case-spine-wordmark {
+  position: absolute;
+  top: 14.5%;
+  left: 50%;
+  /* Thickness: same 55%-of-spine-width fraction as the mark, applied to
+     this element's pre-rotation height, which becomes the on-screen
+     horizontal thickness once rotated. */
+  height: calc(var(--spine-w) * 0.55);
+  /* Length: bounded against spine height, not the source file's own
+     aspect ratio — see the comment above. 9% fits inside the mark's own
+     sub-zone (3-9%) and this element's (9-20%) with a small margin. */
+  width: calc(var(--spine-h) * 0.09);
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+/* ps3-late: no mark at all on this livery's spine (FlatCase.tsx never
+   renders .flat-case-spine-mark for it) — just the wordmark, using the
+   shared default position/size above unchanged (top: 14.5%, 0.55-of-
+   spine-width thickness, bounded length). Same case format as ps4
+   (bluray), so the same header proportions apply directly with no
+   override needed. */
+
+/* ps2: the mark sits centred in its own white block (0-6% of the
+   height), the wordmark in the black remainder of the header (6-24%).
+   Mark keeps the shared 0.42 fraction. Wordmark width is bounded (calc
+   against --spine-h), not auto: PS2_LOGO_SRC's own natural shape is
+   ~370x71.5 (~5.2:1) — at a fixed 0.42-of-spine-width thickness, auto
+   length worked out to roughly 23% of the spine's own height, well past
+   the black remainder it needed to fit inside (15% at the old 9% white
+   block, still only 18% at the new 6% one), which is what read as the
+   wordmark clipped down to just the "2". 15% fits inside the 18%
+   available with a small margin either side — the fix is the same
+   bounded-length technique ps4/ps5's wordmark already uses, not the
+   white-block shrink alone. */
+.flat-case-spine--ps2 .flat-case-spine-mark {
+  top: 3%;
+  width: calc(var(--spine-w) * 0.42);
+}
+
+.flat-case-spine--ps2 .flat-case-spine-wordmark {
+  top: 15%;
+  height: calc(var(--spine-w) * 0.42);
+  width: calc(var(--spine-h) * 0.15);
+}
+
+/* ps5 mark: PS_LOGO_SRC is a real transparent vector but carries its own
+   multi-colour PlayStation button-symbol fill (confirmed by rendering
+   it), not a single tone — a real PS5 case's own mark is flat black, so
+   brightness(0) forces that regardless of the source's colours; no
+   invert needed since black is already the target against this white
+   header. */
+.flat-case-spine--ps5 .flat-case-spine-mark {
+  filter: brightness(0);
+}
+
+/* ps5 wordmark: PS5_WORDMARK_SRC is an opaque PNG (white background,
+   dark text — CaseFrontFace.tsx's own export comment), not a transparent
+   SVG like the mark above, so brightness(0) would crush the background
+   and the text to the same black instead of clearing it. mix-blend-mode:
+   multiply instead: a white source pixel multiplies against whatever is
+   behind it (this spine's own white header) and reads as that colour,
+   effectively invisible, while the dark text pixels multiply toward
+   black regardless of the backdrop and stay visible. Same technique
+   Case.css uses for this asset on the front header. */
+.flat-case-spine--ps5 .flat-case-spine-wordmark {
+  mix-blend-mode: multiply;
+}
+
+/* ps4 mark: PS_LOGO_SRC's own four-colour fill (see the ps5 comment
+   above) and #333 default don't read against this spine's blue header,
+   so it gets the same brightness(0) invert(1) recolour Case.css's own
+   front-header mark uses. */
+.flat-case-spine--ps4 .flat-case-spine-mark {
+  filter: brightness(0) invert(1);
+}
+
+/* ps4 wordmark: same opaque-PNG problem as ps5's, but the target is
+   white text on this livery's own blue header, not black on white, so
+   multiply alone won't produce it. filter: invert(1) turns the white
+   background black and the dark text white (still fully opaque); mix-
+   blend-mode: screen then reads that inverted black as transparent
+   (screen of black-on-anything = the backdrop, i.e. the blue header
+   shows through) while the inverted white text stays opaque regardless
+   of backdrop. Same technique Case.css uses for this asset on the front
+   header. */
+.flat-case-spine--ps4 .flat-case-spine-wordmark {
+  filter: invert(1);
+  mix-blend-mode: screen;
+}
+
+/* ps3-late wordmark: PS3_LATE_LOGO_SRC has no fill attribute at all (SVG
+   default black) — a genuine transparent SVG, not an opaque PNG like
+   ps4/ps5's wordmarks, so the plain filter here is enough on its own, no
+   mix-blend-mode needed. */
+.flat-case-spine--ps3-late .flat-case-spine-wordmark {
+  filter: brightness(0) invert(1);
+}
+
+/* ps2: PS_LOGO_SRC (the mark) is the real four-colour PlayStation family
+   mark already used unfiltered on this livery's own front header — kept
+   in its own natural colour here too, sitting on the white block for
+   contrast, per "the colour PlayStation mark". PS2_LOGO_SRC (the
+   wordmark) defaults to black (dead, unreachable gradient classes in the
+   source file — CaseFrontFace.tsx's own sourcing note) and sits on the
+   black header remainder, so it needs forcing white same as the others. */
+.flat-case-spine--ps2 .flat-case-spine-wordmark {
+  filter: brightness(0) invert(1);
+}
+
+/*
+ * The edge highlight: a curved plastic edge catches light as a narrow
+ * line, not a wide soft one. Inset from the spine's own right edge (the
+ * corner glued to the front face) rather than sitting on it — the corner
+ * seam below is what marks the join itself.
+ */
+.flat-case-spine::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 10%;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.85), transparent);
+  pointer-events: none;
+}
+
+.flat-case-wrap .flat-case {
+  flex: none;
+  box-shadow: none;
+}
+
+/*
+ * The corner seam: a hairline lighter line at the front face's own left
+ * edge, exactly where it's glued to the spine's right edge (both sit at
+ * the same point in space once folded). Real plastic wraps that corner
+ * rather than meeting at a hard 90 — this is the front-face half of that
+ * read; the spine's own edge highlight above is the other half.
+ */
+.flat-case-wrap .flat-case::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.4));
+  pointer-events: none;
+  z-index: 1;
+}
+
+/*
+ * The contact shadow: soft, wide, low-opacity, offset right and down —
+ * toward the back edge under this row's upper-left light and the wrap's
+ * own rotateY(-36deg) (left edge forward, right edge receding).
+ */
+.flat-case-shadow {
+  position: absolute;
+  left: 4%;
+  right: -22%;
+  bottom: -10%;
+  height: 22%;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.32) 0%, rgba(0, 0, 0, 0) 75%);
+  filter: blur(10px);
+  pointer-events: none;
 }
