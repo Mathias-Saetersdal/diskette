@@ -57,7 +57,11 @@ export default function KeepCaseCard({ entry, active, onActivate, onDeactivate }
           livery={entry.livery}
           onClick={onActivate}
           buttonRef={flatButtonRef}
-          restTilt={entry.medium === 'game'}
+          // Games (every entry) and DVD-format films (build plan stage
+          // 2): both get a real spine. Blu-ray-format films don't yet —
+          // their own front-face livery already reads as a case without
+          // one, unlike DVD standard's plain full-bleed poster.
+          restTilt={entry.medium === 'game' || (entry.medium === 'film' && entry.case === 'dvd')}
           spineTone={entry.spineTone}
         />
       )}

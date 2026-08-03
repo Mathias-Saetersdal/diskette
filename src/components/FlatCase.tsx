@@ -20,20 +20,22 @@ interface FlatCaseProps {
   /** Focused when this placeholder remounts after the case it replaced closes. */
   buttonRef?: RefObject<HTMLButtonElement | null>
   /**
-   * Games row only (KeepCaseCard passes entry.medium === 'game'). Adds a
-   * real spine element beside this same button, plus the resting shelf
-   * tilt and contact shadow around both — films and series pass nothing
-   * here and render exactly as before, same single <button> root, same
-   * style prop on it. See the FlatCase.css comment above .flat-case-wrap
-   * for which element carries which transform.
+   * Games (every entry) and DVD-format films (KeepCaseCard: entry.medium
+   * === 'game' || (entry.medium === 'film' && entry.case === 'dvd')) get
+   * a real spine element beside this same button, plus the resting shelf
+   * tilt and contact shadow around both — every other entry passes
+   * nothing here and renders exactly as before, same single <button>
+   * root, same style prop on it. See the FlatCase.css comment above
+   * .flat-case-wrap for which element carries which transform.
    */
   restTilt?: boolean
   /**
    * The printed insert's dominant tone (a CSS colour). Hand-picked per
    * entry in lists.ts, no canvas sampling. Visible on bluray (standard),
-   * ps2, ps4 and ps5 spines — FlatCase.css restricts --spine-insert to
-   * those four liveries. ps3-late and ps3-early have no insert at all:
-   * their spines are the fixed platform livery regardless of title.
+   * dvd (standard), ps2, ps4 and ps5 spines — FlatCase.css restricts
+   * --spine-insert to those liveries. ps3-late and ps3-early have no
+   * insert at all: their spines are the fixed platform livery regardless
+   * of title.
    */
   spineTone?: string
   /**
@@ -58,14 +60,18 @@ interface FlatCaseProps {
  * measurement, no filter — mounting ten (or forty) of these stays cheap
  * because none of that runs here, restTilt included.
  *
- * restTilt (games row only) adds a real spine face beside this button
- * inside a rotated, preserve-3d wrapper. The spine's colour comes from
- * livery (a CSS modifier class, read the same way CaseFrontFace already
- * reads livery for the front — ps3-early and ps3-late are two distinct
- * livery values already, not one "ps3" resolved some other way, so no new
- * resolution mechanism is needed here either). Logo marks are plain <img>
- * elements positioned and rotated in CSS, not a rendered/composited file —
- * see FlatCase.css for per-livery placement and which liveries get one.
+ * restTilt adds a real spine face beside this button inside a rotated,
+ * preserve-3d wrapper. The spine's colour comes from livery (a CSS
+ * modifier class, read the same way CaseFrontFace already reads livery
+ * for the front — ps3-early and ps3-late are two distinct livery values
+ * already, not one "ps3" resolved some other way, so no new resolution
+ * mechanism is needed here either), except "standard," which pairs with
+ * caseFormat first (spineLivery below) since a DVD spine and a Blu-ray
+ * spine are different materials under that one livery name — same split
+ * CaseFrontFace.tsx already makes for the front face. Logo marks are
+ * plain <img> elements positioned and rotated in CSS, not a rendered/
+ * composited file — see FlatCase.css for per-livery placement and which
+ * liveries get one.
  */
 export default function FlatCase({
   title,
@@ -108,6 +114,15 @@ export default function FlatCase({
 
   if (!restTilt) return button
 
+  // "standard" livery isn't one look — CaseFrontFace.tsx's own
+  // isStandardDvd/isStandardBluray split (same comment there) pairs it
+  // with caseFormat for the same reason: a DVD spine (dvd) and a Blu-ray
+  // spine (.flat-case-spine--standard's own hardcoded blue) are different
+  // materials, not one rule covering both. Every PlayStation livery is
+  // format-independent, same as the front face, so this only branches
+  // when livery is genuinely "standard."
+  const spineLivery = livery === 'standard' && caseFormat === 'dvd' ? 'dvd' : livery
+
   // The upright mark, PS_LOGO_SRC for every livery that gets one. ps3-late
   // does not: no separate PS button mark on this livery's spine, only the
   // wordmark below. ps3-early gets neither: its own marks render on the
@@ -140,7 +155,7 @@ export default function FlatCase({
   return (
     <div className={`flat-case-stage${hidden ? ' flat-case-stage--hidden' : ''}`} style={style}>
       <div className="flat-case-wrap">
-        <div className={`flat-case-spine flat-case-spine--${livery}`} aria-hidden="true">
+        <div className={`flat-case-spine flat-case-spine--${spineLivery}`} aria-hidden="true">
           {markSrc && <img className="flat-case-spine-mark" src={markSrc} alt="" />}
           {wordmarkSrc && <img className="flat-case-spine-wordmark" src={wordmarkSrc} alt="" />}
         </div>

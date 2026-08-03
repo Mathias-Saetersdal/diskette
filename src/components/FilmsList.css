@@ -1,0 +1,20 @@
+/*
+ * Perspective lives on the row container (.media-list, rendered inside
+ * MediaList), not per case — same reasoning and the same figures as
+ * GamesList.css's own identical rule. Reached through this wrapper's
+ * descendant selector rather than a prop threaded into MediaList itself,
+ * so that shared component — and every list beside this one that renders
+ * through it — stays untouched.
+ */
+.films-list {
+  /*
+   * Matches .media-list-section's own width: 100% (MediaList.css) so that
+   * rule resolves against the same box .stage used to give it directly.
+   */
+  width: 100%;
+}
+
+.films-list .media-list {
+  perspective: 1400px;
+  perspective-origin: 50% 40%;
+}

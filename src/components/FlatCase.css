@@ -172,6 +172,28 @@
 }
 
 /*
+ * dvd (standard, films) — .flat-case-spine--standard above is bluray's
+ * own hardcoded blue; FlatCase.tsx's spineLivery routes a DVD-format
+ * "standard" entry here instead, the same caseFormat pairing
+ * CaseFrontFace.tsx's own isStandardDvd already makes for the front face.
+ * A DVD spine has no case-specific header the way a console livery does:
+ * a fixed black band at the top ~8% (a real case's own dark plastic top
+ * edge, where a DVD logo would print — no such asset exists in
+ * public/assets/marks and none is added for this, so the band is colour
+ * alone), then the film's own printed insert (spineTone, hand-picked per
+ * entry in lists.ts — no canvas) for the remaining height, full bleed
+ * rather than the bluray rule's own top/bottom margin. #4a4a4a is the
+ * fallback for an entry with no spineTone yet, not a design colour —
+ * KeepCaseCard's own films currently have none set (docs/04-lists.md
+ * doesn't carry the field), so every dvd-format film renders this grey
+ * until picked by eye against its cover.
+ */
+.flat-case-spine--dvd {
+  --spine-body: var(--spine-insert, #4a4a4a);
+  background: linear-gradient(to bottom, #0a0a0a 0%, #0a0a0a 8%, var(--spine-body) 8%, var(--spine-body) 100%);
+}
+
+/*
  * ps5 and ps4 — a real case spine here is four zones, not one flat
  * colour: the case's own translucent-blue plastic shows at both ends as
  * a cap (0-1.5%, 98.5-100% — half the thickness of an earlier pass, the
