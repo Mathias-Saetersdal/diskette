@@ -39,6 +39,15 @@ interface FlatCaseProps {
    */
   spineTone?: string
   /**
+   * Overrides caseFormat's own depthMm for the spine-ratio calculation
+   * only — front face size and height stay the real format's geometry.
+   * Series only (KeepCaseCard): a multi-disc box set's spine is wider
+   * than a single dvd case's, not a new case shape or a change to
+   * caseGeometry.ts's own table, which every other dvd entry (PS2 games,
+   * DVD-format films) still reads unmodified.
+   */
+  spineWidthMm?: number
+  /**
    * Games row only. True once the active Case has taken over (rendered
    * elsewhere — GameCard portals it out of the scrolling row, see
    * GamesList.tsx). Keeps this element mounted, at its own full size, so
@@ -83,6 +92,7 @@ export default function FlatCase({
   buttonRef,
   restTilt = false,
   spineTone,
+  spineWidthMm,
   hidden = false,
 }: FlatCaseProps) {
   const { heightMm, widthMm, depthMm } = CASE_GEOMETRY[caseFormat]
@@ -95,7 +105,7 @@ export default function FlatCase({
     // hardcoded figure per format: games mix dvd, bluray and ps5
     // geometry (docs/04-lists.md), so this reads whichever caseFormat
     // this entry actually has rather than assuming one.
-    '--spine-ratio': depthMm / widthMm,
+    '--spine-ratio': (spineWidthMm ?? depthMm) / widthMm,
     ...(spineTone ? { '--spine-insert': spineTone } : {}),
   } as CSSProperties
 

@@ -5,6 +5,13 @@ import type { SupportedCaseFormat } from './caseGeometry'
 import type { Entry } from '../data/lists'
 import './MediaCard.css'
 
+// A series is a multi-disc box set, not a single case — its spine reads
+// roughly double a single dvd case's own 14mm depth (caseGeometry.ts).
+// No box set was measured for this; "roughly double" is the build plan's
+// own figure, not derived from a real spec entry the way caseGeometry.ts's
+// other numbers are.
+const SERIES_SPINE_WIDTH_MM = 28
+
 interface KeepCaseCardProps {
   entry: Entry
   active: boolean
@@ -57,12 +64,18 @@ export default function KeepCaseCard({ entry, active, onActivate, onDeactivate }
           livery={entry.livery}
           onClick={onActivate}
           buttonRef={flatButtonRef}
-          // Games (every entry) and DVD-format films (build plan stage
-          // 2): both get a real spine. Blu-ray-format films don't yet —
-          // their own front-face livery already reads as a case without
-          // one, unlike DVD standard's plain full-bleed poster.
-          restTilt={entry.medium === 'game' || (entry.medium === 'film' && entry.case === 'dvd')}
+          // Games (every entry), DVD-format films (build plan stage 2)
+          // and series (every entry, stage 3) get a real spine. Blu-ray
+          // -format films don't yet — their own front-face livery already
+          // reads as a case without one, unlike DVD standard's plain
+          // full-bleed poster.
+          restTilt={
+            entry.medium === 'game' ||
+            (entry.medium === 'film' && entry.case === 'dvd') ||
+            entry.medium === 'series'
+          }
           spineTone={entry.spineTone}
+          spineWidthMm={entry.medium === 'series' ? SERIES_SPINE_WIDTH_MM : undefined}
         />
       )}
       <span className="media-card__rank">{entry.rank}</span>
