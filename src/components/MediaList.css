@@ -6,6 +6,71 @@
   width: 100%;
 }
 
+/*
+ * Heading and row's shared wrapper (build plan stage 3, MediaList.tsx) —
+ * carries the same column/centre/gap layout .media-list-section used to
+ * apply directly to all three children, now split so the floor band
+ * below can cover exactly this wrapper's own box (heading plus row)
+ * without reaching the detail panel, which stays .media-list-section's
+ * own direct child, outside the band.
+ */
+.media-list-band {
+  /*
+   * position: relative alone doesn't create a new stacking context — only
+   * paired with a real z-index (0, not auto) does. Without one, the
+   * ::before below (position: absolute, so it stacks by z-index rather
+   * than DOM order at all) painted *after* the plain, unpositioned
+   * heading regardless of coming first in markup — the CSS stacking
+   * order for z-index: auto positioned descendants is a whole category
+   * above unpositioned block content, DOM order only breaking ties
+   * within the same category. The row's own cards survived that same
+   * bug by accident (their own inner elements are themselves positioned,
+   * landing in the ::before's own category and winning there by DOM
+   * order) — the heading had nothing of its own to win with. z-index: 0
+   * here contains the ::before's own z-index: -1 to this element's own
+   * stacking context instead of escaping to the page's.
+   */
+  position: relative;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+}
+
+/*
+ * The floor: a separate layer behind the heading and row, not either of
+ * their own backgrounds — mask-image below fades this element's own
+ * paint at each horizontal end, and applying that same mask to
+ * .media-list-band directly would fade the actual cards near the row's
+ * own edges along with it, not just what they're sitting on.
+ *
+ * Darker at the top, lighter at the bottom, reading as a surface
+ * catching light from below rather than a flat page background with
+ * objects pasted on it — same idea as before, weaker in both directions
+ * now: build plan stage 3 called the original strength (#141414 to
+ * #202020, a 12-point spread around the page's own #1a1a1a/rgb(26,26,26))
+ * a "hard-edged rectangle" that "reads as a stripe." #181818 to #1e1e1e
+ * (rgb 24,24,24 to rgb 30,30,30) halves that spread, and the mask below
+ * fades both horizontal ends to nothing rather than cutting — together,
+ * barely perceptible rather than a distinct panel, which is the target.
+ * pointer-events: none since this is decoration sitting behind real
+ * interactive content, not something a click or a tab stop should ever
+ * land on. z-index: -1, explicit rather than relying on DOM order — see
+ * .media-list-band's own comment above for why DOM order alone doesn't
+ * reliably put a positioned layer behind unpositioned content.
+ */
+.media-list-band::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(to bottom, #181818 0%, #1e1e1e 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
+  pointer-events: none;
+}
+
 /* Same treatment as .media-card__rank (MediaCard.css) — quiet, not a
    visual anchor competing with the objects themselves. */
 .media-list-heading {
@@ -58,8 +123,8 @@
    * rather than being cancelled back out of it. .stage's 56px gap
    * between sections and .media-list-section's own 24px heading-to-row/
    * row-to-detail gaps stay exactly what they're declared as; the page
-   * simply reads taller as a result, which is the point. Stage 7's floor
-   * gradient reads against this same clearance.
+   * simply reads taller as a result, which is the point. .media-list-band's
+   * own floor (below) reads against this same clearance.
    *
    * Also covers a second, older need without a second value: the games
    * row's own hover/focus zoom (FlatCase.css's .flat-case-stage:hover,
@@ -85,21 +150,6 @@
    * (driven by the :has() rule's own transition) animated correctly.
    */
   transition: padding-top 1.5s ease-in-out;
-  /*
-   * The floor stage 6's padding made room for: darker at the band's own
-   * top edge, lighter where the objects actually sit (every card is
-   * bottom-aligned — .media-list .media-card below), reading as a
-   * surface catching light from below rather than a flat page
-   * background with objects pasted on it. Both stops stay close to
-   * .stage's own #1a1a1a (App.css) — a few points of lightness either
-   * side, not a visibly separate panel — because a floor that reads as
-   * its own box is the wrong amount of this effect, per the brief.
-   * Background only: the existing per-case contact shadows (FlatCase.css's
-   * .flat-case-shadow, FlatJewelCase.css's .flat-jewel-case-shadow,
-   * Case.css's own) paint on top of this unchanged, and nothing here
-   * adds a second one.
-   */
-  background: linear-gradient(to bottom, #141414 0%, #202020 100%);
 }
 
 /* --height-scale is Case.tsx's own per-format inline style; JewelCase.tsx
@@ -146,13 +196,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .media-list,
-  .media-list:has(.case[data-enlarged='true']),
-  .media-list:has(.jewel-case[data-enlarged='true']) {
-    transition: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
   .media-list:has(.case[data-enlarged='true']),
   .media-list:has(.jewel-case[data-enlarged='true']) {
     transition: none;

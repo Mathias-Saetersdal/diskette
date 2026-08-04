@@ -34,17 +34,28 @@ export default function MediaList({ entries, CardComponent, ariaLabel, heading }
 
   return (
     <section className="media-list-section" aria-label={ariaLabel}>
-      <h2 className="media-list-heading">{heading}</h2>
-      <div className="media-list">
-        {entries.map((entry) => (
-          <CardComponent
-            key={entry.id}
-            entry={entry}
-            active={entry.id === activeId}
-            onActivate={() => setActiveId(entry.id)}
-            onDeactivate={() => setActiveId(null)}
-          />
-        ))}
+      {/*
+       * Heading and row share one wrapper (build plan stage 3) so the
+       * floor band (MediaList.css's own .media-list-band::before) can
+       * cover both and read as one shelf instead of stopping at the
+       * row's own top edge with the heading floating above it,
+       * unrelated. The detail panel stays outside it, its own sibling —
+       * the band is what the objects and their heading sit on, not the
+       * text describing whichever one is open.
+       */}
+      <div className="media-list-band">
+        <h2 className="media-list-heading">{heading}</h2>
+        <div className="media-list">
+          {entries.map((entry) => (
+            <CardComponent
+              key={entry.id}
+              entry={entry}
+              active={entry.id === activeId}
+              onActivate={() => setActiveId(entry.id)}
+              onDeactivate={() => setActiveId(null)}
+            />
+          ))}
+        </div>
       </div>
       <div className="media-list-detail" aria-live="polite">
         {activeEntry && (
