@@ -50,6 +50,21 @@
    * now that this covers the same minimum.
    */
   padding-block: 24px;
+  /*
+   * The floor stage 6's padding made room for: darker at the band's own
+   * top edge, lighter where the objects actually sit (every card is
+   * bottom-aligned — .media-list .media-card below), reading as a
+   * surface catching light from below rather than a flat page
+   * background with objects pasted on it. Both stops stay close to
+   * .stage's own #1a1a1a (App.css) — a few points of lightness either
+   * side, not a visibly separate panel — because a floor that reads as
+   * its own box is the wrong amount of this effect, per the brief.
+   * Background only: the existing per-case contact shadows (FlatCase.css's
+   * .flat-case-shadow, FlatJewelCase.css's .flat-jewel-case-shadow,
+   * Case.css's own) paint on top of this unchanged, and nothing here
+   * adds a second one.
+   */
+  background: linear-gradient(to bottom, #141414 0%, #202020 100%);
 }
 
 /* --height-scale is Case.tsx's own per-format inline style; JewelCase.tsx
