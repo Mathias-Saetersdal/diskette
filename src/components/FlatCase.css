@@ -24,6 +24,19 @@
 }
 
 /*
+ * The bare-button path's own version of .flat-case-stage--hidden further
+ * down this file: no restTilt, no stage wrapper, so this button is the
+ * root element to hide directly rather than a descendant inheriting it.
+ * Same technique, same reasoning — visibility, not display: none, keeps
+ * the layout box (the row's own width and this card's rank number below
+ * it don't shift) while dropping out of view, hit-testing and the tab
+ * order.
+ */
+.flat-case--hidden {
+  visibility: hidden;
+}
+
+/*
  * Games row only (FlatCase's restTilt prop, set from entry.medium ===
  * 'game' in KeepCaseCard). A real spine, not a gradient painted over the
  * front artwork.

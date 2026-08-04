@@ -18,6 +18,14 @@ interface FlatJewelCaseProps {
    * an unset keep-case spineTone.
    */
   spineTone?: string
+  /**
+   * True once the active JewelCase has taken over (rendered elsewhere —
+   * AlbumCard portals it out of the scrolling row, build plan stage 8,
+   * same mechanism KeepCaseCard/FlatCase.tsx use for keep cases). Keeps
+   * this element mounted, at its own full size, so the row's layout and
+   * this card's own rank number don't shift — only visibility drops.
+   */
+  hidden?: boolean
 }
 
 /**
@@ -37,7 +45,15 @@ interface FlatJewelCaseProps {
  * table, since every album is the same 142 x 125 x 10mm case — no
  * per-instance height-scale factor either, for the same reason.
  */
-export default function FlatJewelCase({ title, coverSrc, coverAlt, onClick, buttonRef, spineTone }: FlatJewelCaseProps) {
+export default function FlatJewelCase({
+  title,
+  coverSrc,
+  coverAlt,
+  onClick,
+  buttonRef,
+  spineTone,
+  hidden = false,
+}: FlatJewelCaseProps) {
   const style = {
     '--front-face-ratio': widthMm / heightMm,
     // Same depthMm/widthMm-off-caseGeometry.ts pattern as FlatCase.tsx's
@@ -47,7 +63,7 @@ export default function FlatJewelCase({ title, coverSrc, coverAlt, onClick, butt
   } as CSSProperties
 
   return (
-    <div className="flat-jewel-case-stage" style={style}>
+    <div className={`flat-jewel-case-stage${hidden ? ' flat-jewel-case-stage--hidden' : ''}`} style={style}>
       <div className="flat-jewel-case-wrap">
         <div className="flat-jewel-case-spine" aria-hidden="true" />
         <button

@@ -20,51 +20,30 @@
   perspective: 1400px;
   perspective-origin: 50% 40%;
   /*
-   * Bigger than the shared 95-180px range films/series/albums still use
-   * (MediaList.css) — the spine needs real width to project from at the
-   * row's rest angle. Calibrated against bluray (5 of the row's 10
-   * entries): at these ends FlatCase's own --front-w works out to ~68px
-   * and ~140px (97 * 0.804 heightScale * 0.868 frontFaceRatio ≈ 68;
-   * 201 * 0.804 * 0.868 ≈ 140 — the 140px figure FlatCase.css's own
-   * spine-width comment is worked against). ps5 and dvd entries land
-   * within a few px of the same range at their own ratios, not this
-   * exact number — the shared clamp can't hit it precisely for every
-   * format at once.
+   * Build plan stage 8: the spine, not the card's overall footprint, sets
+   * the floor now — the same formula FilmsList.css's own comment walks
+   * through in full, applied to this row's own widest spine ratio (dvd,
+   * 14/130 ≈ 0.108, the same figure ps2/Sly 3 uses — narrower than that
+   * needs proportionally more card height to clear the same 8px target,
+   * wider needs less):
+   *
+   *   8 / (0.1077 * sin(36deg)) ≈ 126px of front-face width needed
+   *   126 / (130/184 dvd front-face-ratio) ≈ 179px of card height
+   *
+   * 180px clears it with a hair of margin, verified by measurement after
+   * the fact: 180 * 1 * 0.7065 * 0.1077 * sin(36deg) ≈ 8.05px on dvd/ps2.
+   * Blu-ray-format entries (five of this row's ten — ps3-early, ps3-late,
+   * ps4 liveries) have a narrower ratio still (12/128.5 ≈ 0.093) and a
+   * height-scale under 1, so this same floor lands them under the 8px
+   * target rather than at it — measured, not assumed: reported alongside
+   * the other three rows' own numbers once this landed. Chosen as the
+   * reference anyway (build plan) rather than raising the floor further
+   * to cover Blu-ray too, so 201px stays this row's own ceiling —
+   * unchanged, since the row's own card size beyond its floor is settled
+   * (build plan's own freeze on this row) and only the floor itself was
+   * asked for here.
    */
-  --list-case-h: clamp(97px, 9vw, 201px);
-  /*
-   * Ten cards at this size may not fit every viewport. Wrapping to a
-   * second row (the shared .media-list's flex-wrap: wrap) would visually
-   * read as shrinking the row to fit — overflow instead, scrollable
-   * rather than clipped.
-   */
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  /*
-   * No padding-block/margin-block override here any more — this row used
-   * to need its own, calc(6% of --list-case-h), room for the hover/focus
-   * zoom (FlatCase.css's .flat-case-stage:hover, scale(1.12)) to grow
-   * into without overflow-x: auto's forced overflow-y: auto clipping it
-   * (dvd, this row's tallest format, has zero slack against the row's
-   * own flex-computed cross size, so a card at that format and livery —
-   * ps2, Sly 3 — had nothing to give before its hover growth hit the
-   * row's own box). MediaList.css's own shared padding-block: 24px (build
-   * plan stage 6, added for every row's "band, not floating cards" read)
-   * comfortably covers that same minimum on its own: 6% of this row's own
-   * clamp ceiling (201px) is ~12px, half of 24px, at every viewport this
-   * clamp can ever reach. One shared rule now does both jobs instead of
-   * two separate values that happened to want the same kind of fix.
-   */
-}
-
-/*
- * flex-shrink defaults to 1 — without turning it off here, nowrap plus a
- * narrow viewport would still shrink each card below its own explicit
- * width (FlatCase.css) to make the row fit, which is exactly what "do
- * not shrink the cards" rules out.
- */
-.games-list .media-card {
-  flex-shrink: 0;
+  --list-case-h: clamp(180px, 9vw, 201px);
 }
 
 /*
@@ -78,7 +57,10 @@
  * are, by design, so the row was clipping the top of its own case the
  * instant it grew — moving the active one to a plain sibling with no
  * overflow rule of its own is what stops that, not touching the row's
- * scroll behaviour, which the ten resting cards still need.
+ * scroll behaviour, which the ten resting cards still need (every row's
+ * own now, build plan stage 8 — MediaList.css's shared .media-list rule
+ * carries flex-wrap: nowrap/overflow-x: auto/flex-shrink: 0 unconditionally
+ * now, so this file no longer repeats them).
  *
  * --list-case-h duplicated from .games-list .media-list above rather than
  * shared through inheritance: .media-list already sets its own base value
@@ -93,7 +75,7 @@
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  --list-case-h: clamp(97px, 9vw, 201px);
+  --list-case-h: clamp(180px, 9vw, 201px);
 }
 
 /*

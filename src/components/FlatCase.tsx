@@ -48,10 +48,11 @@ interface FlatCaseProps {
    */
   spineWidthMm?: number
   /**
-   * Games row only. True once the active Case has taken over (rendered
-   * elsewhere — GameCard portals it out of the scrolling row, see
-   * GamesList.tsx). Keeps this element mounted, at its own full size, so
-   * the row's layout and this card's own rank number don't shift — only
+   * True once the active Case has taken over (rendered elsewhere — every
+   * row's own card component portals it out of the scrolling row now,
+   * build plan stage 8, not just GameCard/GamesList.tsx which started
+   * this). Keeps this element mounted, at its own full size, so the
+   * row's layout and this card's own rank number don't shift — only
    * visibility drops, via CSS (FlatCase.css), same technique
    * prefers-reduced-motion elsewhere in this project uses to remove
    * something from view without touching layout.
@@ -113,7 +114,13 @@ export default function FlatCase({
     <button
       ref={buttonRef}
       type="button"
-      className="flat-case"
+      // Only applied here when there's no restTilt stage wrapping this
+      // button (see below): that wrapper's own flat-case-stage--hidden
+      // already hides everything inside it, this button included, via
+      // ordinary visibility inheritance — adding it here too would be
+      // redundant, not wrong, but this keeps one element owning the
+      // state per render path rather than two agreeing by coincidence.
+      className={`flat-case${hidden && !restTilt ? ' flat-case--hidden' : ''}`}
       style={style}
       aria-label={`Open case: ${title}`}
       onClick={onClick}

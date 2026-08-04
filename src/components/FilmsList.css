@@ -17,4 +17,69 @@
 .films-list .media-list {
   perspective: 1400px;
   perspective-origin: 50% 40%;
+  /*
+   * Build plan stage 8: the spine, not the card's overall footprint, sets
+   * the floor now — below this, the DVD-format spine (14/130, the
+   * widest of this row's two ratios; Blu-ray-format entries have none to
+   * protect) stops reading as anything at all. Target: 8px of visible
+   * spine at the row's own 36deg rest angle. Worked from the same
+   * on-screen-width formula FlatCase.css's own spine-width comment
+   * already uses (front_w * spine-ratio * sin(36deg)):
+   *
+   *   8 / (0.1077 * sin(36deg)) ≈ 126px of front-face width needed
+   *   126 / (130/184 dvd front-face-ratio) ≈ 179px of card height
+   *
+   * 180px clears it with a hair of margin (front-face-ratio 130/184,
+   * spine-ratio 14/130, sin(36deg): 180 * 0.7065 * 0.1077 * 0.5878 ≈
+   * 8.05px, measured the same way after the fact). Landing almost
+   * exactly on the old clamp's own 180px ceiling turns this into a
+   * fixed size rather than a responsive range in practice — 9vw only
+   * exceeds 180px past a ~2000px viewport — which is the intended
+   * effect, not a side effect: "two and a half cards visible at 380px is
+   * correct for a scroll row, do not fit ten" (build plan) applies at
+   * every width this clamp actually reaches.
+   */
+  --list-case-h: clamp(180px, 9vw, 180px);
+}
+
+/*
+ * Where KeepCaseCard's active Case portals to, instead of rendering in
+ * its own row slot inside .media-list above — same mechanism and same
+ * reason as .games-active-slot (GamesList.css's own comment has the
+ * full explanation of why overflow-x: auto rules out rendering it
+ * in place).
+ */
+.films-active-slot {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  /*
+   * Duplicated from .films-list .media-list above rather than shared
+   * through inheritance: .media-list already sets its own base value for
+   * this property directly (MediaList.css), and a property set directly
+   * on an element always wins over one inherited from an ancestor
+   * regardless of the ancestor selector's specificity — so raising this
+   * override to a shared parent instead of repeating it here would lose
+   * back to that base value on .media-list itself. Same reasoning
+   * GamesList.css's own duplicate of this figure documents.
+   */
+  --list-case-h: clamp(180px, 9vw, 180px);
+}
+
+.films-active-slot:not(:empty) {
+  margin-bottom: 24px;
+}
+
+/*
+ * Case.css's own --case-h fallback (min(64vmin, 460px)) is sized for a
+ * standalone full-page case, not a list row — this is the same override
+ * MediaList.css applies to .media-list .case, repeated here because the
+ * portal moves the element out from under that selector's own ancestor
+ * match. --height-scale is Case.tsx's own per-format inline style — this
+ * row mixes dvd and Blu-ray geometry, so this has to read it rather than
+ * assume one, same as MediaList.css's own version did before every row
+ * portaled.
+ */
+.films-active-slot .case {
+  --case-h: calc(var(--list-case-h) * var(--height-scale, 1));
 }
