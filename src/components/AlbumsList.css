@@ -18,26 +18,49 @@
   perspective: 1400px;
   perspective-origin: 50% 40%;
   /*
-   * Build plan stage 8: same spine-legibility floor as FilmsList.css's
-   * own (comment there has the full formula), computed against jewel's
-   * own geometry instead of dvd's. Jewel's spine ratio (10/125 = 0.080,
-   * caseGeometry.ts's JEWEL_GEOMETRY) is narrower than dvd's (14/130 ≈
-   * 0.108), so it needs more card height to clear the same 8px target,
-   * not less — "jewel... needs more width than dvd does" (build plan):
+   * Build plan review, stage 2 (formula) and stage 3 (this row
+   * specifically): same "ten cards plus a budgeted eleventh fit this
+   * row's own available width" solve as FilmsList.css's own comment
+   * walks through in full, against jewel's own geometry instead of a
+   * dvd/bluray mix. Every album is the same jewel case, no height-scale
+   * of its own to fold in (JewelCase.tsx never sets --height-scale, so
+   * MediaList.css's var(--height-scale, 1) fallback applies — a jewel
+   * card's on-screen width really is just height * front-face-ratio):
    *
-   *   8 / (0.080 * sin(36deg)) ≈ 170px of front-face width needed
-   *   170 / (125/142 jewel front-face-ratio) ≈ 193px of card height
+   *   front-face-ratio = 125/142 ≈ 0.8803 (docs/03-object-spec.md)
+   *   R (sum of all ten, same ratio each) = 10 * 0.8803 = 8.8028
+   *   budgeted eleventh (this row's own, and only, ratio) = 0.8803
+   *   total = 9.6831
    *
-   * 195px clears it with a hair of margin (front-face-ratio 125/142,
-   * spine-ratio 10/125, sin(36deg): 195 * 0.8803 * 0.08 * 0.5878 ≈
-   * 8.07px, measured the same way after the fact). The old shared
-   * default's own 180px ceiling sits below this new floor, so the max
-   * moves up to match it — otherwise clamp(195px, 9vw, 180px) would be
-   * asking for a floor taller than its own ceiling, which resolves to a
-   * constant 195px regardless (max() dominates once min > max) but with
-   * a 9vw term that reads as responsive and isn't. Making both 195px is
-   * the same fixed-in-practice result FilmsList.css's own floor already
-   * landed on, just written honestly instead of by accident.
+   *   card height = (100cqw - 9 * 16px) / 9.6831
+   *
+   * Known cost, not a bug: jewel's own spine ratio (10/125 = 0.080,
+   * caseGeometry.ts's JEWEL_GEOMETRY) is the narrowest in the project —
+   * narrower than dvd's 14/130 ≈ 0.108, which the 180px spine-legibility
+   * floor (FilmsList.css) was set to clear at 8px. Reusing that same
+   * floor here would ask for a floor taller than what stage 2's own
+   * formula computes at any width this row is likely to actually reach
+   * — jewel's own total (9.6831) is noticeably larger than films' own
+   * (7.731), which is exactly the "this row renders much larger than the
+   * other three" stage 3 set out to fix, so the floor can't be the thing
+   * holding it up there again. 95px instead: MediaList.css's own shared
+   * default floor, a safety net against a pathologically narrow
+   * viewport rather than a legibility target of its own. At 95px, jewel's
+   * spine (95 * 0.8803 * 0.08 * sin(36deg) ≈ 3.9px) is short of even the
+   * accepted-below number — reached only once the row has already
+   * dropped to scrolling instead of shrinking further (flex-shrink: 0 on
+   * .media-card, MediaList.css), the same fallback every other row's own
+   * floor also leans on.
+   *
+   * At the size this formula actually lands on for a typical fullscreen
+   * width (comfortably above the 95px floor), jewel's spine measures
+   * around 6px — short of the 8px target the other rows clear, since
+   * their own narrower front-face-ratio needs less total width per unit
+   * of height than jewel's near-square one does. Accepted: getting all
+   * ten to fit without scrolling is this row's own goal here, and 6px of
+   * spine is still a visible spine, not an invisible one. 200px ceiling:
+   * a sanity cap for very wide viewports, same reasoning as FilmsList.css's
+   * own 260px, scaled down to this row's own smaller total.
    */
-  --list-case-h: clamp(195px, 9vw, 195px);
+  --list-case-h: clamp(95px, calc((100cqw - 144px) / 9.683), 200px);
 }
