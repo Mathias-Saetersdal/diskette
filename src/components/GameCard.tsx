@@ -1,6 +1,7 @@
 import { useContext } from 'react'
 import Case from './Case'
 import FlatCase from './FlatCase'
+import MediaCardDetail from './MediaCardDetail'
 import { useCaseSequence } from './useCaseSequence'
 import { SettleContext } from './SettleContext'
 import type { SupportedCaseFormat } from './caseGeometry'
@@ -37,6 +38,12 @@ interface GameCardProps {
  * this same slot, instead of both happening on the same render — a
  * concern about timing, not about where Case ends up, so it didn't go
  * away when the portal did.
+ *
+ * MediaCardDetail renders here too, not once for the whole list (build
+ * plan stage 5) — same reasoning as KeepCaseCard.tsx's own copy of this
+ * comment. Not part of this row's own livery/geometry/rest-angle/
+ * card-size freeze, a layout change to where the description renders,
+ * not to any of those.
  */
 export default function GameCard({ entry, active, onActivate, onDeactivate }: GameCardProps) {
   const { open, enlarged, showCase, caseToggleRef, flatButtonRef, onToggleOpen } = useCaseSequence({
@@ -81,6 +88,7 @@ export default function GameCard({ entry, active, onActivate, onDeactivate }: Ga
           settleOnMount={settle && entry.rank === 1}
         />
       )}
+      {showCase && <MediaCardDetail entry={entry} />}
       <span className="media-card__rank">{entry.rank}</span>
     </div>
   )

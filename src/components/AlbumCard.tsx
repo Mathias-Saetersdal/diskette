@@ -1,6 +1,7 @@
 import { useContext } from 'react'
 import JewelCase from './JewelCase'
 import FlatJewelCase from './FlatJewelCase'
+import MediaCardDetail from './MediaCardDetail'
 import { useCaseSequence } from './useCaseSequence'
 import { SettleContext } from './SettleContext'
 import type { Entry } from '../data/lists'
@@ -35,6 +36,10 @@ interface AlbumCardProps {
  * overlapped the section above and left a hole where the card had been.
  * MediaList.css's own .media-list:has(.jewel-case[data-enlarged='true'])
  * rule pads the row's own scroll container instead now.
+ *
+ * MediaCardDetail renders here too, not once for the whole list (build
+ * plan stage 5) — same reasoning as KeepCaseCard.tsx's own copy of this
+ * comment.
  */
 export default function AlbumCard({ entry, active, onActivate, onDeactivate }: AlbumCardProps) {
   const { open, enlarged, showCase, caseToggleRef, flatButtonRef, onToggleOpen } = useCaseSequence({
@@ -70,6 +75,7 @@ export default function AlbumCard({ entry, active, onActivate, onDeactivate }: A
           settleOnMount={settle && entry.rank === 1}
         />
       )}
+      {showCase && <MediaCardDetail entry={entry} />}
       <span className="media-card__rank">{entry.rank}</span>
     </div>
   )

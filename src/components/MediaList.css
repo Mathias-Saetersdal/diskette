@@ -1,17 +1,15 @@
 /*
- * Build plan stage 4: measured 158px of visual gap from a row's own
- * tallest card to the next section's own heading, well past the 56px
- * .stage gap (App.css) alone, which stays as it is — an earlier,
- * explicit instruction ("keep the section gap at 56px, do not shrink
- * it") that still holds. The other three contributors, measured before
- * touching any of them: this rule's own 24px gap (band to detail),
- * .media-list-detail's own 54px reserved height when nothing is active
- * (min-height: 3em, the single biggest of the three), and .media-list's
- * own 24px padding-bottom (the row breathing room work, also explicitly
- * asked to stay — it reads as part of the previous section's own shelf,
- * not empty space between two sections, so it's left out of this fix).
- * This rule's own gap and the detail panel's own reserved height were
- * the two nothing had already protected, so those are what change here.
+ * Build plan stage 4 measured section-to-section spacing against a
+ * .media-list-detail panel that lived here, as this element's own second
+ * child alongside .media-list-band, with a 16px gap between them and its
+ * own 1.5em min-height. Stage 5 removed that panel entirely — each card
+ * now renders its own detail text (MediaCardDetail.tsx), positioned under
+ * itself rather than the row as a whole — so .media-list-band is this
+ * element's only child now and the gap between children no longer has
+ * anything to act on. Left declared rather than deleted: harmless with
+ * one child, and .stage's own 56px gap (App.css) plus this row's 24px
+ * padding-block are still the only spacing this section contributes,
+ * exactly stage 4's own target.
  */
 .media-list-section {
   display: flex;
@@ -155,16 +153,19 @@
    */
   padding-block: 24px;
   /*
-   * padding-top gets its own transition here too, not only on the
-   * :has(...) rule below that raises it: a CSS transition runs off
-   * whichever rule's declarations are in effect *after* a change, not
-   * before, so when a card stops being enlarged and :has() no longer
-   * matches, this base rule is what's active for the shrink back to
-   * 24px — without its own copy of this transition, that direction
-   * would jump instead of easing, even though the grow direction
-   * (driven by the :has() rule's own transition) animated correctly.
+   * padding-top and padding-bottom both get their own transition here
+   * too, not only on the :has(...) rule below that raises them: a CSS
+   * transition runs off whichever rule's declarations are in effect
+   * *after* a change, not before, so when a card stops being enlarged
+   * and :has() no longer matches, this base rule is what's active for
+   * the shrink back to 24px on both — without its own copy of these
+   * transitions, that direction would jump instead of easing, even
+   * though the grow direction (driven by the :has() rule's own
+   * transition) animated correctly.
    */
-  transition: padding-top 1.5s ease-in-out;
+  transition:
+    padding-top 1.5s ease-in-out,
+    padding-bottom 1.5s ease-in-out;
 }
 
 /* --height-scale is Case.tsx's own per-format inline style; JewelCase.tsx
@@ -203,10 +204,29 @@
  * 1.5s) so the row's own growth and the card's own scale finish
  * together, not one visibly lagging the other.
  */
+/*
+ * padding-bottom here too, build plan stage 5: MediaCardDetail.tsx sits
+ * position: absolute under whichever card is active (deliberately out of
+ * flow, so it doesn't shift .case/.jewel-case's own transform-origin:
+ * 50% 100% by adding flow content below it) — out of flow means it
+ * doesn't push this row's own height the way a real sibling would, so
+ * without room reserved here overflow-x: auto's forced overflow-y: auto
+ * clips it exactly the way it used to clip the enlarged case itself
+ * before the padding-top rule above existed. 220px is a fixed estimate,
+ * not measured per entry: note length varies per entry and is empty for
+ * everything until Matti writes them (CLAUDE.md), so there's no single
+ * real height to read this off yet. 220px covers a two-line title plus
+ * year/creator plus several lines of note comfortably at this panel's own
+ * 480px width; a future long note could still exceed it, at which point
+ * this number should move rather than the panel scrolling.
+ */
 .media-list:has(.case[data-enlarged='true']),
 .media-list:has(.jewel-case[data-enlarged='true']) {
   padding-top: calc(24px + var(--list-case-h));
-  transition: padding-top 1.5s ease-in-out;
+  padding-bottom: 220px;
+  transition:
+    padding-top 1.5s ease-in-out,
+    padding-bottom 1.5s ease-in-out;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -270,46 +290,4 @@
   .media-card > .flat-case:focus-visible {
     transform: none;
   }
-}
-
-/*
- * Build plan stage 4: 3em (54px) reserved the space for a wrapped
- * two-line title even when nothing is active, at the cost of being the
- * single biggest contributor to a total section-to-section gap that read
- * as too large. 1.5em still reserves a real single line rather than
- * collapsing to nothing (which would visibly push the next section up
- * the instant a card opens) — the panel still grows past this the
- * moment real content needs more, min-height is a floor, not a fixed
- * size.
- */
-.media-list-detail {
-  min-height: 1.5em;
-  max-width: 640px;
-  margin-inline: auto;
-  text-align: center;
-  color: #eee;
-  font-family: system-ui, sans-serif;
-}
-
-.media-list-detail__title {
-  margin: 0 0 4px;
-  font-size: 1.1rem;
-  font-weight: 600;
-}
-
-.media-list-detail__year {
-  font-weight: 400;
-  color: #999;
-}
-
-.media-list-detail__creator {
-  margin: 0 0 8px;
-  color: #aaa;
-  font-size: 0.9rem;
-}
-
-.media-list-detail__note {
-  margin: 0;
-  color: #ddd;
-  line-height: 1.5;
 }

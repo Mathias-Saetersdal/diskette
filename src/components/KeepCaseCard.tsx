@@ -1,6 +1,7 @@
 import { useContext } from 'react'
 import Case from './Case'
 import FlatCase from './FlatCase'
+import MediaCardDetail from './MediaCardDetail'
 import { useCaseSequence } from './useCaseSequence'
 import { SettleContext } from './SettleContext'
 import type { SupportedCaseFormat } from './caseGeometry'
@@ -42,6 +43,12 @@ interface KeepCaseCardProps {
  * .media-list:has(.case[data-enlarged='true']) rule pads the row's own
  * scroll container while any card here is enlarged, instead of moving
  * the card anywhere.
+ *
+ * MediaCardDetail renders here too, not once for the whole list (build
+ * plan stage 5): the row scrolls, so the old single shared panel below
+ * it read as detached from whichever card was actually open once that
+ * card wasn't always centred under the row. Rendered only when showCase
+ * is true, same condition as Case itself.
  */
 export default function KeepCaseCard({ entry, active, onActivate, onDeactivate }: KeepCaseCardProps) {
   const { open, enlarged, showCase, caseToggleRef, flatButtonRef, onToggleOpen } = useCaseSequence({
@@ -95,6 +102,7 @@ export default function KeepCaseCard({ entry, active, onActivate, onDeactivate }
           settleOnMount={settle && entry.rank === 1}
         />
       )}
+      {showCase && <MediaCardDetail entry={entry} />}
       <span className="media-card__rank">{entry.rank}</span>
     </div>
   )

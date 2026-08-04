@@ -13,6 +13,7 @@
  * both use it unchanged, since none of this reads case shape at all.
  */
 .media-card {
+  position: relative; /* containing block for MediaCardDetail.css's own absolute positioning */
   display: flex;
   flex-direction: column;
   align-items: center;

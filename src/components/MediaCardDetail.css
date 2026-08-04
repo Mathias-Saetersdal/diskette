@@ -1,0 +1,48 @@
+/*
+ * Positioned relative to .media-card (MediaCard.css's own position:
+ * relative), not in normal document flow: this text's own height is
+ * unpredictable (a note can run to several lines), and letting it push
+ * the card's own layout box taller would shift the enlarged case's own
+ * transform-origin (caseMechanism.css's 50% 100%, relative to the
+ * card's own box) out from under it — a visible jump each time this
+ * text mounts or unmounts, not just the text itself appearing.
+ *
+ * width: min(90vw, 480px), not the old shared panel's 640px: this now
+ * has to fit centred under a single card without running off either
+ * side of a narrow viewport, where the old panel could rely on the
+ * whole row's own width to centre against instead.
+ */
+.media-card-detail {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 16px;
+  width: min(90vw, 480px);
+  text-align: center;
+  color: #eee;
+  font-family: system-ui, sans-serif;
+}
+
+.media-card-detail__title {
+  margin: 0 0 4px;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.media-card-detail__year {
+  font-weight: 400;
+  color: #999;
+}
+
+.media-card-detail__creator {
+  margin: 0 0 8px;
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+.media-card-detail__note {
+  margin: 0;
+  color: #ddd;
+  line-height: 1.5;
+}
