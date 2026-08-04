@@ -84,16 +84,17 @@ export default function KeepCaseCard({ entry, active, onActivate, onDeactivate }
           livery={entry.livery}
           onClick={onActivate}
           buttonRef={flatButtonRef}
-          // Games (every entry), DVD-format films (build plan stage 2)
-          // and series (every entry, stage 3) get a real spine. Blu-ray
-          // -format films don't yet — their own front-face livery already
-          // reads as a case without one, unlike DVD standard's plain
-          // full-bleed poster.
-          restTilt={
-            entry.medium === 'game' ||
-            (entry.medium === 'film' && entry.case === 'dvd') ||
-            entry.medium === 'series'
-          }
+          // Every entry KeepCaseCard ever renders gets a real spine now
+          // (build plan review, stage 4) — films and series, the only two
+          // media this component handles (games route through GameCard
+          // instead, which sets its own restTilt unconditionally the same
+          // way). Bluray-format films were the one gap: FlatCase.css/tsx
+          // already had a full "standard" spine variant built (the same
+          // one bluray-format games use under their own console livery),
+          // just never reached, since this prop stopped at dvd. No new
+          // spine material needed, only turning this on for the format
+          // that already had one waiting.
+          restTilt
           spineTone={entry.spineTone}
           spineWidthMm={entry.medium === 'series' ? SERIES_SPINE_WIDTH_MM : undefined}
           // Rank 1 only (build plan stage 9) — never every card in the
