@@ -35,7 +35,16 @@
   /* Momentum on iOS Safari specifically — plain overflow-x: auto alone
      doesn't reliably get it there. Harmless, ignored elsewhere. */
   -webkit-overflow-scrolling: touch;
-  justify-content: center;
+  /*
+   * safe, not plain center: centring an overflowing flex container splits
+   * the overflow across both ends, which moves scroll position 0 away
+   * from "card 1 fully visible" — some of card 1's own left edge was
+   * clipped even at rest, before any scrolling happened. safe center
+   * keeps the centring a row without overflow still wants, but falls
+   * back to start alignment the moment content actually overflows, which
+   * is exactly "start scrolled all the way to the start."
+   */
+  justify-content: safe center;
   gap: 16px;
   width: 100%;
   /*
