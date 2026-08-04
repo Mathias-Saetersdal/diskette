@@ -174,6 +174,51 @@
 .media-list .case,
 .media-list .jewel-case {
   --case-h: calc(var(--list-case-h) * var(--height-scale, 1));
+  /*
+   * Neighbours shift aside when a card opens, not just the row growing
+   * taller (padding-top/-bottom below handle that axis). Restored from an
+   * earlier version — removed when a portal briefly took over this row's
+   * whole layout, and never brought back once that reverted — using
+   * --enlarge and --extent, both still defined per-card in
+   * caseMechanism.css for exactly this: "The list's own CSS multiplies
+   * this by --enlarge to reserve exactly enough margin at every point in
+   * both animations" (that file's own --extent comment). Zero at rest
+   * (enlarge is 1 and extent already equals the resting half-width this
+   * formula subtracts, so the two cancel), growing as the card enlarges
+   * and again once it opens (--extent switches from the closed
+   * half-width to the open front panel's own full width).
+   *
+   * Real margin, not a transform, is what makes this move the row's other
+   * flex items rather than just visually overflow over them: .media-card
+   * (this element's own parent, the actual flex item inside .media-list's
+   * row) has no fixed width of its own, so its outer size grows with this
+   * margin and .media-list reflows its siblings the same way any other
+   * width change would.
+   */
+  margin-inline: calc(var(--enlarge, 1) * var(--extent) - (var(--depth) + var(--front-w)) / 2);
+  /*
+   * transform repeated here for the same reason caseMechanism.css's own
+   * comment on its base transition gives: a list-scoped rule's own
+   * transition list fully replaces the base rule's, it doesn't merge with
+   * it, so leaving transform out would silently drop the enlarge
+   * animation the moment a case is used inside a list.
+   *
+   * margin-inline at 0.6s ease, not --enlarge-duration's 1.5s ease-in-out:
+   * matches the hinge's own duration (caseMechanism.css's
+   * .case__toggle/.case__front, both 0.6s ease) so the shift reads as
+   * part of the same motion as the lid swinging, not a separate, slower
+   * adjustment trailing behind it.
+   */
+  transition:
+    transform var(--enlarge-duration) ease-in-out,
+    margin-inline 0.6s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .media-list .case,
+  .media-list .jewel-case {
+    transition: none;
+  }
 }
 
 /*
