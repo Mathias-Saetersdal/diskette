@@ -28,4 +28,14 @@
    * dvd front-face-ratio) * 0.2154 * sin(36deg) ≈ 8.5px. Verified by
    * measurement after the fact, not assumed from the formula alone.
    */
+  /*
+   * MediaList.css's own edge reserve (that file's own padding-inline
+   * comment has the full reasoning) — dvd, this row's only format, same
+   * derivation FilmsList.css's own --edge-reserve comment walks through:
+   * SERIES_SPINE_WIDTH_MM (28mm, KeepCaseCard.tsx) only widens the closed
+   * FlatCase placeholder's own spine, not the real open Case component
+   * here, which reads plain dvd geometry (docs/03-object-spec.md: 130 x
+   * 184 x 14mm) regardless. (14 + 130) / (2 * 184) = 144/368.
+   */
+  --edge-reserve: calc(var(--list-case-h) * 144 / 368);
 }

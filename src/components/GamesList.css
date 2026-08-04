@@ -45,4 +45,14 @@
    * asked for here.
    */
   --list-case-h: clamp(180px, 9vw, 201px);
+  /*
+   * MediaList.css's own edge reserve (that file's own padding-inline
+   * comment has the full reasoning), same derivation as FilmsList.css's
+   * own --edge-reserve. This row's widest format for that formula isn't
+   * dvd/ps2 (the widest by spine, the figure the floor above is tuned
+   * against) — it's ps5: docs/03-object-spec.md, 135 x 148 x 14mm (still
+   * marked unverified there). (14 + 135) / (2 * 184) = 149/368, against
+   * dvd's own 144/368 and bluray's 140.5/368 (12 + 128.5).
+   */
+  --edge-reserve: calc(var(--list-case-h) * 149 / 368);
 }

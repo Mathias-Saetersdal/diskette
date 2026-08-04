@@ -64,4 +64,22 @@
    * in itself.
    */
   --list-case-h: clamp(180px, calc((100cqw - 144px) / 7.731), 260px);
+  /*
+   * MediaList.css's own edge reserve: half the on-screen width of this
+   * row's own widest case, at rest (--enlarge: 1) — enough for a scale(2)
+   * enlarge (caseMechanism.css) to grow left or right without pushing
+   * card 1 or the last card past the row's own scrollable edges (that
+   * file's own comment on padding-inline has the full reasoning).
+   *
+   * A case's real on-screen width is list-case-h * height-scale *
+   * (depth-ratio + front-face-ratio) (Case.tsx/caseMechanism.css), which
+   * reduces to list-case-h * (depthMm + widthMm) / MAX_CASE_HEIGHT_MM
+   * once height-scale's own heightMm/184 cancels the front-face-ratio's
+   * widthMm/heightMm denominator — the format's own height drops out
+   * entirely, only depth+width and the shared 184mm reference matter.
+   * Half of that, for dvd (docs/03-object-spec.md: 130 x 184 x 14mm,
+   * this row's own widest — see the eleventh-card comment above): (14 +
+   * 130) / (2 * 184) = 144/368.
+   */
+  --edge-reserve: calc(var(--list-case-h) * 144 / 368);
 }

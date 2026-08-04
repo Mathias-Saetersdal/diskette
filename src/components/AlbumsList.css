@@ -63,4 +63,15 @@
    * own 260px, scaled down to this row's own smaller total.
    */
   --list-case-h: clamp(95px, calc((100cqw - 144px) / 9.683), 200px);
+  /*
+   * MediaList.css's own edge reserve (that file's own padding-inline
+   * comment has the full reasoning). Jewel has no height-scale of its own
+   * (JewelCase.tsx never sets --height-scale, caseGeometry.ts's
+   * JEWEL_GEOMETRY isn't scaled against MAX_CASE_HEIGHT_MM the way dvd/
+   * bluray/ps5 are), so the width is plainly list-case-h * (depth-ratio +
+   * front-face-ratio) here, not FilmsList.css's own MAX_CASE_HEIGHT_MM-
+   * cancelling version. docs/03-object-spec.md: CD jewel case, 142 x 125
+   * x 10mm. Half of (10 + 125) / 142 = 135/142.
+   */
+  --edge-reserve: calc(var(--list-case-h) * 135 / 284);
 }

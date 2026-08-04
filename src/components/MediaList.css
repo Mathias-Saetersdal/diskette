@@ -110,6 +110,19 @@
 
 .media-list {
   --list-case-h: clamp(95px, 9vw, 180px);
+  /*
+   * Nothing in this project resets box-sizing globally (only #root gets
+   * border-box, index.css) — this element's own width: 100% is content-box
+   * by default, so the padding-inline below would add on top of that 100%
+   * instead of fitting inside it, making the row's own border box wider
+   * than .media-list-band actually gave it. .media-list-band's own
+   * align-items: center then centres that overflow, splitting it evenly
+   * across both sides — which shifts card 1 left by exactly the amount
+   * padding-inline was reserving to protect it, cancelling the fix
+   * outright (confirmed: this is what happened before this rule was
+   * added). border-box keeps width: 100% meaning 100%, padding included.
+   */
+  box-sizing: border-box;
   display: flex;
   /*
    * Build plan stage 8: every row scrolls horizontally now, not just
@@ -166,6 +179,38 @@
    * now that this covers the same minimum.
    */
   padding-block: 24px;
+  /*
+   * Reserved space at both ends of the row, sized by each list's own
+   * --edge-reserve (FilmsList.css, SeriesList.css, AlbumsList.css,
+   * GamesList.css) — half the on-screen width of that row's own widest
+   * case, at rest. 0px here is only a fallback for a list that hasn't set
+   * one; every list that renders through this component does.
+   *
+   * Card 1 and the row's last card both scale(2) (caseMechanism.css's
+   * --enlarge) around their own centre when active, pushing half their
+   * own width past whichever edge they're closest to. A later card has
+   * real siblings to its own left, so growing its margin (the .case/
+   * .jewel-case rule below) pushes them aside and the row's own
+   * scrollWidth simply grows to the right, reachable by scrolling same as
+   * any other overflow. Card 1 has nothing to its own left to push into —
+   * growing its margin there just adds blank space between it and the
+   * row's own start, which sits behind scrollLeft: 0 and can never be
+   * scrolled to in a left-to-right scroll container, unlike overflow past
+   * the end. Confirmed directly: opening the first film and the first
+   * album both clipped the case against the browser's own left edge, with
+   * no scroll gesture able to reveal the rest of it. Real padding, inside
+   * the scrollable content rather than around it, is what gives that
+   * leftward growth room that isn't behind the scroll origin — the same
+   * fix already works for the row's own last card (its trailing padding
+   * is redundant with the scrollWidth growth described above, kept anyway
+   * so the end doesn't depend on that side effect either).
+   *
+   * Rows still rest at scroll 0 with card 1 fully visible: this padding
+   * sits outside card 1's own box, so at rest it just reads as a small
+   * margin before the first case, never something scrolled past to reach
+   * it.
+   */
+  padding-inline: var(--edge-reserve, 0px);
   /*
    * padding-top and padding-bottom both get their own transition here
    * too, not only on the :has(...) rule below that raises them: a CSS
