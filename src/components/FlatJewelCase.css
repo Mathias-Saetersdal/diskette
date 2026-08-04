@@ -1,8 +1,9 @@
 /*
  * --list-case-h comes from the containing list (MediaList.css), a small
- * fallback here only so this component doesn't collapse to nothing if it's
- * ever rendered outside that context. No --height-scale factor, unlike
- * FlatCase.css: a jewel case is one fixed size, not a per-format table.
+ * fallback here only so this component doesn't collapse to nothing if
+ * it's ever rendered outside that context. No --height-scale factor,
+ * unlike FlatCase.css: a jewel case is one fixed size, not a per-format
+ * table.
  */
 .flat-jewel-case {
   all: unset;
@@ -12,12 +13,144 @@
   width: calc(var(--list-case-h, 140px) * var(--front-face-ratio));
   height: var(--list-case-h, 140px);
   overflow: hidden;
-  /* A plain contact shadow, not filter: drop-shadow — cheaper to
-     composite, which matters with several of these mounted at once. */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.45);
 }
 
 .flat-jewel-case:focus-visible {
   outline: 2px solid #fff;
   outline-offset: 3px;
+}
+
+/*
+ * The stage/wrap/spine assembly, same structural pattern as FlatCase.css's
+ * own .flat-case-stage/.flat-case-wrap/.flat-case-spine (comment there has
+ * the full breakdown): a box sized to fit both faces side by side before
+ * the fold, a single rotateY(-36deg) preserve-3d wrap laying them out,
+ * and a true spine face pivoting at the corner glued to the front. No
+ * livery branching here — every jewel case gets the identical spine.
+ */
+.flat-jewel-case-stage {
+  position: relative;
+  --front-w: calc(var(--list-case-h, 140px) * var(--front-face-ratio));
+  width: calc(var(--front-w) * (1 + var(--spine-ratio, 0)));
+  height: var(--list-case-h, 140px);
+}
+
+.flat-jewel-case-wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  transform-origin: left center;
+  transform: rotateY(-36deg);
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flat-jewel-case-wrap {
+    transition: none;
+  }
+}
+
+/*
+ * Clear plastic over the album's own printed insert (spineTone), not an
+ * opaque body the way a keep case's spine is: real jewel case plastic is
+ * transparent, so the paper insert underneath shows through, tinted by
+ * the plastic rather than covered by it — the gradient layers over
+ * --spine-insert instead of replacing it, the same "clear shell over a
+ * coloured surface" read .jewel-case__tray-shell (JewelCase.css) already
+ * uses for the open case's own clear panels. #4a4a4a is the fallback for
+ * an entry with no spineTone yet, not a design colour — every album in
+ * lists.ts currently has none set.
+ */
+.flat-jewel-case-spine {
+  position: relative;
+  flex: none;
+  --spine-w: calc(var(--front-w) * var(--spine-ratio, 0));
+  width: var(--spine-w);
+  height: 100%;
+  transform-origin: right center;
+  transform: rotateY(90deg);
+  background:
+    linear-gradient(155deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 40%, transparent 70%),
+    var(--spine-insert, #4a4a4a);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+}
+
+/*
+ * The two ridge lines a real jewel case spine has running its full
+ * height, one near each edge — this, not colour or a header, is what
+ * reads as "jewel case" rather than "a narrow Blu-ray spine" at a
+ * glance, per the brief. Darker than the insert, not lighter: a moulded
+ * ridge catches a shadow along its own edge rather than a highlight at
+ * this scale. ::before/::after rather than two extra elements — both are
+ * the same 1px line, only their position differs.
+ */
+.flat-jewel-case-spine::before,
+.flat-jewel-case-spine::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 1px;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.flat-jewel-case-spine::before {
+  left: 18%;
+}
+
+.flat-jewel-case-spine::after {
+  right: 18%;
+}
+
+.flat-jewel-case-wrap .flat-jewel-case {
+  flex: none;
+}
+
+/*
+ * The contact shadow, same treatment as FlatCase.css's own
+ * .flat-case-shadow — soft, wide, low-opacity, offset toward the back
+ * edge under this row's upper-left light and the wrap's own
+ * rotateY(-36deg).
+ */
+.flat-jewel-case-shadow {
+  position: absolute;
+  left: 4%;
+  right: -22%;
+  bottom: -10%;
+  height: 22%;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.32) 0%, rgba(0, 0, 0, 0) 75%);
+  filter: blur(10px);
+  pointer-events: none;
+}
+
+/*
+ * Hover/focus zoom, same mechanism and figures as FlatCase.css's own
+ * .flat-case-stage:hover — this card's own button (.flat-jewel-case) is
+ * nested inside .flat-jewel-case-wrap now rather than being the stage
+ * element itself, the same reason the games row's own rule needs
+ * :has() instead of a plain :hover on the button. MediaList.css's shared
+ * hover-zoom rule only reaches a *direct* child of .media-card, which
+ * this stopped being once the spine assembly landed, so it's scoped here
+ * instead rather than left broken there.
+ */
+.flat-jewel-case-stage {
+  transition: transform 180ms ease-out;
+}
+
+.flat-jewel-case-stage:hover,
+.flat-jewel-case-stage:has(.flat-jewel-case:focus-visible) {
+  transform: scale(1.12);
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flat-jewel-case-stage {
+    transition: none;
+  }
+
+  .flat-jewel-case-stage:hover,
+  .flat-jewel-case-stage:has(.flat-jewel-case:focus-visible) {
+    transform: none;
+  }
 }

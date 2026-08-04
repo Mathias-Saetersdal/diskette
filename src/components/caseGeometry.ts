@@ -23,3 +23,14 @@ export const CASE_GEOMETRY: Record<SupportedCaseFormat, { heightMm: number; widt
 // Blu-ray case is always ~80% of a DVD case's height, alone or side by
 // side, per "Dimensions are real millimetres, used as ratios" (03-object-spec.md).
 export const MAX_CASE_HEIGHT_MM = Math.max(...Object.values(CASE_GEOMETRY).map((format) => format.heightMm))
+
+// docs/03-object-spec.md Cases table: CD jewel case, 142 x 125 x 10mm.
+// Not part of CASE_GEOMETRY/SupportedCaseFormat above: jewel isn't a
+// format Case.tsx/FlatCase.tsx render (JewelCase/FlatJewelCase are their
+// own components, one fixed size, no per-format table), so it doesn't
+// belong in a type built to parameterise those two over dvd/bluray/ps5.
+// Lives here anyway, rather than as local constants in JewelCase.tsx —
+// same "read the real geometry, don't hardcode a ratio" reason
+// CASE_GEOMETRY exists — so JewelCase.tsx and FlatJewelCase.tsx share one
+// source for these three numbers instead of each declaring its own.
+export const JEWEL_GEOMETRY = { heightMm: 142, widthMm: 125, depthMm: 10 }

@@ -1,17 +1,15 @@
 import { useState, type CSSProperties, type KeyboardEvent, type RefObject } from 'react'
 import Disc, { DISC_DIAMETER_MM } from './Disc'
 import BurnedDisc from './BurnedDisc'
+import { JEWEL_GEOMETRY } from './caseGeometry'
 import type { DiscSource } from '../data/lists'
 import './caseMechanism.css'
 import './JewelCase.css'
 
-// docs/03-object-spec.md Cases table: CD jewel case, 142 x 125 x 10mm,
-// front face ratio 0.880. One fixed size, unlike Case.tsx's per-format
-// table: every album is the same jewel case, so there is no format
-// argument here to compute this from.
-const HEIGHT_MM = 142
-const WIDTH_MM = 125
-const DEPTH_MM = 10
+// caseGeometry.ts's JEWEL_GEOMETRY: front face ratio 0.880. One fixed
+// size, unlike Case.tsx's per-format table: every album is the same
+// jewel case, so there is no format argument here to compute this from.
+const { heightMm: HEIGHT_MM, widthMm: WIDTH_MM, depthMm: DEPTH_MM } = JEWEL_GEOMETRY
 // Exported: FlatJewelCase.tsx needs the same ratio for its own closed
 // placeholder and has no format table of its own to recompute it from.
 export const FRONT_FACE_RATIO = WIDTH_MM / HEIGHT_MM

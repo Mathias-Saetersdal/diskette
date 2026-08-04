@@ -19,10 +19,13 @@ interface AlbumCardProps {
 
 /**
  * The album equivalent of KeepCaseCard: the switch between FlatJewelCase
- * (closed, no 3D subtree) and JewelCase (the full interactive object),
- * using the same useCaseSequence choreography KeepCaseCard uses for keep
- * cases. Every jewel case is one fixed size with no livery, so there's no
- * caseFormat/livery to pass through here, unlike Case's props.
+ * (closed, at the row's own rest tilt) and JewelCase (the full
+ * interactive object), using the same useCaseSequence choreography
+ * KeepCaseCard uses for keep cases. Every jewel case is one fixed size
+ * with no livery, so there's no caseFormat/livery to pass through here,
+ * unlike Case's props — spineTone is the one exception, the same
+ * per-entry hand-picked colour keep cases already use for their own
+ * printed insert.
  */
 export default function AlbumCard({ entry, active, onActivate, onDeactivate }: AlbumCardProps) {
   const { open, enlarged, showCase, caseToggleRef, flatButtonRef, onToggleOpen } = useCaseSequence({
@@ -52,6 +55,7 @@ export default function AlbumCard({ entry, active, onActivate, onDeactivate }: A
           coverAlt={`${entry.title} cover`}
           onClick={onActivate}
           buttonRef={flatButtonRef}
+          spineTone={entry.spineTone}
         />
       )}
       <span className="media-card__rank">{entry.rank}</span>

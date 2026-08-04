@@ -54,10 +54,15 @@ export interface Entry {
   cover: string;
   spine?: string;
   /**
-   * Games row only. The printed insert's dominant tone as a plain CSS
-   * colour, hand-picked against each cover rather than sampled — no
-   * canvas per instance (FlatCase.tsx). Absent falls back to no visible
-   * insert band on the spine.
+   * The printed insert's dominant tone as a plain CSS colour, hand-picked
+   * against each cover rather than sampled — no canvas per instance
+   * (FlatCase.tsx, FlatJewelCase.tsx). Absent falls back to whichever
+   * neutral default that spine's own livery uses (FlatCase.css,
+   * FlatJewelCase.css) — a fixed grey for dvd and jewel, the platform's
+   * own base colour for a console livery. Set for every game entry;
+   * DVD-format films, series and albums don't have one yet (build plan
+   * stages 2-4) and render their own fallback until picked by eye
+   * against each cover.
    */
   spineTone?: string;
   back?: string;

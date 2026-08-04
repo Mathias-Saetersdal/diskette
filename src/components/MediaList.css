@@ -48,38 +48,35 @@
  * underneath is always a real, clickable/focusable control regardless of
  * hover state, so this is never the only way to discover a case opens.
  *
- * Scoped to a direct child of .media-card, not a bare .flat-case/
- * .flat-jewel-case selector: the games row's own FlatCase (restTilt path)
- * nests its real .flat-case button two levels deeper, inside
- * .flat-case-stage > .flat-case-wrap, so a direct-child selector here
- * can't reach it. That's deliberate — GamesList.css already applies the
- * identical 1.12/180ms zoom to .flat-case-stage itself for that row, and
- * matching .flat-case directly here too would double the effect inside
- * its already-rotated, preserve-3d spine assembly.
+ * Scoped to a direct child of .media-card, not a bare .flat-case
+ * selector: the games row's own FlatCase (restTilt path) nests its real
+ * .flat-case button two levels deeper, inside .flat-case-stage >
+ * .flat-case-wrap, so a direct-child selector here can't reach it.
+ * That's deliberate — GamesList.css already applies the identical
+ * 1.12/180ms zoom to .flat-case-stage itself for that row, and matching
+ * .flat-case directly here too would double the effect inside its
+ * already-rotated, preserve-3d spine assembly. FlatJewelCase moved to
+ * the same nested stage/wrap shape once it grew a real spine (build plan
+ * stage 4) — its own equivalent rule now lives in FlatJewelCase.css for
+ * the same reason, not here.
  */
-.media-card > .flat-case,
-.media-card > .flat-jewel-case {
+.media-card > .flat-case {
   transition: transform 180ms ease-out;
 }
 
 .media-card > .flat-case:hover,
-.media-card > .flat-case:focus-visible,
-.media-card > .flat-jewel-case:hover,
-.media-card > .flat-jewel-case:focus-visible {
+.media-card > .flat-case:focus-visible {
   transform: scale(1.12);
   z-index: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .media-card > .flat-case,
-  .media-card > .flat-jewel-case {
+  .media-card > .flat-case {
     transition: none;
   }
 
   .media-card > .flat-case:hover,
-  .media-card > .flat-case:focus-visible,
-  .media-card > .flat-jewel-case:hover,
-  .media-card > .flat-jewel-case:focus-visible {
+  .media-card > .flat-case:focus-visible {
     transform: none;
   }
 }
