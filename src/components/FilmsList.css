@@ -18,26 +18,50 @@
   perspective: 1400px;
   perspective-origin: 50% 40%;
   /*
-   * Build plan stage 8: the spine, not the card's overall footprint, sets
-   * the floor now — below this, the DVD-format spine (14/130, the
-   * widest of this row's two ratios; Blu-ray-format entries have none to
-   * protect) stops reading as anything at all. Target: 8px of visible
-   * spine at the row's own 36deg rest angle. Worked from the same
-   * on-screen-width formula FlatCase.css's own spine-width comment
-   * already uses (front_w * spine-ratio * sin(36deg)):
+   * Build plan review, stage 2: card height now solves directly for "ten
+   * cards, plus budget for an eleventh, fit this row's own available
+   * width" instead of approximating it off viewport width. .media-list-
+   * band's own container-type: inline-size (MediaList.css) makes 100cqw
+   * this row's real available width, not the viewport's.
    *
-   *   8 / (0.1077 * sin(36deg)) ≈ 126px of front-face width needed
-   *   126 / (130/184 dvd front-face-ratio) ≈ 179px of card height
+   * The ten cards are 5 dvd-format and 5 bluray-format (docs/04-lists.md).
+   * Each contributes height * height-scale * front-face-ratio of on-screen
+   * width (Case.tsx/FlatCase.tsx), not just height * front-face-ratio —
+   * bluray's own height-scale (148/184 ≈ 0.8043, MAX_CASE_HEIGHT_MM is
+   * dvd's 184mm) shrinks it before its wider front-face-ratio (128.5/148 ≈
+   * 0.8682) is applied, so its effective on-screen ratio (≈0.6984) actually
+   * lands a hair narrower than dvd's own (130/184 ≈ 0.7065), not wider as
+   * the raw ratios alone would suggest:
    *
-   * 180px clears it with a hair of margin (front-face-ratio 130/184,
-   * spine-ratio 14/130, sin(36deg): 180 * 0.7065 * 0.1077 * 0.5878 ≈
-   * 8.05px, measured the same way after the fact). Landing almost
-   * exactly on the old clamp's own 180px ceiling turns this into a
-   * fixed size rather than a responsive range in practice — 9vw only
-   * exceeds 180px past a ~2000px viewport — which is the intended
-   * effect, not a side effect: "two and a half cards visible at 380px is
-   * correct for a scroll row, do not fit ten" (build plan) applies at
-   * every width this clamp actually reaches.
+   *   5 * 0.7065 (dvd)    = 3.5326
+   *   5 * 0.6984 (bluray) = 3.4918
+   *   R (sum of all ten)  = 7.0244
+   *
+   * The eleventh, budgeted rather than rendered — "an open case is
+   * roughly two panels wide and consumes about one extra card width"
+   * (build plan) — uses the row's own largest effective ratio (dvd's
+   * 0.7065) as that extra unit's width, the conservative choice: whichever
+   * entry actually opens, the true extra it needs is at most this much,
+   * never more, so headroom is never short regardless of which of the two
+   * formats it is.
+   *
+   *   total = R + 0.7065 = 7.7310
+   *
+   * 9 real gaps between the ten actual cards, at 16px (.media-list's own
+   * gap) — the budgeted eleventh doesn't get one, it's headroom, not a
+   * rendered item:
+   *
+   *   card height = (100cqw - 9 * 16px) / 7.7310
+   *
+   * 180px floor: the existing spine-legibility figure (this same comment,
+   * pre-review — 8px of visible dvd spine at this row's own 36deg rest
+   * angle), reused rather than rederived — dvd is still this row's own
+   * widest ratio, so the floor that protected it before still does.
+   * Below the width this needs, the row scrolls instead of shrinking
+   * cards further (flex-shrink: 0 on .media-card, MediaList.css). 260px
+   * ceiling: a sanity cap for very wide viewports, well above what any
+   * width this formula is meant to serve actually reaches — not a target
+   * in itself.
    */
-  --list-case-h: clamp(180px, 9vw, 180px);
+  --list-case-h: clamp(180px, calc((100cqw - 144px) / 7.731), 260px);
 }

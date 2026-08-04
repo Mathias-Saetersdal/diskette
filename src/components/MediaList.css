@@ -50,6 +50,20 @@
   align-items: center;
   gap: 24px;
   width: 100%;
+  /*
+   * Build plan review, stage 2: card size is sized off this element's own
+   * available width now (cqw, in each list's own CSS file), not the
+   * viewport's (vw) — .media-list-band already matches .stage's own width
+   * exactly (100%, no max-width anywhere above it), so vw and cqw would
+   * resolve to the same number today, but cqw is correct for what the
+   * formula actually means ("fits within this row's own available
+   * space") where vw only happened to agree by coincidence of there being
+   * no side content yet. inline-size, not size: only the row's own width
+   * drives card height here, never its own height, which would be
+   * circular against a container whose height depends on that same card
+   * size.
+   */
+  container-type: inline-size;
 }
 
 /*
