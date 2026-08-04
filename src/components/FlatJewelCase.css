@@ -35,19 +35,6 @@
   height: var(--list-case-h, 140px);
 }
 
-/*
- * Set once AlbumCard's own showCase (useCaseSequence) has risen and the
- * full JewelCase has taken over elsewhere (portaled out of the scrolling
- * row, build plan stage 8 — same mechanism FlatCase.css's own
- * .flat-case-stage--hidden documents for keep cases). visibility, not
- * display: none, so this element keeps its layout box — the row doesn't
- * reflow and the rank number below it (MediaCard.css) doesn't shift —
- * while dropping out of view, hit-testing and the tab order.
- */
-.flat-jewel-case-stage--hidden {
-  visibility: hidden;
-}
-
 .flat-jewel-case-wrap {
   position: absolute;
   inset: 0;

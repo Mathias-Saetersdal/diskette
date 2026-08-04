@@ -48,17 +48,6 @@ interface FlatCaseProps {
    */
   spineWidthMm?: number
   /**
-   * True once the active Case has taken over (rendered elsewhere — every
-   * row's own card component portals it out of the scrolling row now,
-   * build plan stage 8, not just GameCard/GamesList.tsx which started
-   * this). Keeps this element mounted, at its own full size, so the
-   * row's layout and this card's own rank number don't shift — only
-   * visibility drops, via CSS (FlatCase.css), same technique
-   * prefers-reduced-motion elsewhere in this project uses to remove
-   * something from view without touching layout.
-   */
-  hidden?: boolean
-  /**
    * Plays the one-time settle animation (build plan stage 9): the wrap
    * cracks a few degrees off its own rest tilt and eases back, once,
    * demonstrating that this is a real hinged object rather than a flat
@@ -107,7 +96,6 @@ export default function FlatCase({
   restTilt = false,
   spineTone,
   spineWidthMm,
-  hidden = false,
   settleOnMount = false,
 }: FlatCaseProps) {
   const { heightMm, widthMm, depthMm } = CASE_GEOMETRY[caseFormat]
@@ -128,13 +116,7 @@ export default function FlatCase({
     <button
       ref={buttonRef}
       type="button"
-      // Only applied here when there's no restTilt stage wrapping this
-      // button (see below): that wrapper's own flat-case-stage--hidden
-      // already hides everything inside it, this button included, via
-      // ordinary visibility inheritance — adding it here too would be
-      // redundant, not wrong, but this keeps one element owning the
-      // state per render path rather than two agreeing by coincidence.
-      className={`flat-case${hidden && !restTilt ? ' flat-case--hidden' : ''}`}
+      className="flat-case"
       style={style}
       aria-label={`Open case: ${title}`}
       onClick={onClick}
@@ -184,7 +166,7 @@ export default function FlatCase({
             : null
 
   return (
-    <div className={`flat-case-stage${hidden ? ' flat-case-stage--hidden' : ''}`} style={style}>
+    <div className="flat-case-stage" style={style}>
       <div className={`flat-case-wrap${settleOnMount ? ' flat-case-wrap--settle' : ''}`}>
         <div className={`flat-case-spine flat-case-spine--${spineLivery}`} aria-hidden="true">
           {markSrc && <img className="flat-case-spine-mark" src={markSrc} alt="" />}

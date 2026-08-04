@@ -1,9 +1,7 @@
 import { useContext } from 'react'
-import { createPortal } from 'react-dom'
 import JewelCase from './JewelCase'
 import FlatJewelCase from './FlatJewelCase'
 import { useCaseSequence } from './useCaseSequence'
-import { ActivePortalContext } from './ActivePortal'
 import { SettleContext } from './SettleContext'
 import type { Entry } from '../data/lists'
 // The layout rules (case, then a rank number below it, bottom-aligned as
@@ -24,58 +22,54 @@ interface AlbumCardProps {
 /**
  * The album equivalent of KeepCaseCard: the switch between FlatJewelCase
  * (closed, at the row's own rest tilt) and JewelCase (the full
- * interactive object, portaled in for whichever entry is active), using
- * the same useCaseSequence choreography KeepCaseCard uses for keep
- * cases. Every jewel case is one fixed size with no livery, so there's no
- * caseFormat/livery to pass through here, unlike Case's props —
- * spineTone is the one exception, the same per-entry hand-picked colour
- * keep cases already use for their own printed insert.
+ * interactive object), in place, in the same row slot — using the same
+ * useCaseSequence choreography KeepCaseCard uses for keep cases. Every
+ * jewel case is one fixed size with no livery, so there's no caseFormat/
+ * livery to pass through here, unlike Case's props — spineTone is the
+ * one exception, the same per-entry hand-picked colour keep cases
+ * already use for their own printed insert.
  *
- * The albums row scrolls horizontally now (build plan stage 8), which is
- * what makes the portal necessary here, not just for GameCard: overflow
- * -x: auto forces overflow-y: auto along with it (MediaList.css), which
- * clips anything inside the row taller than its own resting height —
- * exactly what the active JewelCase is, by design, once it enlarges or
- * opens.
+ * A portal used to lift the active JewelCase out of the scrolling row,
+ * to dodge overflow-x: auto's forced overflow-y: auto clipping it once
+ * it enlarged or opened. Reverted, same as KeepCaseCard.tsx: it
+ * overlapped the section above and left a hole where the card had been.
+ * MediaList.css's own .media-list:has(.jewel-case[data-enlarged='true'])
+ * rule pads the row's own scroll container instead now.
  */
 export default function AlbumCard({ entry, active, onActivate, onDeactivate }: AlbumCardProps) {
   const { open, enlarged, showCase, caseToggleRef, flatButtonRef, onToggleOpen } = useCaseSequence({
     active,
     onDeactivate,
   })
-  const portalTarget = useContext(ActivePortalContext)
   const settle = useContext(SettleContext)
 
   return (
     <div className="media-card">
-      <FlatJewelCase
-        title={entry.title}
-        coverSrc={entry.cover}
-        coverAlt={`${entry.title} cover`}
-        onClick={onActivate}
-        buttonRef={flatButtonRef}
-        spineTone={entry.spineTone}
-        hidden={showCase}
-        // Rank 1 only (build plan stage 9).
-        settleOnMount={settle && entry.rank === 1}
-      />
-      {showCase &&
-        portalTarget &&
-        createPortal(
-          <JewelCase
-            title={entry.title}
-            coverSrc={entry.cover}
-            coverAlt={`${entry.title} cover`}
-            discSrc={entry.disc}
-            discAlt={`${entry.title} disc`}
-            discSource={entry.discSource}
-            open={open}
-            enlarged={enlarged}
-            onToggleOpen={onToggleOpen}
-            toggleRef={caseToggleRef}
-          />,
-          portalTarget,
-        )}
+      {showCase ? (
+        <JewelCase
+          title={entry.title}
+          coverSrc={entry.cover}
+          coverAlt={`${entry.title} cover`}
+          discSrc={entry.disc}
+          discAlt={`${entry.title} disc`}
+          discSource={entry.discSource}
+          open={open}
+          enlarged={enlarged}
+          onToggleOpen={onToggleOpen}
+          toggleRef={caseToggleRef}
+        />
+      ) : (
+        <FlatJewelCase
+          title={entry.title}
+          coverSrc={entry.cover}
+          coverAlt={`${entry.title} cover`}
+          onClick={onActivate}
+          buttonRef={flatButtonRef}
+          spineTone={entry.spineTone}
+          // Rank 1 only (build plan stage 9).
+          settleOnMount={settle && entry.rank === 1}
+        />
+      )}
       <span className="media-card__rank">{entry.rank}</span>
     </div>
   )

@@ -24,19 +24,6 @@
 }
 
 /*
- * The bare-button path's own version of .flat-case-stage--hidden further
- * down this file: no restTilt, no stage wrapper, so this button is the
- * root element to hide directly rather than a descendant inheriting it.
- * Same technique, same reasoning — visibility, not display: none, keeps
- * the layout box (the row's own width and this card's rank number below
- * it don't shift) while dropping out of view, hit-testing and the tab
- * order.
- */
-.flat-case--hidden {
-  visibility: hidden;
-}
-
-/*
  * Games row only (FlatCase's restTilt prop, set from entry.medium ===
  * 'game' in KeepCaseCard). A real spine, not a gradient painted over the
  * front artwork.
@@ -103,22 +90,6 @@
   .flat-case-stage:has(.flat-case:focus-visible) {
     transform: none;
   }
-}
-
-/*
- * Set once GameCard's own showCase (useCaseSequence) has risen and the
- * full Case has taken over elsewhere (portaled out of the scrolling row —
- * GamesList.tsx). visibility, not display: none, so this element keeps
- * its layout box — the row doesn't reflow and the rank number below it
- * (MediaCard.css) doesn't shift — while dropping out of view, hit-testing
- * and the tab order, the same three things display: none would remove,
- * without the layout cost. Mirrors the delay on the way in
- * (useCaseSequence's showCaseNow): this card was visible a moment into
- * its own opening animation, and disappears the instant the full case
- * genuinely takes its place, not before.
- */
-.flat-case-stage--hidden {
-  visibility: hidden;
 }
 
 .flat-case-wrap {

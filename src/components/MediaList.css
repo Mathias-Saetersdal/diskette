@@ -66,6 +66,17 @@
    */
   padding-block: 24px;
   /*
+   * padding-top gets its own transition here too, not only on the
+   * :has(...) rule below that raises it: a CSS transition runs off
+   * whichever rule's declarations are in effect *after* a change, not
+   * before, so when a card stops being enlarged and :has() no longer
+   * matches, this base rule is what's active for the shrink back to
+   * 24px — without its own copy of this transition, that direction
+   * would jump instead of easing, even though the grow direction
+   * (driven by the :has() rule's own transition) animated correctly.
+   */
+  transition: padding-top 1.5s ease-in-out;
+  /*
    * The floor stage 6's padding made room for: darker at the band's own
    * top edge, lighter where the objects actually sit (every card is
    * bottom-aligned — .media-list .media-card below), reading as a
@@ -80,6 +91,63 @@
    * adds a second one.
    */
   background: linear-gradient(to bottom, #141414 0%, #202020 100%);
+}
+
+/* --height-scale is Case.tsx's own per-format inline style; JewelCase.tsx
+   never sets it, so the var() fallback of 1 applies there, correctly —
+   every jewel case is already the same size. */
+.media-list .case,
+.media-list .jewel-case {
+  --case-h: calc(var(--list-case-h) * var(--height-scale, 1));
+}
+
+/*
+ * The card expands in place now, not through a portal (build plan: a
+ * portal used to lift the active Case/JewelCase out of the row into a
+ * container mounted outside it, specifically to dodge overflow-x: auto's
+ * forced overflow-y: auto clipping it once it enlarged or opened —
+ * reverted, since it overlapped the section above and left a hole where
+ * the card had been, which read worse than the clipping it fixed). This
+ * is the replacement: while any card in the row is enlarged, the row's
+ * own padding-top grows by --list-case-h — matching caseMechanism.css's
+ * own transform-origin: 50% 100% on .case/.jewel-case (growth is purely
+ * upward from a fixed bottom edge, so the extra room only has to open up
+ * above the row's own content, never below it) — instead of the card
+ * moving anywhere. :has() reads the state directly off whichever card is
+ * actually enlarged, so this needs no JS and no prop threaded through
+ * MediaList.tsx, which stays untouched.
+ *
+ * --list-case-h alone, not a per-card --case-h: :has() can select on a
+ * descendant's own state but a parent selector can't read a descendant's
+ * custom property back up the tree, so this can't ask "how tall is the
+ * specific card that's active" — --list-case-h (this row's own reference
+ * height, at height-scale 1) is a safe upper bound instead. A shorter
+ * format (Blu-ray, height-scale under 1) gets slightly more headroom
+ * than its own enlarge strictly needs; never less, so nothing clips.
+ *
+ * Transition duration matches --enlarge-duration (caseMechanism.css,
+ * 1.5s) so the row's own growth and the card's own scale finish
+ * together, not one visibly lagging the other.
+ */
+.media-list:has(.case[data-enlarged='true']),
+.media-list:has(.jewel-case[data-enlarged='true']) {
+  padding-top: calc(24px + var(--list-case-h));
+  transition: padding-top 1.5s ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .media-list,
+  .media-list:has(.case[data-enlarged='true']),
+  .media-list:has(.jewel-case[data-enlarged='true']) {
+    transition: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .media-list:has(.case[data-enlarged='true']),
+  .media-list:has(.jewel-case[data-enlarged='true']) {
+    transition: none;
+  }
 }
 
 /*

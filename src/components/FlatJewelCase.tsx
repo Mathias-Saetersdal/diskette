@@ -19,21 +19,11 @@ interface FlatJewelCaseProps {
    */
   spineTone?: string
   /**
-   * True once the active JewelCase has taken over (rendered elsewhere —
-   * AlbumCard portals it out of the scrolling row, build plan stage 8,
-   * same mechanism KeepCaseCard/FlatCase.tsx use for keep cases). Keeps
-   * this element mounted, at its own full size, so the row's layout and
-   * this card's own rank number don't shift — only visibility drops.
-   */
-  hidden?: boolean
-  /**
    * Plays the one-time settle animation (build plan stage 9): the wrap
    * cracks a few degrees off its own rest tilt and eases back, once,
    * demonstrating that this is a real hinged object rather than a flat
    * image. Same mechanism and CSS shape as FlatCase.tsx's own
-   * settleOnMount — see FlatJewelCase.css. Every jewel case always has
-   * this wrap (unlike FlatCase's bare-button path), so unlike there,
-   * this is never a no-op when true.
+   * settleOnMount — see FlatJewelCase.css.
    */
   settleOnMount?: boolean
 }
@@ -62,7 +52,6 @@ export default function FlatJewelCase({
   onClick,
   buttonRef,
   spineTone,
-  hidden = false,
   settleOnMount = false,
 }: FlatJewelCaseProps) {
   const style = {
@@ -74,7 +63,7 @@ export default function FlatJewelCase({
   } as CSSProperties
 
   return (
-    <div className={`flat-jewel-case-stage${hidden ? ' flat-jewel-case-stage--hidden' : ''}`} style={style}>
+    <div className="flat-jewel-case-stage" style={style}>
       <div className={`flat-jewel-case-wrap${settleOnMount ? ' flat-jewel-case-wrap--settle' : ''}`}>
         <div className="flat-jewel-case-spine" aria-hidden="true" />
         <button
