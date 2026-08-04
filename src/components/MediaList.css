@@ -1,8 +1,23 @@
+/*
+ * Build plan stage 4: measured 158px of visual gap from a row's own
+ * tallest card to the next section's own heading, well past the 56px
+ * .stage gap (App.css) alone, which stays as it is — an earlier,
+ * explicit instruction ("keep the section gap at 56px, do not shrink
+ * it") that still holds. The other three contributors, measured before
+ * touching any of them: this rule's own 24px gap (band to detail),
+ * .media-list-detail's own 54px reserved height when nothing is active
+ * (min-height: 3em, the single biggest of the three), and .media-list's
+ * own 24px padding-bottom (the row breathing room work, also explicitly
+ * asked to stay — it reads as part of the previous section's own shelf,
+ * not empty space between two sections, so it's left out of this fix).
+ * This rule's own gap and the detail panel's own reserved height were
+ * the two nothing had already protected, so those are what change here.
+ */
 .media-list-section {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
+  gap: 16px;
   width: 100%;
 }
 
@@ -257,8 +272,18 @@
   }
 }
 
+/*
+ * Build plan stage 4: 3em (54px) reserved the space for a wrapped
+ * two-line title even when nothing is active, at the cost of being the
+ * single biggest contributor to a total section-to-section gap that read
+ * as too large. 1.5em still reserves a real single line rather than
+ * collapsing to nothing (which would visibly push the next section up
+ * the instant a card opens) — the panel still grows past this the
+ * moment real content needs more, min-height is a floor, not a fixed
+ * size.
+ */
 .media-list-detail {
-  min-height: 3em;
+  min-height: 1.5em;
   max-width: 640px;
   margin-inline: auto;
   text-align: center;
