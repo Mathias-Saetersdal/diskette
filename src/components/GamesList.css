@@ -41,26 +41,20 @@
   flex-wrap: nowrap;
   overflow-x: auto;
   /*
-   * Room for the hover/focus zoom (FlatCase.css's .flat-case-stage:hover,
-   * scale(1.12)) to grow into without the same overflow-x: auto forcing
-   * overflow-y: auto and clipping it — the mechanism is identical to the
-   * one .games-active-slot's own comment below already explains for the
-   * active case, just triggered by hover instead of activation. dvd is
-   * the tallest format this row renders (caseGeometry.ts's
-   * MAX_CASE_HEIGHT_MM, height-scale 1, so its on-screen height is
-   * exactly --list-case-h with no slack against the row's own
-   * flex-computed cross size) — a card at that format and livery (ps2,
-   * Sly 3) has nothing to give before its hover growth hits the row's own
-   * box. scale(1.12) grows a card by 6% of its own height in each
-   * direction from its centre (the default transform-origin, untouched);
-   * padding this exact amount, top and bottom, gives that growth
-   * somewhere to go. The negative margin below cancels the padding back
-   * out of the page's own layout flow, so this only changes how much the
-   * row can show without clipping, not where it sits or how tall it
-   * reads as being to anything outside it.
+   * No padding-block/margin-block override here any more — this row used
+   * to need its own, calc(6% of --list-case-h), room for the hover/focus
+   * zoom (FlatCase.css's .flat-case-stage:hover, scale(1.12)) to grow
+   * into without overflow-x: auto's forced overflow-y: auto clipping it
+   * (dvd, this row's tallest format, has zero slack against the row's
+   * own flex-computed cross size, so a card at that format and livery —
+   * ps2, Sly 3 — had nothing to give before its hover growth hit the
+   * row's own box). MediaList.css's own shared padding-block: 24px (build
+   * plan stage 6, added for every row's "band, not floating cards" read)
+   * comfortably covers that same minimum on its own: 6% of this row's own
+   * clamp ceiling (201px) is ~12px, half of 24px, at every viewport this
+   * clamp can ever reach. One shared rule now does both jobs instead of
+   * two separate values that happened to want the same kind of fix.
    */
-  padding-block: calc(var(--list-case-h) * 0.06);
-  margin-block: calc(var(--list-case-h) * -0.06);
 }
 
 /*

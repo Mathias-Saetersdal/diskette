@@ -23,6 +23,33 @@
   justify-content: center;
   gap: 16px;
   width: 100%;
+  /*
+   * Vertical padding inside the row's own box, not more gap around it:
+   * cards sat directly on the page's own background with nothing to
+   * read as a shelf — floating objects, not a band. No compensating
+   * negative margin here — unlike the games row's own earlier use of
+   * this same padding/margin pair (see below), this padding is meant to
+   * be seen: it's what actually pushes the cards clear of their own
+   * heading, deliberately growing .media-list-section's own height
+   * rather than being cancelled back out of it. .stage's 56px gap
+   * between sections and .media-list-section's own 24px heading-to-row/
+   * row-to-detail gaps stay exactly what they're declared as; the page
+   * simply reads taller as a result, which is the point. Stage 7's floor
+   * gradient reads against this same clearance.
+   *
+   * Also covers a second, older need without a second value: the games
+   * row's own hover/focus zoom (FlatCase.css's .flat-case-stage:hover,
+   * scale(1.12)) needs room to grow into so overflow-x: auto's forced
+   * overflow-y: auto doesn't clip it (GamesList.css has the full
+   * mechanism) — that fix's own minimum works out to 6% of that row's
+   * own --list-case-h, capped at ~12px by its 201px clamp ceiling, well
+   * under this rule's 24px at every viewport that clamp can reach. That
+   * fix never needed the padding to be invisible, only large enough —
+   * GamesList.css used to carry its own calc-based padding/negative-
+   * margin pair for it anyway, since nothing shared one yet; it's gone
+   * now that this covers the same minimum.
+   */
+  padding-block: 24px;
 }
 
 /* --height-scale is Case.tsx's own per-format inline style; JewelCase.tsx
