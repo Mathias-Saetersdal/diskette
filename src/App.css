@@ -20,15 +20,3 @@
      Materials. */
   background: #1a1a1a;
 }
-
-.burned-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 24px;
-}
-
-.burned-row .disc {
-  width: min(24vmin, 260px);
-}
