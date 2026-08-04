@@ -138,6 +138,46 @@
 }
 
 /*
+ * The one-time settle animation (build plan stage 9, FlatCase.tsx's
+ * settleOnMount prop): cracks off the wrap's own -36deg rest tilt
+ * (matching the literal value above — a CSS keyframe can't reference a
+ * sibling rule's own value, so this is a second copy of that same
+ * number, not a new one) toward the viewer by 8deg, then eases back.
+ * Toward the viewer, not further away: a hinge opening reads as the
+ * front turning to face the viewer more directly, not receding further
+ * into the tilt. ease-out over a flat linear or ease-in-out reads as a
+ * quick push followed by a slower settle under its own weight, which is
+ * the physical read "crack and settle" describes — a symmetric curve
+ * wouldn't distinguish the two halves of the motion at all.
+ * animation-fill-mode: forwards isn't needed for the end state itself
+ * (the keyframe's own 100% already matches the base rule's resting
+ * transform exactly) but is set anyway so the handoff between the
+ * animation ending and the base rule resuming control can't flicker.
+ */
+@keyframes flat-case-settle {
+  0% {
+    transform: rotateY(-36deg);
+  }
+  30% {
+    transform: rotateY(-28deg);
+  }
+  100% {
+    transform: rotateY(-36deg);
+  }
+}
+
+.flat-case-wrap--settle {
+  animation: flat-case-settle 700ms ease-out;
+  animation-fill-mode: forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flat-case-wrap--settle {
+    animation: none;
+  }
+}
+
+/*
  * The spine's fallback material: --spine-body alone, full height, one flat
  * colour or gradient. Liveries whose spine has more than one zone
  * (standard's printed insert; ps5/ps4's plastic caps + header + insert;

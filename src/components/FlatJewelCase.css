@@ -65,6 +65,38 @@
 }
 
 /*
+ * The one-time settle animation (build plan stage 9,
+ * FlatJewelCase.tsx's settleOnMount prop) — same shape and same
+ * reasoning as FlatCase.css's own .flat-case-wrap--settle: cracks off
+ * the wrap's own -36deg rest tilt (matching the literal value above — a
+ * keyframe can't reference a sibling rule's value) toward the viewer by
+ * 8deg, then eases back under an ease-out curve so the push reads quick
+ * and the settle reads slow.
+ */
+@keyframes flat-jewel-case-settle {
+  0% {
+    transform: rotateY(-36deg);
+  }
+  30% {
+    transform: rotateY(-28deg);
+  }
+  100% {
+    transform: rotateY(-36deg);
+  }
+}
+
+.flat-jewel-case-wrap--settle {
+  animation: flat-jewel-case-settle 700ms ease-out;
+  animation-fill-mode: forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flat-jewel-case-wrap--settle {
+    animation: none;
+  }
+}
+
+/*
  * Clear plastic over the album's own printed insert (spineTone), not an
  * opaque body the way a keep case's spine is: real jewel case plastic is
  * transparent, so the paper insert underneath shows through, tinted by

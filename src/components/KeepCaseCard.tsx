@@ -4,6 +4,7 @@ import Case from './Case'
 import FlatCase from './FlatCase'
 import { useCaseSequence } from './useCaseSequence'
 import { ActivePortalContext } from './ActivePortal'
+import { SettleContext } from './SettleContext'
 import type { SupportedCaseFormat } from './caseGeometry'
 import type { Entry } from '../data/lists'
 import './MediaCard.css'
@@ -49,6 +50,7 @@ export default function KeepCaseCard({ entry, active, onActivate, onDeactivate }
     onDeactivate,
   })
   const portalTarget = useContext(ActivePortalContext)
+  const settle = useContext(SettleContext)
 
   return (
     <div className="media-card">
@@ -73,6 +75,10 @@ export default function KeepCaseCard({ entry, active, onActivate, onDeactivate }
         spineTone={entry.spineTone}
         spineWidthMm={entry.medium === 'series' ? SERIES_SPINE_WIDTH_MM : undefined}
         hidden={showCase}
+        // Rank 1 only (build plan stage 9) — never every card in the
+        // row, which is exactly what settle already guards against
+        // being true for more than one row at a time.
+        settleOnMount={settle && entry.rank === 1}
       />
       {showCase &&
         portalTarget &&

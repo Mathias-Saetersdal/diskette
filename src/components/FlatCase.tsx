@@ -58,6 +58,19 @@ interface FlatCaseProps {
    * something from view without touching layout.
    */
   hidden?: boolean
+  /**
+   * Plays the one-time settle animation (build plan stage 9): the wrap
+   * cracks a few degrees off its own rest tilt and eases back, once,
+   * demonstrating that this is a real hinged object rather than a flat
+   * image — the affordance nothing at rest otherwise gives touch users
+   * (hover covers desktop, nothing covers touch). Only meaningful on the
+   * restTilt path below: the bare-button path has no rotated wrap to
+   * crack, so this is ignored there rather than animating something
+   * else in its place. Each row's own list wrapper decides which single
+   * entry gets true (useSettleOnFirstView.ts, SettleContext.ts) — never
+   * passed true for more than one card per row at a time.
+   */
+  settleOnMount?: boolean
 }
 
 /**
@@ -95,6 +108,7 @@ export default function FlatCase({
   spineTone,
   spineWidthMm,
   hidden = false,
+  settleOnMount = false,
 }: FlatCaseProps) {
   const { heightMm, widthMm, depthMm } = CASE_GEOMETRY[caseFormat]
   const style = {
@@ -171,7 +185,7 @@ export default function FlatCase({
 
   return (
     <div className={`flat-case-stage${hidden ? ' flat-case-stage--hidden' : ''}`} style={style}>
-      <div className="flat-case-wrap">
+      <div className={`flat-case-wrap${settleOnMount ? ' flat-case-wrap--settle' : ''}`}>
         <div className={`flat-case-spine flat-case-spine--${spineLivery}`} aria-hidden="true">
           {markSrc && <img className="flat-case-spine-mark" src={markSrc} alt="" />}
           {wordmarkSrc && <img className="flat-case-spine-wordmark" src={wordmarkSrc} alt="" />}

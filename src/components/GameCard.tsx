@@ -4,6 +4,7 @@ import Case from './Case'
 import FlatCase from './FlatCase'
 import { useCaseSequence } from './useCaseSequence'
 import { GamesActivePortalContext } from './GamesActivePortal'
+import { SettleContext } from './SettleContext'
 import type { SupportedCaseFormat } from './caseGeometry'
 import type { Entry } from '../data/lists'
 import './MediaCard.css'
@@ -43,6 +44,7 @@ export default function GameCard({ entry, active, onActivate, onDeactivate }: Ga
     delayShowCase: true,
   })
   const portalTarget = useContext(GamesActivePortalContext)
+  const settle = useContext(SettleContext)
 
   return (
     <div className="media-card">
@@ -57,6 +59,10 @@ export default function GameCard({ entry, active, onActivate, onDeactivate }: Ga
         restTilt
         spineTone={entry.spineTone}
         hidden={showCase}
+        // Rank 1 only (build plan stage 9) — not part of this row's own
+        // livery/geometry/rest-angle/card-size freeze, a new interaction
+        // affordance rather than a change to any of those.
+        settleOnMount={settle && entry.rank === 1}
       />
       {showCase &&
         portalTarget &&

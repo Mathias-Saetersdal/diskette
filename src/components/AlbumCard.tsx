@@ -4,6 +4,7 @@ import JewelCase from './JewelCase'
 import FlatJewelCase from './FlatJewelCase'
 import { useCaseSequence } from './useCaseSequence'
 import { ActivePortalContext } from './ActivePortal'
+import { SettleContext } from './SettleContext'
 import type { Entry } from '../data/lists'
 // The layout rules (case, then a rank number below it, bottom-aligned as
 // one stack) have nothing case-shape-specific in them, so they live in
@@ -43,6 +44,7 @@ export default function AlbumCard({ entry, active, onActivate, onDeactivate }: A
     onDeactivate,
   })
   const portalTarget = useContext(ActivePortalContext)
+  const settle = useContext(SettleContext)
 
   return (
     <div className="media-card">
@@ -54,6 +56,8 @@ export default function AlbumCard({ entry, active, onActivate, onDeactivate }: A
         buttonRef={flatButtonRef}
         spineTone={entry.spineTone}
         hidden={showCase}
+        // Rank 1 only (build plan stage 9).
+        settleOnMount={settle && entry.rank === 1}
       />
       {showCase &&
         portalTarget &&

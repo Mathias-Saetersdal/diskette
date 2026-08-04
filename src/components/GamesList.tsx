@@ -2,6 +2,8 @@ import { useState } from 'react'
 import MediaList from './MediaList'
 import GameCard from './GameCard'
 import { GamesActivePortalContext } from './GamesActivePortal'
+import { useSettleOnFirstView } from './useSettleOnFirstView'
+import { SettleContext } from './SettleContext'
 import { games } from '../data/lists'
 import './GamesList.css'
 
@@ -23,15 +25,26 @@ import './GamesList.css'
  * re-render GameCard's first portal needs; passing setActiveSlot directly
  * as the ref callback gets that render for free the moment the node
  * mounts.
+ *
+ * The third reason, added in build plan stage 9: a ref to watch for this
+ * row's own first scroll into view, to fire the settle animation on its
+ * ranked-1 entry once (SettleContext, read by GameCard). Not part of the
+ * games livery/geometry/rest-angle/card-size freeze this row otherwise
+ * carries — a new interaction affordance, not a change to any of those.
+ * staggerMs 450: games is the fourth and last of the four lists in
+ * App.tsx.
  */
 export default function GamesList() {
   const [activeSlot, setActiveSlot] = useState<HTMLDivElement | null>(null)
+  const [settleRef, settle] = useSettleOnFirstView<HTMLDivElement>(450)
 
   return (
-    <div className="games-list">
+    <div className="games-list" ref={settleRef}>
       <div ref={setActiveSlot} className="games-active-slot" />
       <GamesActivePortalContext.Provider value={activeSlot}>
-        <MediaList entries={games} CardComponent={GameCard} ariaLabel="Games, all time" heading="Spill" />
+        <SettleContext.Provider value={settle}>
+          <MediaList entries={games} CardComponent={GameCard} ariaLabel="Games, all time" heading="Spill" />
+        </SettleContext.Provider>
       </GamesActivePortalContext.Provider>
     </div>
   )

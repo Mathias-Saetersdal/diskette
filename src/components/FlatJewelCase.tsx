@@ -26,6 +26,16 @@ interface FlatJewelCaseProps {
    * this card's own rank number don't shift — only visibility drops.
    */
   hidden?: boolean
+  /**
+   * Plays the one-time settle animation (build plan stage 9): the wrap
+   * cracks a few degrees off its own rest tilt and eases back, once,
+   * demonstrating that this is a real hinged object rather than a flat
+   * image. Same mechanism and CSS shape as FlatCase.tsx's own
+   * settleOnMount — see FlatJewelCase.css. Every jewel case always has
+   * this wrap (unlike FlatCase's bare-button path), so unlike there,
+   * this is never a no-op when true.
+   */
+  settleOnMount?: boolean
 }
 
 /**
@@ -53,6 +63,7 @@ export default function FlatJewelCase({
   buttonRef,
   spineTone,
   hidden = false,
+  settleOnMount = false,
 }: FlatJewelCaseProps) {
   const style = {
     '--front-face-ratio': widthMm / heightMm,
@@ -64,7 +75,7 @@ export default function FlatJewelCase({
 
   return (
     <div className={`flat-jewel-case-stage${hidden ? ' flat-jewel-case-stage--hidden' : ''}`} style={style}>
-      <div className="flat-jewel-case-wrap">
+      <div className={`flat-jewel-case-wrap${settleOnMount ? ' flat-jewel-case-wrap--settle' : ''}`}>
         <div className="flat-jewel-case-spine" aria-hidden="true" />
         <button
           ref={buttonRef}
