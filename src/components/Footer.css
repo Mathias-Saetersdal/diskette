@@ -1,0 +1,53 @@
+/*
+ * Same 600px column and 24px side padding as Intro.css, deliberately — the
+ * page opens on a centred column and closes on one, the one bookend this
+ * pass adds. system-ui, not Lora: the intro's Lora is Matti's own voice,
+ * this is attribution copy, a legal requirement (TMDB's free tier), not
+ * writing — interface register, same family as the section labels and
+ * rank numbers use elsewhere.
+ *
+ * "Not 10px grey": #ccc at 0.95rem is deliberately closer to the intro's
+ * own body-copy contrast than to .media-list-heading's own #888 caption
+ * colour (MediaList.css) — a real attribution line earns real legibility,
+ * not a footnote trailing off the page.
+ */
+.footer {
+  max-width: 600px;
+  margin-inline: auto;
+  padding-inline: 24px;
+  text-align: center;
+  font-family: system-ui, sans-serif;
+}
+
+.footer__attribution {
+  margin: 0;
+  color: #ccc;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/*
+ * Underlined, not coloured, is what marks this as a link — no accent
+ * colour on the page, so the same grayscale family as the line above
+ * has to do the whole job. Brighter than the attribution line on top of
+ * the underline (not just the underline alone) since this is the one
+ * actually interactive word in the footer and needs to read as more than
+ * a trailing continuation of the sentence above it.
+ */
+.footer__link {
+  display: inline-block;
+  margin-top: 12px;
+  color: #eee;
+  font-size: 0.95rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.footer__link:hover {
+  color: #fff;
+}
+
+.footer__link:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 4px;
+}

@@ -33,7 +33,13 @@ export default function SeriesList() {
   return (
     <div className="series-list" ref={settleRef}>
       <SettleContext.Provider value={settle}>
-        <MediaList entries={series} CardComponent={KeepCaseCard} ariaLabel="Series, all time" heading="Serier" />
+        <MediaList
+          entries={series}
+          CardComponent={KeepCaseCard}
+          ariaLabel="Series, all time"
+          heading="Serier"
+          id="serier"
+        />
       </SettleContext.Provider>
     </div>
   )

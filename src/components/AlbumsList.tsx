@@ -26,7 +26,13 @@ export default function AlbumsList() {
   return (
     <div className="albums-list" ref={settleRef}>
       <SettleContext.Provider value={settle}>
-        <MediaList entries={albums} CardComponent={AlbumCard} ariaLabel="Albums, all time" heading="Album" />
+        <MediaList
+          entries={albums}
+          CardComponent={AlbumCard}
+          ariaLabel="Albums, all time"
+          heading="Album"
+          id="album"
+        />
       </SettleContext.Provider>
     </div>
   )

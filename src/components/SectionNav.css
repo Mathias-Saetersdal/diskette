@@ -1,0 +1,81 @@
+/*
+ * Fixed to the left edge, vertically centred with flex alignment rather
+ * than a translateY transform: nothing in this file uses transform at
+ * all, since the same reasoning that rules it out for rotating the link
+ * text (below) applies to any transform on an ancestor that could clip
+ * or offset a focused descendant's own hit area.
+ *
+ * Hidden below 768px with no mobile equivalent: each list's own h2
+ * (MediaList.tsx's .media-list-heading) already announces the current
+ * section on a phone, one at a time, as it scrolls past. A cramped
+ * rotated column has nothing to add there.
+ */
+.section-nav {
+  position: fixed;
+  inset-block: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  z-index: 10;
+}
+
+@media (max-width: 768px) {
+  .section-nav {
+    display: none;
+  }
+}
+
+.section-nav__list {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  margin: 0;
+  padding: 16px 6px;
+  list-style: none;
+}
+
+/*
+ * writing-mode, not transform: rotate. A rotated transform turns the
+ * link's own box in place but leaves its layout footprint (and its
+ * hit-test rect for click and for the focus ring) as the original,
+ * unrotated rectangle, so the visible glyph and the clickable/focusable
+ * area drift apart. writing-mode instead lays the text out vertically in
+ * the first place: the box itself is tall and narrow, so its hit area
+ * and its focus outline both already match what's on screen.
+ *
+ * vertical-rl reads top-to-bottom, each Latin glyph turned 90 degrees
+ * clockwise — verified in Chrome rather than assumed, since this is
+ * exactly the detail rotated nav usually gets wrong.
+ */
+.section-nav__link {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  display: inline-block;
+  padding: 4px 6px;
+  font: 500 0.85rem/1 system-ui, sans-serif;
+  letter-spacing: 0.04em;
+  color: #888;
+  text-decoration: none;
+  opacity: 0.6;
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.section-nav__link:hover {
+  opacity: 1;
+  color: #ccc;
+}
+
+/*
+ * No accent colour: the current section is the brighter, fuller-weight
+ * one, not a coloured one. Weight and opacity are the whole vocabulary.
+ */
+.section-nav__link[data-current='true'] {
+  color: #eee;
+  font-weight: 700;
+  opacity: 1;
+}
+
+.section-nav__link:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}

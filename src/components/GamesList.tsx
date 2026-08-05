@@ -35,7 +35,7 @@ export default function GamesList() {
   return (
     <div className="games-list" ref={settleRef}>
       <SettleContext.Provider value={settle}>
-        <MediaList entries={games} CardComponent={GameCard} ariaLabel="Games, all time" heading="Spill" />
+        <MediaList entries={games} CardComponent={GameCard} ariaLabel="Games, all time" heading="Spill" id="spill" />
       </SettleContext.Provider>
     </div>
   )

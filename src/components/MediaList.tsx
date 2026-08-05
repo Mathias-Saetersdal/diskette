@@ -14,6 +14,10 @@ interface MediaListProps {
   CardComponent: ComponentType<MediaCardProps>
   ariaLabel: string
   heading: string
+  // Scroll target for SectionNav.tsx's jump links and the section it
+  // marks current via IntersectionObserver. Optional so nothing else
+  // calling MediaList needs updating.
+  id?: string
 }
 
 /**
@@ -35,11 +39,11 @@ interface MediaListProps {
  * only thing that conveys rank here. No badge, no number beyond the rank
  * printed by the card itself: open decision 5 resolved as position only.
  */
-export default function MediaList({ entries, CardComponent, ariaLabel, heading }: MediaListProps) {
+export default function MediaList({ entries, CardComponent, ariaLabel, heading, id }: MediaListProps) {
   const [activeId, setActiveId] = useState<string | null>(null)
 
   return (
-    <section className="media-list-section" aria-label={ariaLabel}>
+    <section id={id} className="media-list-section" aria-label={ariaLabel}>
       {/*
        * Heading and row share one wrapper (build plan stage 3) so the
        * floor band (MediaList.css's own .media-list-band::before) can

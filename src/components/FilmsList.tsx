@@ -30,7 +30,13 @@ export default function FilmsList() {
   return (
     <div className="films-list" ref={settleRef}>
       <SettleContext.Provider value={settle}>
-        <MediaList entries={films} CardComponent={KeepCaseCard} ariaLabel="Films, all time" heading="Filmer" />
+        <MediaList
+          entries={films}
+          CardComponent={KeepCaseCard}
+          ariaLabel="Films, all time"
+          heading="Filmer"
+          id="filmer"
+        />
       </SettleContext.Provider>
     </div>
   )
