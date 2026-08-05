@@ -1,14 +1,67 @@
-/* Same body-text treatment as .media-list-detail (MediaList.css) — plain
-   copy, no card or list mechanics involved. */
+/*
+ * The one typographic identity move on the page (frontend-design review):
+ * Lora, not system-ui — the same self-hosted face MediaCardDetail.css
+ * already uses for each entry's own note (@fontsource/lora/latin-400.css,
+ * Intro.tsx's own import — same file, same weight, no new font asset).
+ * It's the same voice, Matti's own writing, just addressed to whoever's
+ * reading the page instead of to one entry.
+ *
+ * Kept to this project's own plain grayscale (#eee/#aaa, already used
+ * throughout the case components) rather than the note's own warm
+ * parchment tone (#d9cfae, MediaCardDetail.css) — no accent colour, by
+ * direct review, and that tone specifically belongs to text sitting
+ * inside an open object. This text isn't attached to one, so it stays
+ * neutral instead of borrowing it.
+ */
 .intro {
-  max-width: 640px;
+  max-width: 600px;
   margin-inline: auto;
-  text-align: center;
-  color: #ddd;
-  font-family: system-ui, sans-serif;
-  line-height: 1.5;
+  padding-inline: 24px;
+  font-family: 'Lora', system-ui, sans-serif;
 }
 
-.intro p {
+/*
+ * The premise. Centred and set apart in size (not weight or colour alone —
+ * this is the one place on the page allowed real scale) because a short
+ * declarative sentence reads fine centred; the explanatory body below
+ * doesn't, which is exactly why it isn't.
+ */
+.intro__lead {
   margin: 0;
+  text-align: center;
+  color: #eee;
+  font-size: 1.6rem;
+  line-height: 1.3;
+}
+
+/*
+ * The mechanism. Left-aligned inside the same centred column rather than
+ * centred like the lead — multi-line centred prose reads as generic
+ * regardless of typeface, where a flush-left rag reads as a considered
+ * paragraph rather than a caption that ran long. Quieter colour and
+ * smaller, body-reading size mark it as the second tier without needing
+ * a rule or divider to do that job.
+ */
+.intro__body {
+  margin: 20px 0 0;
+  text-align: left;
+  color: #aaa;
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
+/*
+ * Holds at 375px: the lead is the one line long enough to need its own
+ * step down — Norwegian compounds like "favorittfilmene" and "albumene"
+ * run long, and at the desktop size this sentence wraps to three lines
+ * in a 327px measure (375px viewport minus this rule's own 24px padding
+ * either side), reading as cramped rather than deliberate. The body
+ * stays the same size throughout: it was already sized for reading, not
+ * for display, so narrowing the column just wraps it a line or two
+ * sooner, which a reading paragraph is meant to do anyway.
+ */
+@media (max-width: 480px) {
+  .intro__lead {
+    font-size: 1.25rem;
+  }
 }

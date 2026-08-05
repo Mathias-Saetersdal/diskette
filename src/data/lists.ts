@@ -753,4 +753,5 @@ export const lists = { films, series, albums, games } as const;
 // Site-level intro copy, written by Matti. Same placeholder convention as
 // note above: scripts/check-notes.ts fails the build while this still
 // starts with TODO, so it cannot ship unwritten by accident.
-export const introText = "TODO: Her skriver jeg introen.";
+export const introText =
+  "Dette er favorittfilmene, seriene, albumene og spillene mine. Ti av hver, rangert, med en linje fra meg om hvorfor hver av dem står der. Hver oppføring er gjengitt som objektet den kom i. En film er et cover du kan åpne, med en plate inni du kan ta ut og snurre. Et album er et CD-cover. Et spill er det konsollen brukte. Der det aldri fantes noe fysisk, er platen laget av coverbildet, eller brent og skrevet på med tusj.";
