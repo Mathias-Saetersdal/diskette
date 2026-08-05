@@ -5,12 +5,12 @@ import MediaCardDetail from './MediaCardDetail'
 import { useCaseSequence } from './useCaseSequence'
 import { SettleContext } from './SettleContext'
 import type { Entry } from '../data/lists'
-// The layout rules (case, then a rank number below it, bottom-aligned as
-// one stack) have nothing case-shape-specific in them, so they live in
-// their own medium-neutral file rather than KeepCaseCard's — this is a
-// jewel case, not a keep case, and importing something named after the
-// other geometry here would be exactly the kind of misleading reuse
-// KeepCaseCard itself was renamed to stop being.
+// The layout rules (this card's own box, bottom-aligned within the row)
+// have nothing case-shape-specific in them, so they live in their own
+// medium-neutral file rather than KeepCaseCard's — this is a jewel case,
+// not a keep case, and importing something named after the other geometry
+// here would be exactly the kind of misleading reuse KeepCaseCard itself
+// was renamed to stop being.
 import './MediaCard.css'
 
 interface AlbumCardProps {
@@ -75,8 +75,7 @@ export default function AlbumCard({ entry, active, onActivate, onDeactivate }: A
           settleOnMount={settle && entry.rank === 1}
         />
       )}
-      {showCase && <MediaCardDetail entry={entry} />}
-      <span className="media-card__rank">{entry.rank}</span>
+      {showCase && <MediaCardDetail entry={entry} open={open} />}
     </div>
   )
 }

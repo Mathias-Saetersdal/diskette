@@ -20,39 +20,127 @@
   perspective: 1400px;
   perspective-origin: 50% 40%;
   /*
-   * Build plan stage 8: the spine, not the card's overall footprint, sets
-   * the floor now — the same formula FilmsList.css's own comment walks
-   * through in full, applied to dvd/ps2's own spine ratio (14/130 ≈
-   * 0.108):
+   * Build plan stage 8: the spine, not the card's overall footprint, set
+   * the floor originally, at 180px — the same formula FilmsList.css's own
+   * comment walked through in full, applied to dvd/ps2's own spine ratio
+   * (14/130 ≈ 0.108):
    *
    *   8 / (0.1077 * sin(36deg)) ≈ 126px of front-face width needed
    *   126 / (130/184 dvd front-face-ratio) ≈ 179px of card height
    *
-   * 180px clears it with a hair of margin, verified by measurement after
-   * the fact: 180 * 1 * 0.7065 * 0.1077 * sin(36deg) ≈ 8.05px on dvd/ps2.
+   * Superseded (desktop review, second pass): the floor below is 95px
+   * now, matching albums' and series' own, on direct request rather than
+   * protecting that 8px target — this row's own dvd/ps2 spine measures
+   * well under it at 95px, a real, accepted cost. Kept here rather than
+   * deleted since it's the reasoning that set 180px in the first place,
+   * not a currently-active constraint.
    *
-   * Known, deliberate gap, not a bug: dvd/ps2's own ratio is this row's
-   * widest, not its narrowest — Blu-ray-format entries (five of this
-   * row's ten — ps3-early, ps3-late, ps4 liveries) have a narrower ratio
-   * still (12/128.5 ≈ 0.093) and a height-scale under 1, so this floor
-   * lands them at ~6.9px, short of the 8px target (measured, not
-   * assumed). The build plan's own instruction for this row named the
-   * widest ratio as the reference when the narrowest is what a floor
-   * meant to clear the target everywhere actually needs — caught after
-   * the fact, and left as is rather than reworked: the shortfall is
-   * 1.1px, and this row's own card size beyond its floor is otherwise
-   * frozen. 201px stays the ceiling, unchanged — only the floor was
-   * asked for here.
+   * Known, deliberate gap, not a bug, at the OLD 180px floor: dvd/ps2's
+   * own ratio is this row's widest by spine, not its narrowest — Blu-ray-
+   * format entries (five of this row's ten — ps3-early, ps3-late, ps4
+   * liveries) have a narrower ratio still (12/128.5 ≈ 0.093) and a
+   * height-scale under 1, so that floor landed them at ~6.9px, short of
+   * the 8px target (measured, not assumed). The build plan's own
+   * instruction for this row named the widest ratio as the reference when
+   * the narrowest is what a floor meant to clear the target everywhere
+   * actually needs — caught after the fact, left as is at the time: the
+   * shortfall was 1.1px. Moot now that the floor itself has moved.
+   *
+   * The middle of the clamp, desktop review: this row never had a fitting
+   * formula at all before this — plain 9vw, floor and ceiling doing all
+   * the real work — which is exactly why opening a card here overflowed a
+   * real 1920px container the same way films' and albums' own under-
+   * budgeted formulas did. Built from scratch now, same "ten cards plus a
+   * budgeted eleventh" shape FilmsList.css's own comment walks through in
+   * full, against this row's own dvd/bluray/ps5 mix (docs/04-lists.md):
+   * 1 dvd (Sly 3), 5 bluray (Black Ops II, Lego Star Wars, Black Ops III,
+   * Dark Souls III, Rocket League), 4 ps5 (Elden Ring, Nightreign, GTA V,
+   * Cuphead). Each format's own on-screen width ratio reduces to that
+   * format's own widthMm/184 (MAX_CASE_HEIGHT_MM, height-scale's own
+   * heightMm/184 cancelling front-face-ratio's widthMm/heightMm — this
+   * row's own --edge-reserve below already uses this same reduction):
+   *
+   *   R = (1*130 + 5*128.5 + 4*135) / 184 = 1312.5/184 ≈ 7.1332
+   *
+   * Budgeted eleventh: extra = 3*width/184 (FilmsList.css's own comment
+   * has the full margin-inline derivation), biggest for ps5 here — 3*135/
+   * 184 ≈ 2.2011, against dvd's 3*130/184 ≈ 2.1196 and bluray's 3*128.5/
+   * 184 ≈ 2.0951 — the conservative, worst-case pick, same reasoning the
+   * old floor comment above used for spine width:
+   *
+   *   A = 7.1332 + 2.2011 = 9.3343
+   *
+   * A flat "9 gaps at 2px" subtraction undercounts, same discovery
+   * FilmsList.css's own identical comment made after the budget fix alone
+   * still overflowed a real 1920px container: gap (below) is width-
+   * dependent. Solving the two formulas together rather than approximating
+   * one into the other: gap(h) = (h - 95px) * 52/105 + 2px (that rule's
+   * own comment, floor/ceiling below), so 9*gap(h) = h*9*52/105 -
+   * 95*9*52/105 + 18 = 4.4571h - 423.4286 + 18 = 4.4571h - 405.4286.
+   * --edge-reserve (below) is h * 17/16, so 2 * that is 2.125h.
+   * Substituting both into h = (100cqw - 9*gap(h) - 2*edge-reserve) / A
+   * and solving for h:
+   *
+   *   h*A = 100cqw - (4.4571h - 405.4286) - 2.125h
+   *   h*(A + 4.4571 + 2.125) = 100cqw + 405.4286
+   *   h * 15.9164 = 100cqw + 405.43
+   *   h = (100cqw + 405.43) / 15.9164
+   *
+   * 95px floor, 200px ceiling — lowered from 180/201 (desktop review,
+   * second pass, same move FilmsList.css's own comment above made for its
+   * own row): dropped to match albums' own floor/ceiling exactly, on
+   * direct request, rather than protecting the 8px spine target the old
+   * 180px floor was tuned to. Two things this actually fixes together,
+   * same as films: this row's own resting ten now fit inside a real
+   * 1440px container instead of already overflowing before anything even
+   * opens, and MediaList.css's own justify-content: safe center only
+   * centres a row that isn't overflowing — a row already past "safe
+   * start" at rest never had room to distribute on both sides in the
+   * first place, which is the real reason opening a card here only ever
+   * pushed one direction while series' and albums' own smaller rows
+   * pushed both.
    */
-  --list-case-h: clamp(180px, 9vw, 201px);
+  --list-case-h: clamp(95px, calc((100cqw + 405.43px) / 15.9164), 200px);
   /*
-   * MediaList.css's own edge reserve (that file's own padding-inline
-   * comment has the full reasoning), same derivation as FilmsList.css's
-   * own --edge-reserve. This row's widest format for that formula isn't
-   * dvd/ps2 (the widest by spine, the figure the floor above is tuned
-   * against) — it's ps5: docs/03-object-spec.md, 135 x 148 x 14mm (still
-   * marked unverified there). (14 + 135) / (2 * 184) = 149/368, against
-   * dvd's own 144/368 and bluray's 140.5/368 (12 + 128.5).
+   * Desktop review: raised from half the resting width to the real
+   * open+enlarged growth per side, same (3*width - depth)/(2*184)
+   * quantity the budgeted-eleventh comment above now uses. This row's
+   * worst case for that formula isn't dvd/ps2 (the widest by spine, the
+   * figure the old floor comment is tuned against) — it's ps5, same as
+   * before: (3*135 - 14) / (2*184) = 391/368 = 17/16 = 1.0625, against
+   * the old 149/368 ≈ 0.4049, which only ever covered the scale(2)
+   * enlarge and never the hinge unfolding on top of it. Folded into
+   * --list-case-h's own formula above (the 2.125 term there is 2 *
+   * this), so this row's own middle and edges are sized off the same
+   * corrected number rather than two independent guesses.
    */
-  --edge-reserve: calc(var(--list-case-h) * 149 / 368);
+  --edge-reserve: calc(var(--list-case-h) * 17 / 16);
+  /*
+   * Packed shelf, extended from FilmsList.css's own review and now
+   * SeriesList.css's own gap-width follow-up, same reasoning both times:
+   * .flat-case-wrap pivots on its own left edge (FlatCase.css), so the
+   * drawn shape only ever covers stage-width * cos(36deg) on screen, real
+   * dead space on the right of every card's own box regardless of gap.
+   * .flat-case-stage's own negative margin-right below cancels exactly
+   * that, reading its own --front-w/--spine-ratio, correct for whichever
+   * of this row's three formats (dvd, bluray, ps5) a given card is.
+   *
+   * gap is width-dependent for the same reason FilmsList.css's own now
+   * is: 2px at this row's own floor, 54px at its own ceiling. This row's
+   * own floor and ceiling (95px, 200px) now match albums' exactly
+   * (desktop review, second pass — that rule's own comment above has
+   * why), so this is the same 52/105 fraction albums' own gap first
+   * used, not a coincidence: (54-2) spread across the same 105px range
+   * (200-95). At h=95 (floor): (95-95)*52/105+2 = 2px. At h=200
+   * (ceiling): (200-95)*52/105+2 = 52+2 = 54px.
+   */
+  gap: calc((var(--list-case-h) - 95px) * 52 / 105 + 2px);
+}
+
+/*
+ * Cancels the dead space the comment above measured, per card — same rule
+ * as FilmsList.css's and SeriesList.css's own identical selector.
+ */
+.games-list .flat-case-stage {
+  margin-right: calc((var(--front-w) * (1 + var(--spine-ratio, 0))) * -0.19098);
 }

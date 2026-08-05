@@ -38,4 +38,43 @@
    * 184 x 14mm) regardless. (14 + 130) / (2 * 184) = 144/368.
    */
   --edge-reserve: calc(var(--list-case-h) * 144 / 368);
+  /*
+   * Packed shelf, extended from FilmsList.css's own review (same reasoning
+   * there in full): the wrap that folds a closed card to this row's -36deg
+   * rest tilt pivots on its own left edge, so the drawn shape only ever
+   * covers stage-width * cos(36deg) on screen — real, unpainted dead space
+   * on the right of every card's own box regardless of gap. The negative
+   * margin below cancels exactly that, proportionally to each card's own
+   * size — confirmed directly, not assumed: at --list-case-h 95px (this
+   * row's own floor, 390px and narrower) it resolves to -15.58px and the
+   * measured seam is 2px; at 180px (the ceiling, ~2000px and wider) it
+   * resolves to -29.52px and the seam is still 2px. The cancellation
+   * scales with the card, this gap value doesn't, so gap is what actually
+   * sets the visible seam at any size — the margin's only job is making
+   * the cancellation exact enough that gap is the only thing left to see.
+   *
+   * Desktop review: 2px read as too tight once cards are rendering at
+   * this row's own 180px ceiling — tripled three times over on separate
+   * passes (6px, then 18px, then 54px), without moving the 390px/95px
+   * value on any of them. Linear in --list-case-h between the row's own
+   * existing floor and ceiling, not a separate breakpoint of its own: at
+   * h=95 (floor), (95-95)*52/85+2 = 2px, unchanged. At h=180 (ceiling),
+   * (180-95)*52/85+2 = 52+2 = 54px. +52px is the desired increase
+   * (54-2) spread across 85px (180-95), the same floor-to-ceiling range
+   * --list-case-h itself already clamps to, so this rides that existing
+   * breakpoint rather than adding a second one that could drift out of
+   * sync with it.
+   */
+  gap: calc((var(--list-case-h) - 95px) * 52 / 85 + 2px);
+}
+
+/* Cancels the dead space the comment above measured, per card — read from
+ * this element's own --front-w/--spine-ratio (FlatCase.css's inline
+ * style), exactly as FilmsList.css's own identical rule does. Series's
+ * own spine-ratio (SERIES_SPINE_WIDTH_MM, 28/130 = 0.2154, not dvd's
+ * plain 14/130) changes stage width, not the fraction — 1 - cos(36deg) is
+ * rotation-only, so the same -0.19098 factor applies unchanged.
+ */
+.series-list .flat-case-stage {
+  margin-right: calc((var(--front-w) * (1 + var(--spine-ratio, 0))) * -0.19098);
 }

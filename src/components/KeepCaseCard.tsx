@@ -31,9 +31,16 @@ interface KeepCaseCardProps {
  * to dvd/bluray/ps5 (caseGeometry.ts's SupportedCaseFormat), which every
  * entry in all three lists falls under. Which one is active lives in
  * MediaList, not here — this only owns which Case props come from the
- * entry, plus the rank number that sits below whichever representation is
- * showing. The enlarge/open/close choreography itself lives in
+ * entry. The enlarge/open/close choreography itself lives in
  * useCaseSequence, shared with AlbumCard.
+ *
+ * No resting rank caption any more (frontend-design review): dropped here
+ * first, films and — as a consequence of this being the shared component
+ * films and series both render through — series too, then confirmed to
+ * apply everywhere and dropped from AlbumCard and GameCard as well.
+ * MediaCardDetail's own comment has the reasoning: position in the row
+ * already carries rank at rest, the open state's own title block carries
+ * the ordinal.
  *
  * A portal used to lift the active Case out of the scrolling row, to
  * dodge overflow-x: auto's forced overflow-y: auto clipping it once it
@@ -103,8 +110,7 @@ export default function KeepCaseCard({ entry, active, onActivate, onDeactivate }
           settleOnMount={settle && entry.rank === 1}
         />
       )}
-      {showCase && <MediaCardDetail entry={entry} />}
-      <span className="media-card__rank">{entry.rank}</span>
+      {showCase && <MediaCardDetail entry={entry} open={open} />}
     </div>
   )
 }

@@ -22,6 +22,46 @@
   text-align: center;
   color: #eee;
   font-family: system-ui, sans-serif;
+  /*
+   * Fades and rises in once the case is actually open, not the instant
+   * this element mounts: showCase (and this component with it) flips true
+   * almost immediately on activation (useCaseSequence.ts), long before the
+   * scroll-settle-enlarge-hinge sequence that file now runs has finished —
+   * mounting visible at that point would show the note sitting under a
+   * case that's still small, or still scrolling into place. data-open
+   * mirrors useCaseSequence's own open state exactly, which only becomes
+   * true once the hinge is about to start, so gating on it needs no
+   * separate timer of this component's own.
+   *
+   * transition-delay matches caseMechanism.css's own .case__front / .jewel
+   * -case__front hinge transition (600ms): open becoming true is when the
+   * hinge starts swinging, not when it's finished, so without this delay
+   * the note would already be sitting there, fully visible, while the lid
+   * was still mid-swing — landing it here instead reads as the note being
+   * found inside the case once it's actually open, not appearing next to
+   * a case that's still moving.
+   */
+  opacity: 0;
+  transform: translateX(-50%) translateY(6px);
+  transition:
+    opacity 200ms ease 600ms,
+    transform 200ms ease 600ms;
+}
+
+.media-card-detail[data-open='true'] {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .media-card-detail {
+    transition: none;
+  }
+}
+
+.media-card-detail__rank {
+  color: #888;
+  font-weight: 400;
 }
 
 .media-card-detail__title {
@@ -41,8 +81,20 @@
   font-size: 0.9rem;
 }
 
+/*
+ * Lora, not the interface's own system-ui: the note is Matti's own
+ * writing, not UI chrome, and gets its own voice for it (frontend-design
+ * review, films) — self-hosted via @fontsource/lora/latin-400.css
+ * (MediaCardDetail.tsx), woff2, no runtime request to any font CDN, same
+ * pattern BurnedDisc.tsx already uses for Permanent Marker. Latin subset
+ * only: covers æ, ø, å (U+00E6/00F8/00E5, all inside the subset's own
+ * U+0000-00FF range) for the Norwegian notes without pulling in latin-ext,
+ * which those characters don't need.
+ */
 .media-card-detail__note {
   margin: 0;
-  color: #ddd;
-  line-height: 1.5;
+  color: #d9cfae;
+  font-family: 'Lora', system-ui, sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.6;
 }

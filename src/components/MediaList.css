@@ -98,8 +98,9 @@
   pointer-events: none;
 }
 
-/* Same treatment as .media-card__rank (MediaCard.css) — quiet, not a
-   visual anchor competing with the objects themselves. */
+/* Quiet, not a visual anchor competing with the objects themselves —
+   same size and colour the rank caption used to carry before it moved
+   into the open state's own title block (MediaCardDetail.tsx). */
 .media-list-heading {
   margin: 0;
   font-family: system-ui, sans-serif;

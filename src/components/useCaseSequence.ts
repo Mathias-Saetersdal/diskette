@@ -11,6 +11,16 @@ const ENLARGE_DURATION_MS = 1500
 // to finish swinging shut before it starts shrinking.
 const HINGE_DURATION_MS = 600
 
+// The browser's own smooth scroll has no completion callback with
+// guaranteed support — 'scrollend' (below) is the real signal and fires
+// first in practice, this only covers the case it doesn't fire at all
+// (scrollIntoView was already a no-op because the target was already
+// centred, or the browser doesn't support the event). Sized generously
+// above what a smooth scroll across one row's own width realistically
+// takes, not a measured duration — browsers don't expose one to check
+// against.
+const SCROLL_SETTLE_FALLBACK_MS = 500
+
 interface UseCaseSequenceArgs {
   active: boolean
   onDeactivate: () => void
@@ -24,10 +34,10 @@ interface UseCaseSequenceArgs {
   delayShowCase?: boolean
 }
 
-// Shorter than the enlarge effect's own 50ms activation delay, so the full
-// case has already mounted and painted its closed pose by the time that
-// timer fires and the enlarge actually starts — the ordering this delay
-// exists to guarantee, not just an arbitrary small number.
+// Games only (delayShowCase below) — a short, arbitrary beat, not timed
+// against anything else in the sequence: the scroll effect that used to
+// need this ordering guaranteed now depends on showCaseNow itself and
+// simply waits for it, rather than racing a fixed delay against it.
 const SHOW_CASE_DELAY_MS = 30
 
 /**
@@ -111,26 +121,67 @@ export function useCaseSequence({ active, onDeactivate, delayShowCase = false }:
   // already false, so this doesn't fire.
   if (!active && !prefersReducedMotion && open) setOpen(false)
 
-  // Case mounts small and closed, grows to twice its size, then opens —
-  // the hinge only starts once it's already at full size, not at the same
-  // time. This part is a real effect — it's coordinating with a timer, an
-  // external API — unlike the cuts above. setTimeout, not
-  // requestAnimationFrame: rAF is tied to the paint cycle and simply
-  // doesn't fire while the tab is backgrounded or otherwise not actively
-  // compositing, which a user very plausibly could be the instant after
-  // they click something. setTimeout keeps firing regardless.
+  // Scroll is the sequence's first stage, not something layered on top of
+  // it: centring a case that's already mid-scale would fight MediaList.css's
+  // own neighbour-push margin (driven by --enlarge) for the same frame,
+  // growing and sliding at once with nothing settled for the eye to judge
+  // either against. Scroll, let it settle, only then enlarge — enlarge
+  // waits for this effect to call setEnlarged itself instead of firing off
+  // its own timer, which is what actually keeps the two from overlapping:
+  // there is no separate "start enlarging" trigger any more, this is it.
+  //
+  // caseToggleRef isn't attached yet the instant active flips true for a
+  // delayShowCase caller (games): showCaseNow itself is still 30ms away
+  // (the effect below), so Case hasn't mounted and there's nothing to
+  // scroll to — this returns early rather than scheduling anything, and
+  // showCaseNow is a dependency specifically so this re-runs once that
+  // changes and the ref is real. Every other caller gets showCaseNow true
+  // synchronously in the same update that flips active, so the ref is
+  // already attached the first time this runs and the extra dependency is
+  // a no-op for them.
+  //
+  // Reduced motion still scrolls — the opened case has to actually be
+  // reachable, centring it is not purely decorative — just without the
+  // glide: behavior: 'auto' jumps straight there, and since the render-time
+  // cuts above already set enlarged/open true synchronously for reduced
+  // motion, there is nothing left to sequence against, so this skips the
+  // settle wait and lets the cut do its own job.
   useEffect(() => {
-    if (!active || prefersReducedMotion) return
-    const enlargeId = setTimeout(() => setEnlarged(true), 50)
-    return () => clearTimeout(enlargeId)
-  }, [active, prefersReducedMotion])
+    if (!active) return
+    const el = caseToggleRef.current
+    if (!el) return
+
+    if (prefersReducedMotion) {
+      el.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'auto' })
+      return
+    }
+
+    const list = el.closest('.media-list')
+    let settled = false
+    const onSettle = () => {
+      if (settled) return
+      settled = true
+      clearTimeout(fallbackId)
+      list?.removeEventListener('scrollend', onSettle)
+      setEnlarged(true)
+    }
+    list?.addEventListener('scrollend', onSettle)
+    const fallbackId = setTimeout(onSettle, SCROLL_SETTLE_FALLBACK_MS)
+    el.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' })
+
+    return () => {
+      clearTimeout(fallbackId)
+      list?.removeEventListener('scrollend', onSettle)
+    }
+  }, [active, prefersReducedMotion, showCaseNow])
 
   // The one path the cut above leaves alone: delayShowCase true, real
   // motion. Holds the flat placeholder mounted a beat longer so the full
-  // case has mounted and taken its closed pose — this timer fires before
-  // the enlarge effect's own 50ms one does — rather than the two swapping
-  // in the same render activation happens in. A reopen or a deactivation
-  // before this fires cleans it up via the dependency change below; the
+  // case has mounted and taken its closed pose, rather than the two
+  // swapping in the same render activation happens in. The scroll effect
+  // above depends on this state and simply waits for it, so there's no
+  // race to keep in step with any more. A reopen or a deactivation before
+  // this fires cleans it up via the dependency change below; the
   // falling-edge cut above already reset showCaseNow synchronously in that
   // case, so there's nothing left for a late timer to do anyway.
   useEffect(() => {

@@ -88,8 +88,7 @@ export default function GameCard({ entry, active, onActivate, onDeactivate }: Ga
           settleOnMount={settle && entry.rank === 1}
         />
       )}
-      {showCase && <MediaCardDetail entry={entry} />}
-      <span className="media-card__rank">{entry.rank}</span>
+      {showCase && <MediaCardDetail entry={entry} open={open} />}
     </div>
   )
 }
