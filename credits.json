@@ -453,5 +453,27 @@
       "url": "https://coverartarchive.org/release-group/58b66059-cd24-4773-b0e8-bff5a76162e2/front",
       "licence": "Derived from Cover Art Archive cover, see cover credit"
     }
+  },
+  "site-marks": {
+    "tmdb-logo": {
+      "source": "TMDB",
+      "url": "https://www.themoviedb.org/about/logos-attribution",
+      "licence": "TMDB free tier: logo plus required disclaimer wording (\"This product uses the TMDB API but is not endorsed or certified by TMDB.\"), non-commercial"
+    },
+    "fanart-tv-logo": {
+      "source": "fanart.tv",
+      "url": "https://fanart.tv/icon.svg",
+      "licence": "fanart.tv API licence, Creative Commons Attribution 3.0"
+    },
+    "musicbrainz-logo": {
+      "source": "MusicBrainz / MetaBrainz design-system",
+      "url": "https://github.com/metabrainz/design-system",
+      "licence": "Creative Commons Attribution-NonCommercial-ShareAlike 2.0 and GNU Free Documentation License, per wiki.musicbrainz.org/History:About/Logos"
+    },
+    "gametdb-logo": {
+      "source": "GameTDB",
+      "url": "https://www.gametdb.com/",
+      "licence": "No formal licence page; GameTDB FAQ asks for a link back to gametdb.com"
+    }
   }
 }

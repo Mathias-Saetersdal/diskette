@@ -1,53 +1,109 @@
 /*
- * Same 600px column and 24px side padding as Intro.css, deliberately — the
- * page opens on a centred column and closes on one, the one bookend this
- * pass adds. system-ui, not Lora: the intro's Lora is Matti's own voice,
- * this is attribution copy, a legal requirement (TMDB's free tier), not
- * writing — interface register, same family as the section labels and
- * rank numbers use elsewhere.
- *
- * "Not 10px grey": #ccc at 0.95rem is deliberately closer to the intro's
- * own body-copy contrast than to .media-list-heading's own #888 caption
- * colour (MediaList.css) — a real attribution line earns real legibility,
- * not a footnote trailing off the page.
+ * Same 600px column and 24px side padding as Intro.css — the page opens on
+ * a centred column and closes on one. system-ui, not Lora: this is
+ * attribution copy, not writing, the same interface register as the
+ * section labels and rank numbers use elsewhere.
  */
 .footer {
   max-width: 600px;
   margin-inline: auto;
   padding-inline: 24px;
-  text-align: center;
   font-family: system-ui, sans-serif;
 }
 
-.footer__attribution {
+/*
+ * Four sources, evenly distributed across the row: an equal-width grid
+ * rather than flex space-between, so a shorter name like "TMDB" doesn't
+ * leave its column narrower than "MusicBrainz"'s — every unit gets the
+ * same share of the width and centres inside it.
+ */
+.footer__sources {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  column-gap: 16px;
+  row-gap: 28px;
   margin: 0;
-  color: #ccc;
-  font-size: 0.95rem;
-  line-height: 1.5;
+  padding: 0;
+  list-style: none;
+}
+
+.footer__source {
+  display: flex;
+  justify-content: center;
 }
 
 /*
- * Underlined, not coloured, is what marks this as a link — no accent
- * colour on the page, so the same grayscale family as the line above
- * has to do the whole job. Brighter than the attribution line on top of
- * the underline (not just the underline alone) since this is the one
- * actually interactive word in the footer and needs to read as more than
- * a trailing continuation of the sentence above it.
+ * Logo above name, the whole unit the link — underline only on the name,
+ * not the logo, so the image doesn't grow a line under it the way text
+ * links do elsewhere in the footer.
  */
-.footer__link {
-  display: inline-block;
-  margin-top: 12px;
-  color: #eee;
-  font-size: 0.95rem;
+.footer__source-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: #ccc;
+  text-decoration: none;
+}
+
+.footer__source-link:hover {
+  color: #fff;
+}
+
+.footer__source-link:hover .footer__source-name {
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 
-.footer__link:hover {
-  color: #fff;
-}
-
-.footer__link:focus-visible {
+.footer__source-link:focus-visible {
   outline: 2px solid #fff;
   outline-offset: 4px;
+}
+
+/*
+ * Fixed height, width free — the four source logos don't share a common
+ * aspect ratio (fanart.tv and MusicBrainz are near-square marks, TMDB and
+ * GameTDB are wordmarks), so pinning height and letting each keep its own
+ * proportions is what a mixed "as seen in" row of real logos always does,
+ * rather than forcing a shared box that would crop or pad three of the
+ * four.
+ */
+.footer__source-logo {
+  height: 28px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.footer__source-name {
+  font-size: 0.8rem;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+/*
+ * TMDB's own required disclaimer, fixed wording, sitting under the row
+ * rather than folded into TMDB's own unit above — the other three sources
+ * only ask for credit and a link, which the row already gives them; TMDB
+ * additionally requires this exact sentence.
+ */
+.footer__attribution {
+  margin: 24px 0 0;
+  color: #999;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/*
+ * Two by two rather than a single stacked column at 375px: a four-tall
+ * stack pushes the TMDB disclaimer well down the page for no reason other
+ * than narrowness, where two rows of two keeps the block roughly square
+ * and still gives each logo the same breathing room it has on desktop.
+ */
+@media (max-width: 480px) {
+  .footer__sources {
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 24px;
+  }
 }
