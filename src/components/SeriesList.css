@@ -18,16 +18,26 @@
   perspective: 1400px;
   perspective-origin: 50% 40%;
   /*
-   * No --list-case-h override here, unlike FilmsList.css/AlbumsList.css:
-   * the build plan stage 8 spine-legibility floor (8px at the row's own
-   * 36deg rest angle) only binds MediaList.css's own shared 95px default
-   * up for this row's own geometry once checked. Series's spine is
+   * Series is the reference row (visual pass, direct instruction): this
+   * is the size every other list gets measured against, not a value that
+   * moves when another row's own calibration needs something different.
+   * Declared explicitly here rather than left to MediaList.css's own
+   * shared fallback — a fallback that happened to be read by every list
+   * is exactly what let a later pass shrink this row by changing that
+   * one shared number for albums' own sake (caught and reverted). Own
+   * property, own file, so that can't happen again silently.
+   *
+   * clamp(95px, 9vw, 180px): the original value, unchanged by this
+   * revert or by anything since. The build plan stage 8 spine-legibility
+   * floor (8px at the row's own 36deg rest angle) is why 95px works as
+   * this row's own floor without raising it further: series's spine is
    * doubled width against a single dvd case (KeepCaseCard's
-   * SERIES_SPINE_WIDTH_MM, 28/130 = 0.2154, not the plain dvd 14/130),
-   * so it already clears the target at that shared floor: 95 * (130/184
-   * dvd front-face-ratio) * 0.2154 * sin(36deg) ≈ 8.5px. Verified by
-   * measurement after the fact, not assumed from the formula alone.
+   * SERIES_SPINE_WIDTH_MM, 28/130 = 0.2154, not the plain dvd 14/130), so
+   * it clears the target at that floor: 95 * (130/184 dvd front-face-
+   * ratio) * 0.2154 * sin(36deg) ≈ 8.5px. Verified by measurement after
+   * the fact, not assumed from the formula alone.
    */
+  --list-case-h: clamp(95px, 9vw, 180px);
   /*
    * MediaList.css's own edge reserve (that file's own padding-inline
    * comment has the full reasoning) — dvd, this row's only format, same

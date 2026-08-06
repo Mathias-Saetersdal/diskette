@@ -18,121 +18,38 @@
   perspective: 1400px;
   perspective-origin: 50% 40%;
   /*
-   * Build plan review, stage 2 (formula) and stage 3 (this row
-   * specifically): same "ten cards plus a budgeted eleventh fit this
-   * row's own available width" solve as FilmsList.css's own comment
-   * walks through in full, against jewel's own geometry instead of a
-   * dvd/bluray mix. Every album is the same jewel case, no height-scale
-   * of its own to fold in (JewelCase.tsx never sets --height-scale, so
-   * MediaList.css's var(--height-scale, 1) fallback applies — a jewel
-   * card's on-screen width really is just height * front-face-ratio):
+   * Calibration pass, second round: --edge-reserve below used to read
+   * this row's own real open+enlarged growth (365/284 of --list-case-h,
+   * jewel's own widest-in-the-project figure) — correct under the
+   * symmetric growth model MediaList.css's own base rule applies, where
+   * card 1 needed left-side room to grow into. The direction-switch rule
+   * that same file now carries (ranks 1-5 grow only right, ranks 6-10
+   * only left) removed that need: card 1 never grows left any more, so
+   * reserving jewel's own (largest) growth figure as left padding for it
+   * was pure waste — the most visible gap of the three rows against
+   * SectionNav.tsx's own column, since jewel's fraction was the biggest
+   * to begin with. Matched to series' own smaller fraction (144/368)
+   * below instead, same as films' and games' own identical fix, since
+   * the format-specific derivation was answering a question direction-
+   * switching made moot.
    *
-   *   front-face-ratio = 125/142 ≈ 0.8803 (docs/03-object-spec.md)
-   *   R (sum of all ten, same ratio each) = 10 * 0.8803 = 8.8028
-   *
-   * Budgeted eleventh, desktop review: raised from the plain front-face-
-   * ratio to the real open+enlarged growth — measured directly at a real
-   * 1920px container (same problem this row shares with films/games):
-   * opening a card needed more room than this budget reserved. Same
-   * derivation FilmsList.css's own identical comment walks through in
-   * full (worked from margin-inline's own 2*extent(open) - extent(rest)
-   * on both sides of the active card, minus what R already counted this
-   * card as contributing at rest), general result extra = 3w where w is
-   * this format's own front-w/height — jewel's own w = 125/142 (jewel
-   * isn't scaled against MAX_CASE_HEIGHT_MM the way dvd/bluray/ps5 are,
-   * this file's own --edge-reserve comment below has why, so w is plainly
-   * front-face-ratio here, not FilmsList.css's own width/184 reduction):
-   *
-   *   extra = 3 * (125/142) = 375/142 ≈ 2.6408
-   *   A = 8.8028 + 2.6408 = 11.4436
-   *
-   * A flat "9 gaps at 2px" subtraction undercounts, same discovery
-   * FilmsList.css's own identical comment made after the budget fix alone
-   * still overflowed a real 1920px container: gap (below) is width-
-   * dependent. Solving the two formulas together rather than
-   * approximating one into the other: gap(h) = (h - 95px) * 32/21 + 2px
-   * (that rule's own comment, tripled a second time from this row's own
-   * first pass), so 9*gap(h) = h*9*32/21 - 95*9*32/21 + 18 = 13.7143h -
-   * 1302.86 + 18 = 13.7143h - 1284.86. --edge-reserve (below) is h *
-   * 365/284, so 2 * that is 2.5704h. Substituting both into h = (100cqw -
-   * 9*gap(h) - 2*edge-reserve) / A and solving for h:
-   *
-   *   h*A = 100cqw - (13.7143h - 1284.86) - 2.5704h
-   *   h*(A + 13.7143 + 2.5704) = 100cqw + 1284.86
-   *   h * 27.7283 = 100cqw + 1284.86
-   *   h = (100cqw + 1284.86) / 27.7283
-   *
-   * Known cost, not a bug: jewel's own spine ratio (10/125 = 0.080,
-   * caseGeometry.ts's JEWEL_GEOMETRY) is the narrowest in the project —
-   * narrower than dvd's 14/130 ≈ 0.108, which the 180px spine-legibility
-   * floor (FilmsList.css) was set to clear at 8px. Reusing that same
-   * floor here would ask for a floor taller than what this formula
-   * computes at any width this row is likely to actually reach — jewel's
-   * own total is noticeably larger than films' own, which is exactly the
-   * "this row renders much larger than the other three" stage 3 set out
-   * to fix, so the floor can't be the thing holding it up there again.
-   * 95px instead: MediaList.css's own shared default floor, a safety net
-   * against a pathologically narrow viewport rather than a legibility
-   * target of its own. At 95px, jewel's spine (95 * 0.8803 * 0.08 *
-   * sin(36deg) ≈ 3.9px) is short of even the accepted-below number —
-   * reached only once the row has already dropped to scrolling instead of
-   * shrinking further (flex-shrink: 0 on .media-card, MediaList.css), the
-   * same fallback every other row's own floor also leans on.
-   *
-   * At the size this formula actually lands on for a typical fullscreen
-   * width (comfortably above the 95px floor), jewel's spine measures
-   * around 6px — short of the 8px target the other rows clear, since
-   * their own narrower front-face-ratio needs less total width per unit
-   * of height than jewel's near-square one does. Accepted: getting all
-   * ten to fit without scrolling is this row's own goal here, and 6px of
-   * spine is still a visible spine, not an invisible one. Below a real
-   * ~1349px container the corrected formula solves under this 95px
-   * floor, same as films' own review found for its floor — the direct
-   * cost of the guarantee: cards genuinely fitting alongside one open
-   * case, verified at a real 1920px container, not just solved for on
-   * paper. 200px ceiling: a sanity cap for very wide viewports, same
-   * reasoning as FilmsList.css's own 260px, scaled down to this row's own
-   * smaller total — unchanged by the gap's own second tripling below,
-   * since that only moved gap's own ceiling value, not this row's card
-   * size range.
+   * Checked in Chrome: resting ten cards hold no-scroll up to 9.5vw with
+   * the smaller edge-reserve now in play, well past the first round's
+   * own 8.5vw. Opening the last card (Konnichiwa) is the binding
+   * constraint again: 8.5vw overflowed outright. 7.8vw clears with a
+   * real, repeatable margin — confirmed on two independent open/close
+   * cycles, not a single reading trusted alone (this project's own
+   * measurement tooling has a documented habit of reading a transform
+   * mid-transition as settled).
    */
-  --list-case-h: clamp(95px, calc((100cqw + 1284.86px) / 27.7283), 200px);
+  --list-case-h: clamp(95px, 7.8vw, 300px);
+  --edge-reserve: calc(var(--list-case-h) * 144 / 368);
   /*
-   * Desktop review: raised from half the resting width to the real
-   * open+enlarged growth per side, same (3w - d)/2 quantity the budgeted-
-   * eleventh comment above now uses, against jewel's own w (125/142) and
-   * d = depth/height (10/142) since jewel isn't scaled against
-   * MAX_CASE_HEIGHT_MM the way dvd/bluray/ps5 are: (3*125/142 - 10/142)/2
-   * = (375/142 - 10/142)/2 = (365/142)/2 = 365/284 ≈ 1.2852 — against the
-   * old 135/284 ≈ 0.4754, which only ever covered the scale(2) enlarge
-   * and never the hinge unfolding on top of it. Folded into
-   * --list-case-h's own formula above (the 2.5704 term there is 2 *
-   * this), so this row's own middle and edges are sized off the same
-   * corrected number rather than two independent guesses.
+   * Calibration pass: matches SeriesList.css's own gap formula exactly,
+   * replacing this row's own separately-tripled curve — same reference,
+   * same reasoning as the --list-case-h change above.
    */
-  --edge-reserve: calc(var(--list-case-h) * 365 / 284);
-  /*
-   * Packed shelf, extended from FilmsList.css's own review and now
-   * SeriesList.css's own gap-width follow-up, same reasoning both times:
-   * .flat-jewel-case-wrap pivots on its own left edge (FlatJewelCase.css),
-   * so the drawn shape only ever covers stage-width * cos(36deg) on
-   * screen, real dead space on the right of every card's own box
-   * regardless of gap. .flat-jewel-case-stage's own negative margin-right
-   * below cancels exactly that, reading its own --front-w/--spine-ratio
-   * (that file already defines --front-w locally, unlike FlatCase.tsx
-   * passing it in — same value either way, this rule doesn't care which).
-   *
-   * gap tripled a second time (this row only, direct request — films and
-   * games keep the plain 2px-to-54px curve): 54px at this row's own
-   * ceiling read as too tight once this row's own review made the cards
-   * themselves smaller and more consistent with series'. 162px now,
-   * still 2px at this row's own floor (95px), unchanged — mobile stays
-   * exactly as it was. (162-2) spread across this row's own 105px range
-   * (200-95) is 160/105, which simplifies to 32/21 (divide by 5). At
-   * h=95 (floor): (95-95)*32/21+2 = 2px. At h=200 (ceiling):
-   * (200-95)*32/21+2 = 160+2 = 162px.
-   */
-  gap: calc((var(--list-case-h) - 95px) * 32 / 21 + 2px);
+  gap: calc((var(--list-case-h) - 95px) * 52 / 85 + 2px);
 }
 
 /*

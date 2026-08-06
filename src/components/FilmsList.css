@@ -18,133 +18,41 @@
   perspective: 1400px;
   perspective-origin: 50% 40%;
   /*
-   * Build plan review, stage 2: card height now solves directly for "ten
-   * cards, plus budget for an eleventh, fit this row's own available
-   * width" instead of approximating it off viewport width. .media-list-
-   * band's own container-type: inline-size (MediaList.css) makes 100cqw
-   * this row's real available width, not the viewport's.
+   * Calibration pass, second round: --edge-reserve below used to read
+   * this row's own real open+enlarged growth (47/46 of --list-case-h) —
+   * correct under the symmetric growth model MediaList.css's own base
+   * rule applies, where card 1 needed left-side room to grow into and
+   * card 10 needed right-side room. The direction-switch rule that same
+   * file now carries (ranks 1-5 grow only right, ranks 6-10 only left)
+   * removed that need at both ends of every row: card 1 never grows
+   * left any more, so reserving nearly a full case-height of padding for
+   * it there was pure waste, visible as a real gap between the row and
+   * SectionNav.tsx's own column that series — whose own edge-reserve
+   * fraction (144/368) was always smaller — never had. Matched to that
+   * same fraction below rather than kept format-specific, since the
+   * format-specific derivation was answering a question (how much room
+   * does symmetric growth need) that direction-switching made moot.
    *
-   * The ten cards are 5 dvd-format and 5 bluray-format (docs/04-lists.md).
-   * Each contributes height * height-scale * front-face-ratio of on-screen
-   * width (Case.tsx/FlatCase.tsx), not just height * front-face-ratio —
-   * bluray's own height-scale (148/184 ≈ 0.8043, MAX_CASE_HEIGHT_MM is
-   * dvd's 184mm) shrinks it before its wider front-face-ratio (128.5/148 ≈
-   * 0.8682) is applied, so its effective on-screen ratio (≈0.6984) actually
-   * lands a hair narrower than dvd's own (130/184 ≈ 0.7065), not wider as
-   * the raw ratios alone would suggest:
+   * Checked in Chrome, not assumed: resting ten cards (scrollWidth vs
+   * clientWidth, 1440px) hold no-scroll up to 10.7vw with the smaller
+   * edge-reserve now in play, well past the first round's own 9.7vw —
+   * freeing that padding didn't just close the gap, it raised the whole
+   * row's own ceiling, same as it did for --list-case-h's own budget
+   * equation back when this row still solved one directly. Opening the
+   * last card (Superbad) is the binding constraint again, same as the
+   * first round.
    *
-   *   5 * 0.7065 (dvd)    = 3.5326
-   *   5 * 0.6984 (bluray) = 3.4918
-   *   R (sum of all ten)  = 7.0244
-   *
-   * The eleventh, budgeted rather than rendered — desktop review: "an open
-   * case is roughly two panels wide and consumes about one extra card
-   * width" undercounted what open+enlarged actually needs, measured
-   * directly at a real 1920px container: opening a card there needed
-   * 2172px in a 1920px clip, not because the row was too wide but because
-   * this budget was too small. The real number, worked from the same
-   * margin-inline the row already uses (caseMechanism.css): a case scales
-   * to --enlarge 2 and its hinge unfolds, and MediaList.css's own
-   * margin-inline formula (2*extent(open) - extent(rest)) says exactly
-   * how much room that takes on EACH side of the active card. Both sides
-   * count against this row's own total width, not just one, so the real
-   * extra this format needs is 2 * that margin, and this budget also has
-   * to subtract back out what R already counted this card as contributing
-   * at rest (its own front-face-ratio) rather than double-book it. Worked
-   * through in terms of each format's own widthMm/depthMm over 184
-   * (MAX_CASE_HEIGHT_MM, dvd's own height-scale-cancelling reduction, this
-   * file's own comment above): extra = 3 * width/184. For dvd, this row's
-   * own widest by this measure too (checked bluray: 3*128.5/184 ≈ 2.0951,
-   * smaller): 3 * 130/184 = 390/184 = 195/92 ≈ 2.1196.
-   *
-   *   A = R + 195/92 = 7.0244 + 2.1196 = 9.1440
-   *
-   * A flat "9 gaps at 2px" subtraction undercounts, though: gap (below)
-   * is width-dependent, and at any width past the floor this formula's
-   * own card height feeds back into how big those 9 gaps actually are.
-   * Solving the two formulas together instead of approximating one into
-   * the other: gap(h) = (h - 95px) * 52/85 + 2px (that rule's own
-   * comment, floor/ceiling below), so 9 * gap(h) = h*9*52/85 -
-   * 95*9*52/85 + 18 = 5.5059h - 523.06 + 18 = 5.5059h - 505.06.
-   * --edge-reserve (below) is h * 47/46, so 2 * that is 2.0435h.
-   * Substituting both into h = (100cqw - 9*gap(h) - 2*edge-reserve) / A
-   * and solving for h:
-   *
-   *   h*A = 100cqw - (5.5059h - 505.06) - 2.0435h
-   *   h*(A + 5.5059 + 2.0435) = 100cqw + 505.06
-   *   h * 16.6934 = 100cqw + 505.06
-   *   h = (100cqw + 505.06) / 16.6934
-   *
-   * 95px floor, 180px ceiling — lowered from 180/260 (desktop review,
-   * second pass): dropped to match SeriesList.css's own floor/ceiling
-   * exactly, on direct request, rather than protecting the 8px dvd-spine
-   * target the old 180px floor was tuned to (this row's own dvd spine
-   * measures well under that at 95px — a real, accepted cost, the same
-   * kind of tradeoff jewel's own comment below already accepts for its
-   * spine). Two things this actually fixes together: this row's own
-   * resting ten now fit inside a real 1440px container instead of
-   * already overflowing before anything even opens (was 1512px in 1440),
-   * and MediaList.css's own justify-content: safe center only centres a
-   * row that ISN'T overflowing — a row already past "safe start" at rest
-   * never had room to distribute on both sides in the first place, which
-   * is the real reason opening a card here only ever pushed one
-   * direction while series' and albums' own smaller rows pushed both.
-   * Confirmed directly: the left neighbour of an opened card didn't move
-   * at all before this pass, at any width tested.
+   * 9.8vw read as clear on the first check here but turned out not to
+   * be — a live look at the real page (not this project's own
+   * measurement tooling, which has a documented habit of reading a
+   * transform mid-transition as settled) showed Superbad's own disc
+   * genuinely past the right edge at that value. Re-checked lower with
+   * two independent open/close cycles each, not one reading trusted on
+   * its own: 9.3vw holds a real, repeatable margin.
    */
-  --list-case-h: clamp(95px, calc((100cqw + 505.06px) / 16.6934), 180px);
-  /*
-   * Packed shelf, films only (frontend-design review): real cases on a
-   * real shelf sit close to touching, not spaced 16px apart the way
-   * MediaList.css's own shared default reads as a grid of cards rather
-   * than a row of objects. Reducing MediaList.css's own gap here would
-   * still leave a visible seam, though — measured directly (not assumed):
-   * .flat-case-stage's own box is sized to fit the spine and front face
-   * laid out flat, pre-fold (that file's own comment), but the wrap that
-   * actually folds them to this row's -36deg rest tilt pivots on its own
-   * left edge, so the drawn shape only ever occupies the left ~80.9% of
-   * that box on screen — cos(36deg) — with real, unpainted dead space
-   * on the right of every card's own box, gap or no gap. Confirmed at
-   * 390px on a live dvd-to-dvd seam and a bluray-to-dvd one: 26.9px and
-   * 26.25px of dead space respectively, both exactly stage width times
-   * (1 - cos(36deg)) = 0.19098, format-independent since it falls out of
-   * the shared rotation angle alone, not either format's own ratios.
-   *
-   * .flat-case-stage's own negative margin-right below cancels exactly
-   * that per-card dead space, reading its own --front-w/--spine-ratio
-   * (FlatCase.css) rather than a fixed number, so it's correct for
-   * whichever format a given card actually is. What's left after that
-   * cancellation is this file's own gap, confirmed live at gap:0 (all
-   * filler removed, dvd-to-dvd and bluray-to-dvd both): 0.005px and
-   * 0.008px measured seam on those two boundaries — sub-pixel, so the
-   * margin alone is doing the packing and gap is genuinely free to set
-   * the visible seam to whatever this row wants.
-   *
-   * Width-dependent now, not the flat 2px this review first shipped
-   * (series review, extended here to match): 2px at this row's own
-   * --list-case-h floor, 54px at its own ceiling — the same two endpoint
-   * values SeriesList.css's own gap settled on. This row's own floor and
-   * ceiling (95px, 180px) now match series' exactly (desktop review,
-   * second pass — that rule's own comment above has why), so this is the
-   * same 52/85 fraction as series' own gap, not a coincidence: (54-2)
-   * spread across the same 85px range (180-95). At h=95 (floor):
-   * (95-95)*52/85+2 = 2px. At h=180 (ceiling): (180-95)*52/85+2 = 52+2 =
-   * 54px.
-   */
+  --list-case-h: clamp(95px, 9.3vw, 260px);
   gap: calc((var(--list-case-h) - 95px) * 52 / 85 + 2px);
-  /*
-   * Desktop review: raised from half the resting width to the real
-   * open+enlarged growth per side, the same (3*width/184 - depth/184)/2
-   * quantity the budgeted-eleventh comment above now uses (that comment
-   * has the full derivation from margin-inline). For dvd: (3*130 - 14) /
-   * (2*184) = 376/368 = 47/46 ≈ 1.0217 — against the old 144/368 ≈ 0.3913,
-   * which only ever covered the scale(2) enlarge and never the hinge
-   * unfolding on top of it. Folded into --list-case-h's own formula above
-   * (the 2.0435 term there is 2 * this), so this row's own middle and
-   * edges are sized off the same corrected number rather than two
-   * independent guesses.
-   */
-  --edge-reserve: calc(var(--list-case-h) * 47 / 46);
+  --edge-reserve: calc(var(--list-case-h) * 144 / 368);
 }
 
 /*

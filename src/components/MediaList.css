@@ -110,6 +110,17 @@
 }
 
 .media-list {
+  /*
+   * A fallback only, not read by any list that renders through this
+   * component today — films, series, albums and games each set their
+   * own --list-case-h now (FilmsList.css, SeriesList.css, AlbumsList.css,
+   * GamesList.css), calibrated per row against that row's own aspect
+   * ratio rather than sharing one number across all four (a shared value
+   * means the tightest row's own ceiling caps every other row too, which
+   * is exactly what made films and games render smaller than they had
+   * room for). This exists so a list added later without its own
+   * override doesn't collapse to nothing.
+   */
   --list-case-h: clamp(95px, 9vw, 180px);
   /*
    * Nothing in this project resets box-sizing globally (only #root gets
@@ -254,8 +265,14 @@
    * row) has no fixed width of its own, so its outer size grows with this
    * margin and .media-list reflows its siblings the same way any other
    * width change would.
+   *
+   * Named --growth, not inlined directly into margin-inline below: the
+   * direction-switch rule further down reuses this exact quantity rather
+   * than repeating the calc — the amount each side grows by, symmetric
+   * here, redirected entirely to one side there.
    */
-  margin-inline: calc(var(--enlarge, 1) * var(--extent) - (var(--depth) + var(--front-w)) / 2);
+  --growth: calc(var(--enlarge, 1) * var(--extent) - (var(--depth) + var(--front-w)) / 2);
+  margin-inline: var(--growth);
   /*
    * transform repeated here for the same reason caseMechanism.css's own
    * comment on its base transition gives: a list-scoped rule's own
@@ -274,6 +291,54 @@
     margin-inline 0.6s ease;
 }
 
+/*
+ * Direction switch (visual pass, direct instruction): the base rule
+ * above grows a card symmetrically, matching caseMechanism.css's own
+ * transform-origin: 50% 100% (bottom-CENTRE, unchanged by any of this).
+ * Symmetric growth wastes space at both ends of a row, not just the
+ * far one: card 1 has no sibling to its own left either, and the row's
+ * own edge-reserve padding in front of it is not something a card can
+ * grow into and reveal — growing left there just pushed blank space
+ * further left, ahead of content that was already fully in view.
+ *
+ * Ten entries per list, always (docs/04-lists.md, phase one), so the
+ * split is a plain nth-child cut at the midpoint, not anything measured
+ * from a live viewport: each half of the row opens toward the half it
+ * came from — the half with real siblings already spaced out to grow
+ * into — instead of toward whichever of the row's own two ends it sits
+ * closer to.
+ *
+ * Both rules zero the margin on the side this card no longer grows
+ * into and double it on the side that absorbs the growth the base rule
+ * would otherwise have split evenly. transform gains a translateX
+ * cancelling the half of scale(--enlarge)'s own symmetric growth that
+ * used to land on the now-zeroed side — so that edge stays exactly
+ * where it sat at rest, and everything that would have grown there
+ * grows the other way instead. Nothing in caseMechanism.css changes:
+ * the hinge still opens and the lid still rotates exactly as coded
+ * there, this only repositions the whole already-rendered result
+ * sideways within the row, the same way the base rule's own margin
+ * already does.
+ */
+.media-list .media-card:nth-child(-n + 5) .case,
+.media-list .media-card:nth-child(-n + 5) .jewel-case {
+  margin-inline-start: 0px;
+  margin-inline-end: calc(var(--growth) * 2);
+  transform: translateX(var(--growth)) scale(var(--enlarge, 1));
+}
+
+.media-list .media-card:nth-child(n + 6) .case,
+.media-list .media-card:nth-child(n + 6) .jewel-case {
+  margin-inline-start: calc(var(--growth) * 2);
+  margin-inline-end: 0px;
+  transform: translateX(calc(var(--growth) * -1)) scale(var(--enlarge, 1));
+}
+
+/*
+ * Covers the direction-switch rule above too, not just the base rule:
+ * both select through .media-list .case/.jewel-case, so this already
+ * matches every card in the row regardless of which half it's in.
+ */
 @media (prefers-reduced-motion: reduce) {
   .media-list .case,
   .media-list .jewel-case {
