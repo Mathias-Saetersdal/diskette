@@ -21,11 +21,11 @@
 }
 
 /*
- * The name. Same face and centring as the lead below it, just bigger —
- * weight stays the same 400 the lead already uses (this project only
- * ever imports Lora's 400 file; a heavier weight here would either fake-
- * bold or fall back to a different face mid-block) so scale alone is
- * what marks it as the larger of the two.
+ * The name. Same face and centring as the paragraphs below it, just
+ * bigger — weight stays the same 400 the paragraphs already use (this
+ * project only ever imports Lora's 400 file; a heavier weight here would
+ * either fake-bold or fall back to a different face mid-block) so scale
+ * alone is what marks it as the larger of the two.
  *
  * font-family repeated here rather than left to inherit from .intro:
  * index.css's own leftover Vite scaffold rule (h1, h2 { font-family:
@@ -53,47 +53,53 @@
 }
 
 /*
- * The premise. Centred and set apart in size (not weight or colour alone —
- * this is the one place on the page allowed real scale) because a short
- * declarative sentence reads fine centred; the explanatory body below
- * doesn't, which is exactly why it isn't.
+ * Four coequal paragraphs (visual pass, direct instruction), not a lead
+ * plus a mechanism any more — the copy itself no longer opens with one
+ * short declarative sentence followed by explanatory prose, it's four
+ * separate thoughts of roughly the same weight, so one uniform size and
+ * colour treats them that way instead of forcing an oversized first line
+ * the text no longer has.
+ *
+ * Centred (chosen over the left-aligned variant shown alongside it,
+ * direct instruction) — same centring the block has always used.
+ * margin-top rather than margin-bottom, top-down, so only the gap
+ * between this paragraph and the one before it needs setting per
+ * paragraph, not a trailing margin the last one would then need to
+ * cancel.
  */
-.intro__lead {
-  margin: 0;
-  text-align: center;
-  color: #eee;
-  font-size: 1.6rem;
-  line-height: 1.3;
-}
-
-/*
- * The mechanism. Left-aligned inside the same centred column rather than
- * centred like the lead — multi-line centred prose reads as generic
- * regardless of typeface, where a flush-left rag reads as a considered
- * paragraph rather than a caption that ran long. Quieter colour and
- * smaller, body-reading size mark it as the second tier without needing
- * a rule or divider to do that job.
- */
-.intro__body {
+.intro__paragraph {
   margin: 20px 0 0;
-  text-align: left;
-  color: #aaa;
-  font-size: 0.95rem;
+  text-align: center;
+  color: #ccc;
+  font-size: 1.05rem;
   line-height: 1.65;
 }
 
+.intro__paragraph:first-of-type {
+  margin-top: 0;
+}
+
 /*
- * Holds at 375px: the lead is the one line long enough to need its own
- * step down — Norwegian compounds like "favorittfilmene" and "albumene"
- * run long, and at the desktop size this sentence wraps to three lines
- * in a 327px measure (375px viewport minus this rule's own 24px padding
- * either side), reading as cramped rather than deliberate. The body
- * stays the same size throughout: it was already sized for reading, not
- * for display, so narrowing the column just wraps it a line or two
- * sooner, which a reading paragraph is meant to do anyway.
+ * Stands alone (direct instruction): more air above it than the 20px the
+ * paragraphs before it use between each other, so the break before it
+ * reads as a deliberate shift in address (from describing the site to
+ * speaking to whoever's reading it) rather than one more paragraph in
+ * the same run.
+ */
+.intro__paragraph--last {
+  margin-top: 40px;
+}
+
+/*
+ * Holds at 375px: Norwegian compounds like "favorittfilmene" and
+ * "albumene" run long, and at the desktop size the first paragraph wraps
+ * to more lines than it needs to in a 327px measure (375px viewport minus
+ * this rule's own 24px padding either side) — one step down keeps every
+ * paragraph reading as deliberately sized for this width rather than
+ * simply narrower.
  */
 @media (max-width: 480px) {
-  .intro__lead {
-    font-size: 1.25rem;
+  .intro__paragraph {
+    font-size: 0.95rem;
   }
 }

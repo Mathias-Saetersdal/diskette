@@ -2,24 +2,28 @@ import { introText } from '../data/lists'
 import '@fontsource/lora/latin-400.css'
 import './Intro.css'
 
-// The premise, then the mechanism: introText's own first sentence states
-// what this collection is; everything after explains how it's built (the
-// ranking, the note, the per-medium object). That's a real seam already in
-// the writing, not one this component invents, so it's what the type
-// treatment below makes visible. Split on the first sentence boundary
-// rather than storing lead/body as two separate strings in lists.ts —
-// introText stays the single, unedited string Matti wrote, this only reads
-// it in two pieces.
-const sentenceEnd = introText.indexOf('. ')
-const lead = sentenceEnd === -1 ? introText : introText.slice(0, sentenceEnd + 1)
-const body = sentenceEnd === -1 ? '' : introText.slice(sentenceEnd + 2)
-
+/**
+ * Four real paragraphs (src/data/lists.ts), rendered as four real <p>
+ * elements — no more splitting one string on its first sentence boundary,
+ * since introText itself carries the paragraph breaks Matti actually
+ * wrote now. The last one gets its own modifier class rather than a
+ * fourth generic paragraph: it stands alone rather than continuing the
+ * first three, and Intro.css gives it more space above it than the
+ * paragraphs get between each other, so that break reads as intentional.
+ */
 export default function Intro() {
+  const lastIndex = introText.length - 1
   return (
     <section className="intro" aria-label="Intro">
       <h1 className="intro__title">Diskette</h1>
-      <p className="intro__lead">{lead}</p>
-      {body && <p className="intro__body">{body}</p>}
+      {introText.map((paragraph, index) => (
+        <p
+          key={index}
+          className={index === lastIndex ? 'intro__paragraph intro__paragraph--last' : 'intro__paragraph'}
+        >
+          {paragraph}
+        </p>
+      ))}
     </section>
   )
 }

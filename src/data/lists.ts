@@ -750,8 +750,16 @@ export const allEntries: Entry[] = [...films, ...series, ...albums, ...games];
 
 export const lists = { films, series, albums, games } as const;
 
-// Site-level intro copy, written by Matti. Same placeholder convention as
-// note above: scripts/check-notes.ts fails the build while this still
-// starts with TODO, so it cannot ship unwritten by accident.
-export const introText =
-  "Dette er favorittfilmene, seriene, albumene og spillene mine. Ti av hver, rangert, med en linje fra meg om hvorfor hver av dem står der. Hver oppføring er gjengitt som objektet den kom i. En film er et cover du kan åpne, med en plate inni du kan ta ut og snurre. Et album er et CD-cover. Et spill er det konsollen brukte. Der det aldri fantes noe fysisk, er platen laget av coverbildet, eller brent og skrevet på med tusj.";
+// Site-level intro copy, written by Matti, four separate paragraphs rather
+// than one block of prose Intro.tsx used to split on the first sentence
+// boundary — that heuristic doesn't apply now that the paragraph breaks are
+// real ones Matti wrote, not implied by punctuation. Same placeholder
+// convention as note above: scripts/check-notes.ts fails the build while
+// any paragraph here still starts with TODO, so it cannot ship unwritten by
+// accident.
+export const introText = [
+  "Dette er favorittfilmene, seriene, albumene og spillene mine. Ti stykk rangert. Jeg har laget siden fordi jeg hadde lyst, ikke fordi noen ba om den.",
+  "En film, et album og et spill er kunst på hver sin måte. De blir sjelden behandlet som det. Her ligger de som mediene de kom i.",
+  "Rangeringen er ikke objektiv. Den er full av nostalgi. Noe står høyt fordi det faktisk er godt laget, og noe står høyt fordi jeg opplevde det i riktig alder. Jeg skiller ikke alltid mellom de to.",
+  "Døm meg gjerne. Er du sterkt uenig, si fra.",
+];
