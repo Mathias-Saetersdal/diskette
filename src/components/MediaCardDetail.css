@@ -1,16 +1,35 @@
 /*
- * Positioned relative to .media-card (MediaCard.css's own position:
- * relative), not in normal document flow: this text's own height is
- * unpredictable (a note can run to several lines), and letting it push
- * the card's own layout box taller would shift the enlarged case's own
- * transform-origin (caseMechanism.css's 50% 100%, relative to the
- * card's own box) out from under it — a visible jump each time this
- * text mounts or unmounts, not just the text itself appearing.
+ * Two variants share every rule below except position and width, so the
+ * shared block declares layout-agnostic styling only (colour, type, the
+ * open/closed fade) and the two selectors after it each add the one thing
+ * that differs.
  *
- * width: min(90vw, 480px), not the old shared panel's 640px: this now
- * has to fit centred under a single card without running off either
- * side of a narrow viewport, where the old panel could rely on the
- * whole row's own width to centre against instead.
+ * .media-card-detail (the default, no modifier) is the mobile shape:
+ * rendered by KeepCaseCard/AlbumCard/GameCard themselves, one per card,
+ * absolutely positioned against .media-card (MediaCard.css's own
+ * position: relative) — unchanged from before this pass, and the only
+ * shape that renders at all below 769px (see the media queries below).
+ *
+ * .media-card-detail--row is new: rendered once by MediaList.tsx itself,
+ * as a sibling of .media-list rather than nested inside any one card, so
+ * it centres against .media-list-band (position: relative, MediaList.css)
+ * — the row's own width — instead of a single card's. It has to live
+ * outside .media-list for that centring to hold at all: a version tried
+ * first, keeping this same element inside .media-card and only changing
+ * which ancestor it's positioned against by making .media-card
+ * position: static at desktop, looked right in the DOM but rendered
+ * invisible in Chrome — position: absolute resolves its offsets against
+ * whichever ancestor is its containing block, but overflow clipping is a
+ * separate mechanism that clips every descendant regardless of which
+ * ancestor that is, and .media-list's own overflow-x: auto (which forces
+ * overflow-y: auto alongside it) was still clipping it. Rendering it as a
+ * true sibling of .media-list, outside that clipped subtree entirely, is
+ * what actually escapes it.
+ *
+ * Neither variant renders below 769px or above it at all below 768px —
+ * MediaList.tsx mounts both regardless of viewport (it has no way to
+ * read one), the media queries below are what make only one of them
+ * ever actually visible at a given width.
  */
 .media-card-detail {
   position: absolute;
@@ -31,7 +50,10 @@
    * case that's still small, or still scrolling into place. data-open
    * mirrors useCaseSequence's own open state exactly, which only becomes
    * true once the hinge is about to start, so gating on it needs no
-   * separate timer of this component's own.
+   * separate timer of this component's own. The row variant gets this
+   * same state relayed up to MediaList.tsx (KeepCaseCard/AlbumCard/
+   * GameCard's own onSequenceChange prop) rather than reading it twice,
+   * so both variants fade on the exact same beat.
    *
    * transition-delay matches caseMechanism.css's own .case__front / .jewel
    * -case__front hinge transition (600ms): open becoming true is when the
@@ -51,6 +73,35 @@
 .media-card-detail[data-open='true'] {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
+}
+
+/*
+ * Wider than the card variant's 480px: this now centres under the row's
+ * own much wider box rather than one card, and a narrow panel floating in
+ * that space read as undersized for where it was sitting. 640px matches
+ * the shared panel this project carried before the per-card version
+ * replaced it (MediaList.tsx's own comment on that history).
+ */
+.media-card-detail--row {
+  width: min(90%, 640px);
+}
+
+/*
+ * 769px, not 768px: the exact complement of SectionNav.css's own
+ * `max-width: 768px` (nav hidden at 768 and below), so the row variant
+ * only ever shows at a width where the nav it has to clear is actually on
+ * screen, and the card variant covers every width below that untouched.
+ */
+@media (max-width: 768px) {
+  .media-card-detail--row {
+    display: none;
+  }
+}
+
+@media (min-width: 769px) {
+  .media-card-detail:not(.media-card-detail--row) {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

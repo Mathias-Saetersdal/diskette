@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import Case from './Case'
 import FlatCase from './FlatCase'
 import MediaCardDetail from './MediaCardDetail'
@@ -13,6 +13,11 @@ interface GameCardProps {
   active: boolean
   onActivate: () => void
   onDeactivate: () => void
+  /**
+   * Relays useCaseSequence's own showCase/open pair up to MediaList.tsx —
+   * same reasoning as KeepCaseCard.tsx's own copy of this prop.
+   */
+  onSequenceChange?: (state: { showCase: boolean; open: boolean }) => void
 }
 
 /**
@@ -43,15 +48,21 @@ interface GameCardProps {
  * plan stage 5) — same reasoning as KeepCaseCard.tsx's own copy of this
  * comment. Not part of this row's own livery/geometry/rest-angle/
  * card-size freeze, a layout change to where the description renders,
- * not to any of those.
+ * not to any of those. This is the mobile copy (variant='card');
+ * MediaList.tsx renders the desktop copy (variant='row') itself, fed by
+ * onSequenceChange below.
  */
-export default function GameCard({ entry, active, onActivate, onDeactivate }: GameCardProps) {
+export default function GameCard({ entry, active, onActivate, onDeactivate, onSequenceChange }: GameCardProps) {
   const { open, enlarged, showCase, caseToggleRef, flatButtonRef, onToggleOpen } = useCaseSequence({
     active,
     onDeactivate,
     delayShowCase: true,
   })
   const settle = useContext(SettleContext)
+
+  useEffect(() => {
+    onSequenceChange?.({ showCase, open })
+  }, [showCase, open, onSequenceChange])
 
   return (
     <div className="media-card">

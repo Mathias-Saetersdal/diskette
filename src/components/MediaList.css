@@ -20,12 +20,73 @@
 }
 
 /*
+ * Room for the row-level caption (MediaCardDetail's variant='row', a
+ * child of .media-list-band — MediaList.tsx), desktop only, reserved
+ * here on .media-list-section rather than on .media-list-band itself:
+ * the caption is position: absolute with top: 100% against
+ * .media-list-band (MediaCardDetail.css), so growing .media-list-band's
+ * own padding-bottom moves that 100% mark down by the same amount —
+ * confirmed directly, an earlier version padded .media-list-band and the
+ * caption rendered a full reserve's worth too low, overlapping the
+ * section after it instead of being contained above it. Padding a
+ * separate ancestor instead leaves .media-list-band's own height, and so
+ * the caption's own top: 100%, exactly where the row's real bottom edge
+ * is, and only pushes whatever comes after .media-list-section down to
+ * clear it.
+ *
+ * Reserved on demand (0 at rest, 220px once the row-level caption
+ * exists), not held open permanently at every width regardless of state:
+ * a permanent version would guarantee literally zero movement below the
+ * row on open/close, the strictest reading of "nothing below the row
+ * shifts" — but it also means every row on the page carries a roughly
+ * 220px gap under it all the time, including rest, with nothing in it, a
+ * bigger and more visible change to the page's resting rhythm than this
+ * pass was asked to make.
+ *
+ * Not animated, deliberately: a transitioned version (padding-bottom
+ * easing from 0 to 220px over the same 1.5s the case's own enlarge
+ * takes) was the first version of this rule, matching how the mobile
+ * :has() rule further down this file already animates its own padding.
+ * It didn't work — confirmed directly in Chrome, not assumed. Toggling
+ * padding-bottom on a :has() match and transitioning that same property
+ * in the same rule left the transition stuck at its start value; setting
+ * the property directly (inline, even with !important, even after
+ * clearing the transition-triggering condition first) had no effect
+ * either, which points at the transition's own animated value winning
+ * the cascade and never resolving, rather than anything about :has()
+ * itself, since removing transition entirely (this version) lets the
+ * exact same :has() condition apply the value instantly and correctly.
+ * The shift the row-opens/row-closes verification checks for still
+ * happens on demand, and by a fixed amount regardless of note length,
+ * just as a snap rather than an ease — not the smoother of the two
+ * options offered, but the one that actually works.
+ *
+ * 220px matches the mobile panel's own fixed estimate (MediaList.css's
+ * .media-list rule below has the full reasoning) rather than a new
+ * number: the row variant is wider (640px vs the card variant's 480px,
+ * MediaCardDetail.css), so the same title/creator/note content wraps to
+ * fewer lines here, making 220px if anything more generous at this width,
+ * not less.
+ */
+@media (min-width: 769px) {
+  .media-list-section:has(.media-card-detail--row) {
+    padding-bottom: 220px;
+  }
+}
+
+/*
  * Heading and row's shared wrapper (build plan stage 3, MediaList.tsx) —
  * carries the same column/centre/gap layout .media-list-section used to
  * apply directly to all three children, now split so the floor band
- * below can cover exactly this wrapper's own box (heading plus row)
- * without reaching the detail panel, which stays .media-list-section's
- * own direct child, outside the band.
+ * below can cover exactly this wrapper's own box (heading plus row).
+ *
+ * The desktop row-level caption (MediaCardDetail's variant='row',
+ * MediaList.tsx) is this element's own third child now too, not
+ * .media-list-section's: it centres against this wrapper's own
+ * position: relative (below) to match the row's width. The space it
+ * needs is reserved one level up instead, on .media-list-section — see
+ * that rule's own comment above for why it can't live here alongside the
+ * element the caption actually positions itself against.
  */
 .media-list-band {
   /*

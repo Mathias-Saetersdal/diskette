@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import JewelCase from './JewelCase'
 import FlatJewelCase from './FlatJewelCase'
 import MediaCardDetail from './MediaCardDetail'
@@ -18,6 +18,11 @@ interface AlbumCardProps {
   active: boolean
   onActivate: () => void
   onDeactivate: () => void
+  /**
+   * Relays useCaseSequence's own showCase/open pair up to MediaList.tsx —
+   * same reasoning as KeepCaseCard.tsx's own copy of this prop.
+   */
+  onSequenceChange?: (state: { showCase: boolean; open: boolean }) => void
 }
 
 /**
@@ -39,14 +44,20 @@ interface AlbumCardProps {
  *
  * MediaCardDetail renders here too, not once for the whole list (build
  * plan stage 5) — same reasoning as KeepCaseCard.tsx's own copy of this
- * comment.
+ * comment. This is the mobile copy (variant='card'); MediaList.tsx
+ * renders the desktop copy (variant='row') itself, fed by
+ * onSequenceChange below.
  */
-export default function AlbumCard({ entry, active, onActivate, onDeactivate }: AlbumCardProps) {
+export default function AlbumCard({ entry, active, onActivate, onDeactivate, onSequenceChange }: AlbumCardProps) {
   const { open, enlarged, showCase, caseToggleRef, flatButtonRef, onToggleOpen } = useCaseSequence({
     active,
     onDeactivate,
   })
   const settle = useContext(SettleContext)
+
+  useEffect(() => {
+    onSequenceChange?.({ showCase, open })
+  }, [showCase, open, onSequenceChange])
 
   return (
     <div className="media-card">

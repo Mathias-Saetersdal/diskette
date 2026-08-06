@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import Case from './Case'
 import FlatCase from './FlatCase'
 import MediaCardDetail from './MediaCardDetail'
@@ -20,6 +20,14 @@ interface KeepCaseCardProps {
   active: boolean
   onActivate: () => void
   onDeactivate: () => void
+  /**
+   * Relays useCaseSequence's own showCase/open pair up to MediaList.tsx,
+   * which needs them to drive the desktop row-level caption
+   * (MediaCardDetail's variant='row') on the same beat this card's own
+   * mobile copy already renders on. Optional so nothing else instantiating
+   * this component needs updating.
+   */
+  onSequenceChange?: (state: { showCase: boolean; open: boolean }) => void
 }
 
 /**
@@ -55,14 +63,27 @@ interface KeepCaseCardProps {
  * plan stage 5): the row scrolls, so the old single shared panel below
  * it read as detached from whichever card was actually open once that
  * card wasn't always centred under the row. Rendered only when showCase
- * is true, same condition as Case itself.
+ * is true, same condition as Case itself. This is the mobile copy
+ * (variant='card', the default) — MediaList.tsx renders a second,
+ * desktop-only copy of its own now (variant='row'), fed by
+ * onSequenceChange below.
  */
-export default function KeepCaseCard({ entry, active, onActivate, onDeactivate }: KeepCaseCardProps) {
+export default function KeepCaseCard({
+  entry,
+  active,
+  onActivate,
+  onDeactivate,
+  onSequenceChange,
+}: KeepCaseCardProps) {
   const { open, enlarged, showCase, caseToggleRef, flatButtonRef, onToggleOpen } = useCaseSequence({
     active,
     onDeactivate,
   })
   const settle = useContext(SettleContext)
+
+  useEffect(() => {
+    onSequenceChange?.({ showCase, open })
+  }, [showCase, open, onSequenceChange])
 
   return (
     <div className="media-card">
