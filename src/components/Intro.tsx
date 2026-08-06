@@ -17,6 +17,7 @@ const body = sentenceEnd === -1 ? '' : introText.slice(sentenceEnd + 2)
 export default function Intro() {
   return (
     <section className="intro" aria-label="Intro">
+      <h1 className="intro__title">Diskette</h1>
       <p className="intro__lead">{lead}</p>
       {body && <p className="intro__body">{body}</p>}
     </section>

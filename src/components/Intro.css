@@ -21,6 +21,38 @@
 }
 
 /*
+ * The name. Same face and centring as the lead below it, just bigger —
+ * weight stays the same 400 the lead already uses (this project only
+ * ever imports Lora's 400 file; a heavier weight here would either fake-
+ * bold or fall back to a different face mid-block) so scale alone is
+ * what marks it as the larger of the two.
+ *
+ * font-family repeated here rather than left to inherit from .intro:
+ * index.css's own leftover Vite scaffold rule (h1, h2 { font-family:
+ * var(--heading) }, a plain system sans) targets the h1 element
+ * directly, and an element selector's own declaration for a property a
+ * more specific class rule never touches still wins that property —
+ * confirmed directly, this page's first h1 rendered in that sans
+ * default until this line named Lora explicitly.
+ */
+.intro__title {
+  margin: 0 0 20px;
+  text-align: center;
+  color: #eee;
+  font-family: 'Lora', system-ui, sans-serif;
+  font-size: 2.5rem;
+  line-height: 1.15;
+  font-weight: 400;
+  letter-spacing: normal;
+}
+
+@media (max-width: 480px) {
+  .intro__title {
+    font-size: 2rem;
+  }
+}
+
+/*
  * The premise. Centred and set apart in size (not weight or colour alone —
  * this is the one place on the page allowed real scale) because a short
  * declarative sentence reads fine centred; the explanatory body below
