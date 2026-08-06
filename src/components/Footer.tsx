@@ -1,3 +1,4 @@
+import { assetUrl } from '../assetUrl'
 import './Footer.css'
 
 /**
@@ -16,22 +17,22 @@ const sources = [
   {
     name: 'TMDB',
     href: 'https://www.themoviedb.org/',
-    logo: '/assets/marks/tmdb-logo.svg',
+    logo: assetUrl('/assets/marks/tmdb-logo.svg'),
   },
   {
     name: 'fanart.tv',
     href: 'https://fanart.tv/',
-    logo: '/assets/marks/fanart-tv-logo.svg',
+    logo: assetUrl('/assets/marks/fanart-tv-logo.svg'),
   },
   {
     name: 'MusicBrainz',
     href: 'https://musicbrainz.org/',
-    logo: '/assets/marks/musicbrainz-logo.svg',
+    logo: assetUrl('/assets/marks/musicbrainz-logo.svg'),
   },
   {
     name: 'GameTDB',
     href: 'https://www.gametdb.com/',
-    logo: '/assets/marks/gametdb-logo.png',
+    logo: assetUrl('/assets/marks/gametdb-logo.png'),
   },
 ]
 

@@ -4,6 +4,7 @@ import FlatJewelCase from './FlatJewelCase'
 import MediaCardDetail from './MediaCardDetail'
 import { useCaseSequence } from './useCaseSequence'
 import { SettleContext } from './SettleContext'
+import { assetUrl } from '../assetUrl'
 import type { Entry } from '../data/lists'
 // The layout rules (this card's own box, bottom-aligned within the row)
 // have nothing case-shape-specific in them, so they live in their own
@@ -64,9 +65,9 @@ export default function AlbumCard({ entry, active, onActivate, onDeactivate, onS
       {showCase ? (
         <JewelCase
           title={entry.title}
-          coverSrc={entry.cover}
+          coverSrc={assetUrl(entry.cover)}
           coverAlt={`${entry.title} cover`}
-          discSrc={entry.disc}
+          discSrc={entry.disc ? assetUrl(entry.disc) : undefined}
           discAlt={`${entry.title} disc`}
           discSource={entry.discSource}
           open={open}
@@ -77,7 +78,7 @@ export default function AlbumCard({ entry, active, onActivate, onDeactivate, onS
       ) : (
         <FlatJewelCase
           title={entry.title}
-          coverSrc={entry.cover}
+          coverSrc={assetUrl(entry.cover)}
           coverAlt={`${entry.title} cover`}
           onClick={onActivate}
           buttonRef={flatButtonRef}

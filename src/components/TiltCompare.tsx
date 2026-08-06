@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react'
 import Case from './Case'
+import { assetUrl } from '../assetUrl'
 import type { SupportedCaseFormat } from './caseGeometry'
 import type { Livery, Medium } from '../data/lists'
 import './TiltCompare.css'
@@ -98,9 +99,9 @@ export default function TiltCompare() {
               <Case
                 key={entry.id}
                 title={entry.title}
-                coverSrc={entry.cover}
+                coverSrc={assetUrl(entry.cover)}
                 coverAlt={`${entry.title} cover`}
-                discSrc={entry.disc}
+                discSrc={assetUrl(entry.disc)}
                 discAlt={`${entry.title} disc`}
                 medium={entry.medium}
                 caseFormat={entry.caseFormat}

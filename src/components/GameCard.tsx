@@ -4,6 +4,7 @@ import FlatCase from './FlatCase'
 import MediaCardDetail from './MediaCardDetail'
 import { useCaseSequence } from './useCaseSequence'
 import { SettleContext } from './SettleContext'
+import { assetUrl } from '../assetUrl'
 import type { SupportedCaseFormat } from './caseGeometry'
 import type { Entry } from '../data/lists'
 import './MediaCard.css'
@@ -69,9 +70,9 @@ export default function GameCard({ entry, active, onActivate, onDeactivate, onSe
       {showCase ? (
         <Case
           title={entry.title}
-          coverSrc={entry.cover}
+          coverSrc={assetUrl(entry.cover)}
           coverAlt={`${entry.title} cover`}
-          discSrc={entry.disc}
+          discSrc={entry.disc ? assetUrl(entry.disc) : undefined}
           discAlt={`${entry.title} disc`}
           medium={entry.medium}
           discSource={entry.discSource}
@@ -85,7 +86,7 @@ export default function GameCard({ entry, active, onActivate, onDeactivate, onSe
       ) : (
         <FlatCase
           title={entry.title}
-          coverSrc={entry.cover}
+          coverSrc={assetUrl(entry.cover)}
           coverAlt={`${entry.title} cover`}
           caseFormat={entry.case as SupportedCaseFormat}
           livery={entry.livery}

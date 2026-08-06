@@ -1,4 +1,5 @@
 import { useState, type CSSProperties } from 'react'
+import { assetUrl } from '../assetUrl'
 import type { Livery } from '../data/lists'
 import type { SupportedCaseFormat } from './caseGeometry'
 import './Case.css'
@@ -36,13 +37,13 @@ const PS_LOGO_HEADER_HEIGHT_PCT = 8
 
 // docs/02-asset-sources.md: shared UI marks live under public/assets, same
 // as fetched cover/disc assets, not bundled through src/.
-export const BLURAY_LOGO_SRC = '/assets/marks/blu-ray-disc-white.png'
+export const BLURAY_LOGO_SRC = assetUrl('/assets/marks/blu-ray-disc-white.png')
 // A real vector (four <path> elements with genuine coordinate data, no
 // embedded raster, no background rect) — confirmed before use, copied from
 // reference/playstation-logo.svg unmodified. playstation-network-logo.png
 // is still unusable (no real alpha channel); PS3-late's badge stays
 // styled text until a working one is sourced.
-export const PS_LOGO_SRC = '/assets/marks/playstation-logo.svg'
+export const PS_LOGO_SRC = assetUrl('/assets/marks/playstation-logo.svg')
 // Two more real vectors, checked the same way before use: genuine <path>
 // data (not an <image> wrapping a raster), no background rect, and every
 // corner pixel of a rasterised check came back alpha:0 — confirmed with
@@ -50,7 +51,7 @@ export const PS_LOGO_SRC = '/assets/marks/playstation-logo.svg'
 // at all, defaulting to SVG's own black) rather than white, which the
 // filter rules below correct — see those rules for why a CSS filter
 // rather than editing the SVG.
-export const PS3_LATE_LOGO_SRC = '/assets/marks/ps3-logo-new.svg'
+export const PS3_LATE_LOGO_SRC = assetUrl('/assets/marks/ps3-logo-new.svg')
 // ps4-logo.svg and ps5-logo.svg (the files these constants used to point
 // at) turned out to be full lockups — the PlayStation button icon and the
 // platform wordmark baked into one image, confirmed by rendering both and
@@ -64,13 +65,13 @@ export const PS3_LATE_LOGO_SRC = '/assets/marks/ps3-logo-new.svg'
 // background baked in — confirmed with sharp) — see Case.css's and
 // FlatCase.css's own mix-blend-mode rules for how that's handled without
 // editing the files.
-export const PS4_WORDMARK_SRC = '/assets/marks/ps4-wordmark.png'
-export const PS5_WORDMARK_SRC = '/assets/marks/ps5-wordmark.png'
+export const PS4_WORDMARK_SRC = assetUrl('/assets/marks/ps4-wordmark.png')
+export const PS5_WORDMARK_SRC = assetUrl('/assets/marks/ps5-wordmark.png')
 // ps3-logo-old.svg: the full "PLAYSTATION 3" wordmark, not the shorter "PS3"
 // mark above — ps3-early's own reference photo carries this one on the
 // spine, not the front (Case.tsx renders it, not this file). Same
 // verification: real paths, fill="#231f20" on a <g>, transparent corners.
-export const PS3_EARLY_LOGO_SRC = '/assets/marks/ps3-logo-old.svg'
+export const PS3_EARLY_LOGO_SRC = assetUrl('/assets/marks/ps3-logo-old.svg')
 // reference/playstation-2-seeklogo.svg, copied unmodified. Real <path>
 // data, no background rect, transparent corners confirmed with sharp.
 // Unusual fill situation, checked closely rather than assumed: its <defs>
@@ -85,12 +86,12 @@ export const PS3_EARLY_LOGO_SRC = '/assets/marks/ps3-logo-old.svg'
 // reference/playstation-2-seeklogo.png, is also genuinely usable (real
 // alpha channel, transparent corners, clean content) but the vector is
 // preferred, same as every other mark here.
-export const PS2_LOGO_SRC = '/assets/marks/ps2-logo.svg'
+export const PS2_LOGO_SRC = assetUrl('/assets/marks/ps2-logo.svg')
 // reference/ps3-grey-logo.png: real alpha channel, transparent corners —
 // usable, but only 32x32px, a favicon-sized source. Expect it to read
 // soft rather than crisp once scaled up to sit next to a vector wordmark;
 // flagged rather than hidden.
-export const PS3_GREY_LOGO_SRC = '/assets/marks/ps3-grey-logo.png'
+export const PS3_GREY_LOGO_SRC = assetUrl('/assets/marks/ps3-grey-logo.png')
 
 interface CaseFrontFaceProps {
   coverSrc: string
