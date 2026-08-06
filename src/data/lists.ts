@@ -242,7 +242,7 @@ export const series: Entry[] = [
     cover: "/assets/series/one-piece/cover.png",
     disc: "/assets/series/one-piece/disc.png",
     discSource: "generated",
-    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
+    note: "Det krever en del disiplin å se denne fordi den er så lang, men gud bedre, det er verdt det. Serien presenterer verdensproblemer gjennom kunstneriske og meningsfulle historier med unike karakterer.",
   },
   {
     id: "breaking-bad",
@@ -258,7 +258,7 @@ export const series: Entry[] = [
     cover: "/assets/series/breaking-bad/cover.png",
     disc: "/assets/series/breaking-bad/disc.png",
     discSource: "generated",
-    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
+    note: "Ikke mange serier blir bedre og bedre, men det gjør denne virkelig. Alle karakterer og plots er så goated, med ingen dårlige episoder (Flue-episoden er også tidig på sin egen måte).",
   },
   {
     id: "avatar-the-last-airbender",
@@ -274,7 +274,7 @@ export const series: Entry[] = [
     cover: "/assets/series/avatar-the-last-airbender/cover.png",
     disc: "/assets/series/avatar-the-last-airbender/disc.png",
     discSource: "generated",
-    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
+    note: "Dette er på mange måter min barndom. Dritfett konsept og karakterer, og den beste redemption arc-en jeg har opplevd gjennom Zuko.",
   },
   {
     id: "game-of-thrones",
@@ -290,7 +290,7 @@ export const series: Entry[] = [
     cover: "/assets/series/game-of-thrones/cover.png",
     disc: "/assets/series/game-of-thrones/disc.png",
     discSource: "generated",
-    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
+    note: "Fantasi på sitt beste. Enormt kul storytelling, og ellers en perfekt serie – minus siste sesong (den snakker vi ikke om).",
   },
   {
     id: "invincible",
@@ -305,7 +305,7 @@ export const series: Entry[] = [
     cover: "/assets/series/invincible/cover.png",
     disc: "/assets/series/invincible/disc.png",
     discSource: "generated",
-    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
+    note: "Kuleste superheltserien jeg har sett med masse kjente skuespillere. Ble hooked etter første episode (plot-twisten i første episode er PEAK og blir bare bedre).",
   },
   {
     id: "vinland-saga",
@@ -320,7 +320,7 @@ export const series: Entry[] = [
     cover: "/assets/series/vinland-saga/cover.png",
     disc: "/assets/series/vinland-saga/disc.png",
     discSource: "generated",
-    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
+    note: "Elsker måten sesong 1 og sesong 2 er HELT annerledes. Begge er utført perfekt og virkelig minneverdige.",
   },
   {
     // 1997 Kentaro Miura adaptation, not the 2016 series. Confirm before fetch.
@@ -337,7 +337,7 @@ export const series: Entry[] = [
     cover: "/assets/series/berserk/cover.png",
     disc: "/assets/series/berserk/disc.png",
     discSource: "generated",
-    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
+    note: "Min første anime (som er et sykt sted å starte). Dark fantasy på sitt beste med den sykeste slutten (1997). Jeg visste ikke hvor jeg skulle gjøre av meg etterpå.",
   },
   {
     id: "its-always-sunny-in-philadelphia",
@@ -352,7 +352,7 @@ export const series: Entry[] = [
     cover: "/assets/series/its-always-sunny-in-philadelphia/cover.png",
     disc: "/assets/series/its-always-sunny-in-philadelphia/disc.png",
     discSource: "generated",
-    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
+    note: "Tidigste sitcom jeg har sett, men akkurat min type humor. På mange måter er min komfortserie, ettersom jeg ofte kommer tilbake til den når jeg trenger å se på noe mens jeg spiser.",
   },
   {
     id: "eastbound-and-down",
@@ -368,7 +368,7 @@ export const series: Entry[] = [
     cover: "/assets/series/eastbound-and-down/cover.png",
     disc: "/assets/series/eastbound-and-down/disc.png",
     discSource: "generated",
-    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
+    note: "Så denne for første gang ganske nylig, men ble umiddelbart en favoritt. Har fått opp klipp av denne på TikTok i åresvis, er så mange goated moments.",
   },
   {
     id: "south-park",
@@ -383,7 +383,7 @@ export const series: Entry[] = [
     cover: "/assets/series/south-park/cover.png",
     disc: "/assets/series/south-park/disc.png",
     discSource: "generated",
-    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
+    note: "Min favoritt da jeg var mindre fordi de var litt frekke i språket. Blitt enda mer glad i det i voksen alder ettersom de tøyser mye med ting som skjer aktivt i verden.",
   },
 ];
 
@@ -575,7 +575,7 @@ export const games: Entry[] = [
     spineTone: "#7a5a2e",
     disc: "/assets/game/elden-ring/disc.png",
     discSource: "generated",
-    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
+    note: "Dette er et umenneskelig fett spill, jeg har aldri vært så imponert av noe i mitt liv. Dette er virkelig kunst, og ingen spill har gitt meg mer satisfaction.",
   },
   {
     id: "call-of-duty-black-ops-ii",
@@ -593,7 +593,7 @@ export const games: Entry[] = [
     spineTone: "#3a3a3a",
     disc: "/assets/game/call-of-duty-black-ops-ii/disc.png",
     discSource: "generated",
-    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
+    note: "Beste skytespillet gjennom tidene men beste zombie spillmodus i ett. Dette er mye av min barndom, og jeg er så heldig å få oppleve det på nytt i voksen alder med kompiser på grunn av PS5-porten.",
   },
   {
     id: "sly-3-honor-among-thieves",
@@ -611,7 +611,7 @@ export const games: Entry[] = [
     spineTone: "#2a4d8f",
     disc: "/assets/game/sly-3-honor-among-thieves/disc.png",
     discSource: "generated",
-    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
+    note: "Mitt favorittspill som liten og har en spesiell plass i mitt hjerte. Var skamfett at d fulgte med 3D-briller (blå og rød).",
   },
   {
     id: "lego-star-wars-the-complete-saga",
@@ -629,7 +629,7 @@ export const games: Entry[] = [
     spineTone: "#c9a227",
     disc: "/assets/game/lego-star-wars-the-complete-saga/disc.png",
     discSource: "generated",
-    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
+    note: "Som stor Star Wars-fan er det selvforklarende at jeg elsket dette spillet som liten. Veldig gøy å spille med min søster og venner.",
   },
   {
     id: "call-of-duty-black-ops-iii",
@@ -648,7 +648,7 @@ export const games: Entry[] = [
     spineTone: "#332a24",
     disc: "/assets/game/call-of-duty-black-ops-iii/disc.png",
     discSource: "generated",
-    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
+    note: "Eneste Cod med jetpacks jeg fucket med. Grindet dette religiøst og er stolt av å si at jeg fikk dark matter.",
   },
   {
     id: "elden-ring-nightreign",
@@ -667,7 +667,7 @@ export const games: Entry[] = [
     spineTone: "#5a7a9e",
     disc: "/assets/game/elden-ring-nightreign/disc.png",
     discSource: "generated",
-    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
+    note: "Som enorm fan av Elden ring så lå d i kortene at jeg kom til å elske dette spillet. Er litt repetitivt, men også veldig avhengighetsskapende og har skapt mange gode minner med venner her.",
   },
   {
     id: "dark-souls-iii",
@@ -686,7 +686,7 @@ export const games: Entry[] = [
     spineTone: "#7a5a26",
     disc: "/assets/game/dark-souls-iii/disc.png",
     discSource: "generated",
-    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
+    note: "Det første jeg spilte etter at jeg var ferdig med Elden Ring, og det skuffet virkelig ikke. For en verdensbygging! Det er virkelig kunst på mange måter.",
   },
   {
     // Played from download. Burned rather than generated.
@@ -704,7 +704,7 @@ export const games: Entry[] = [
     // Hand-picked: the dominant cyan-blue racing streak. Not sampled.
     spineTone: "#1a9fd9",
     discSource: "burned",
-    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
+    note: "Et ganske artig arcade-fotballbilspill, men med et enormt skillgap. Har så mange timer på dette spillet med kompiser, hvor vi ler oss ihjel av hvor dårlige vi er.",
   },
   {
     // Work is 2013. The PS5 version arrived in 2022.
@@ -724,7 +724,7 @@ export const games: Entry[] = [
     spineTone: "#a8763f",
     disc: "/assets/game/grand-theft-auto-v/disc.png",
     discSource: "generated",
-    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
+    note: "Virkelig et banebrytende spill med dritbra story og endeløs moro med venner. Å gjøre bankran og races med kompiser har skapt så mange gode minner.",
   },
   {
     // No PS5 physical release. Burned rather than generated.
@@ -742,7 +742,7 @@ export const games: Entry[] = [
     // Hand-picked: the dominant bright yellow background. Not sampled.
     spineTone: "#f4c542",
     discSource: "burned",
-    note: "TODO: Her vil jeg skrive to setninger om hvorfor jeg liker dette.",
+    note: "Gøyeste co-op spillet jeg har spilt med en klassisk og kunstnerisk arkitektur. Har gitt meg minner for livet.",
   },
 ];
 
