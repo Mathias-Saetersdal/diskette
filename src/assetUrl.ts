@@ -1,15 +1,14 @@
 /**
  * Prefixes a root-absolute public/ asset path with Vite's own base
- * (import.meta.env.BASE_URL, set from vite.config.ts's base: '/diskette/').
- * Needed because this site deploys under a subpath
- * (mathias-saetersdal.github.io/diskette/), not the domain root — Vite
- * only rewrites asset references it processes itself (JS imports,
- * index.html's own href/src attributes, CSS url()). A plain string like
- * "/assets/x.png" used as a React <img src> value is never touched by
- * that pipeline, so it resolves against the domain root and 404s under
- * any non-root base. Confirmed directly: this is exactly what happened
- * on the deployed site, covers and disc art all 404ing while index.html
- * itself (base-aware) loaded fine.
+ * (import.meta.env.BASE_URL, set from vite.config.ts's base). Vite only
+ * rewrites asset references it processes itself (JS imports, index.html's
+ * own href/src attributes, CSS url()). A plain string like "/assets/x.png"
+ * used as a React <img src> value is never touched by that pipeline, so it
+ * resolves against the domain root and 404s under any non-root base. This
+ * site currently deploys at the domain root (base: '/'), so BASE_URL is a
+ * no-op today, but a previous subpath deploy (github.io/diskette/) hit
+ * exactly this 404 on every cover and disc image, so the wrapper stays in
+ * place for whichever base is configured.
  *
  * Every entry field and constant that holds one of these paths
  * (src/data/lists.ts's cover/disc, CaseFrontFace.tsx's platform marks,
