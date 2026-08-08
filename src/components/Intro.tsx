@@ -10,6 +10,12 @@ import './Intro.css'
  * fourth generic paragraph: it stands alone rather than continuing the
  * first three, and Intro.css gives it more space above it than the
  * paragraphs get between each other, so that break reads as intentional.
+ *
+ * The last paragraph's own string in lists.ts ends on "på" rather than a
+ * full stop, since the sentence it closes on is the mailto link's own
+ * address text plus the period after it — both live here as JSX rather
+ * than in the data string, the same way the address in Footer.tsx isn't
+ * pulled from a shared constant either.
  */
 export default function Intro() {
   const lastIndex = introText.length - 1
@@ -21,7 +27,17 @@ export default function Intro() {
           key={index}
           className={index === lastIndex ? 'intro__paragraph intro__paragraph--last' : 'intro__paragraph'}
         >
-          {paragraph}
+          {index === lastIndex ? (
+            <>
+              {paragraph}{' '}
+              <a className="intro__contact-link" href="mailto:mathias@saetersdal.no">
+                mathias@saetersdal.no
+              </a>
+              .
+            </>
+          ) : (
+            paragraph
+          )}
         </p>
       ))}
     </section>

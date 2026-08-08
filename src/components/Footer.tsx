@@ -59,6 +59,12 @@ export default function Footer() {
           </li>
         ))}
       </ul>
+      <p className="footer__credit">
+        Laget av Mathias Sætersdal ·{' '}
+        <a className="footer__credit-link" href="mailto:mathias@saetersdal.no">
+          mathias@saetersdal.no
+        </a>
+      </p>
       <p className="footer__attribution">
         This product uses the TMDB API but is not endorsed or certified by
         TMDB.

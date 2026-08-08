@@ -82,17 +82,42 @@
 }
 
 /*
- * TMDB's own required disclaimer, fixed wording, sitting under the row
- * rather than folded into TMDB's own unit above — the other three sources
- * only ask for credit and a link, which the row already gives them; TMDB
- * additionally requires this exact sentence.
+ * Site credit, sitting between the source row and TMDB's disclaimer.
+ * Same colour, size and line-height as .footer__attribution below it —
+ * grouped into one rule with it rather than a second hardcoded #999/0.8rem,
+ * so both stay in the same tier below the source row rather than one
+ * reading as more prominent than the other. Same 24px top margin the
+ * attribution rule already used against the row above it, kept here since
+ * this element now sits in that position instead.
  */
+.footer__credit,
 .footer__attribution {
   margin: 24px 0 0;
   color: #999;
   font-size: 0.8rem;
   line-height: 1.5;
   text-align: center;
+}
+
+/*
+ * Underline marks it as a link against the muted surrounding text, same
+ * text-underline-offset as .footer__source-name's own underline above.
+ * Hover and focus-visible both move to #fff, the brightening this
+ * project's other footer and nav links already use.
+ */
+.footer__credit-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.footer__credit-link:hover {
+  color: #fff;
+}
+
+.footer__credit-link:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
 }
 
 /*

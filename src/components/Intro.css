@@ -103,3 +103,27 @@
     font-size: 0.95rem;
   }
 }
+
+/*
+ * Inline in the last paragraph's own prose, so it inherits that
+ * paragraph's colour and size rather than getting its own — the
+ * underline is what marks it as a link, the same text-underline-offset
+ * Footer.css already uses on .footer__source-name. Hover and
+ * focus-visible both move to #fff, the brightening this project's other
+ * links (Footer.css, SectionNav.css) already use instead of an accent
+ * colour.
+ */
+.intro__contact-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.intro__contact-link:hover {
+  color: #fff;
+}
+
+.intro__contact-link:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}

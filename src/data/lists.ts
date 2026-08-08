@@ -761,5 +761,5 @@ export const introText = [
   "Dette er favorittfilmene, seriene, albumene og spillene mine. Ti stykk rangert. Jeg har laget siden fordi jeg hadde lyst, ikke fordi noen ba om den.",
   "En film, et album og et spill er kunst på hver sin måte. De blir sjelden behandlet som det. Her ligger de som mediene de kom i.",
   "Rangeringen er ikke objektiv. Den er full av nostalgi. Noe står høyt fordi det faktisk er godt laget, og noe står høyt fordi jeg opplevde det i riktig alder. Jeg skiller ikke alltid mellom de to.",
-  "Døm meg gjerne. Er du sterkt uenig, si fra.",
+  "Døm meg gjerne. Er du sterkt uenig, si fra på",
 ];
