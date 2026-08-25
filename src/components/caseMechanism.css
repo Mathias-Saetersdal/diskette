@@ -198,8 +198,7 @@
    * the front leaf's poster image was winning that flattened paint order
    * and fully covering the spine's own marks regardless of any
    * translateZ applied to them, confirmed directly with
-   * elementsFromPoint(). Same fix .case__tray-unit already documents and
-   * uses for the identical problem with a lifted disc.
+   * elementsFromPoint().
    */
   transform-style: preserve-3d;
 }
@@ -213,10 +212,10 @@
  * The tray half — the rigid, motionless part of the case. Fixed at
  * left: depth always, in both states: this is what "the rest of the
  * case stays still" means concretely. Never state-dependent, so nothing
- * here visibly slides. transform-style: preserve-3d so a lifted disc (a
- * descendant here) sorts by actual 3D depth against the front leaf's own
- * children instead of flattening into DOM paint order and losing to
- * whatever comes later in the markup.
+ * here visibly slides. Holds tray visuals only: the disc slot used to
+ * live here but is a direct child of the toggle now, so its paint order
+ * against the front leaf can follow the component's own state-driven DOM
+ * order — see the disc-slot rule below for the engines that need that.
  *
  * No transform here: a keep case needs a small empirical edge
  * correction on top of this (Case.css), measured directly against its
@@ -278,18 +277,29 @@
 }
 
 /*
- * Sized against the tray unit's own panel width, not the full open case:
- * --disc-ratio (each component's own inline style) is the 120mm disc
+ * Sized against the tray panel's width (--front-w), not the toggle's own
+ * box: --disc-ratio (each component's own inline style) is the 120mm disc
  * over that format's own panel width, so it leaves the real margin all
  * round rather than an eyeballed percentage, and stays within the panel:
  * it never crosses the fold at rest.
+ *
+ * A direct child of the toggle, not of the tray unit, even though it
+ * rests centred on the tray: some engines paint a preserve-3d scene in
+ * DOM order instead of sorting by depth (verified against a WebKit
+ * build — a nested slot's translateZ(90px) lost to the open front leaf
+ * and the lifted disc rendered half under it), and the component moves
+ * this node before or after the front leaf per state so paint order
+ * matches real depth order there. Positioning follows: left is the tray
+ * panel's centre in toggle coordinates (the panel spans from --depth to
+ * --depth + --front-w), and top stays 50% since the tray unit runs the
+ * toggle's full height anyway.
  */
 .case__disc-slot,
 .jewel-case__disc-slot {
   position: absolute;
-  left: 50%;
+  left: calc(var(--depth) + var(--front-w) / 2);
   top: 50%;
-  width: calc(var(--disc-ratio) * 100%);
+  width: calc(var(--disc-ratio) * var(--front-w));
   cursor: pointer;
   transform: translate(-50%, -50%) translateZ(1px) scale(1);
   transition:
@@ -327,15 +337,55 @@
   animation: none;
 }
 
-/* Lifted: shifts left to the centre of the whole open case (the tray
-   unit's own left edge, in its local coordinates, is the case's
-   horizontal midpoint) and grows slightly beyond its resting size. */
+/* Lifted: shifts left to the centre of the whole open case (the fold at
+   x: --depth, in toggle coordinates, is the open spread's horizontal
+   midpoint) and grows slightly beyond its resting size. */
 .case__disc-slot.is-out,
 .jewel-case__disc-slot.is-out {
-  left: 0%;
+  left: var(--depth);
   top: 46%;
-  width: 105%;
+  width: calc(var(--disc-ratio) * var(--front-w) * 1.05);
   transform: translate(-50%, -50%) translateZ(90px) scale(1);
+}
+
+/*
+ * Once the hinge has finished swinging open, the lid's outward face
+ * (cover art or the jewel shell holding the booklet) must contribute
+ * nothing: engines that paint the 3D scene without proper backface
+ * culling otherwise show it as a mirrored copy of the cover on the open
+ * lid — the actual bug this fixes, seen on albums and games. In engines
+ * that cull correctly this is a no-op, since the face already hides
+ * itself once rotated past 90deg. The 0.6s delay waits out the hinge
+ * transition so the cover stays visible while the lid is actually
+ * swinging; unmatching on close falls back to the base rule's absent
+ * transition, so the face returns instantly for the closing swing.
+ */
+.case[data-open='true'] .case__front-art,
+.jewel-case[data-open='true'] .jewel-case__front-shell {
+  visibility: hidden;
+  transition: visibility 0s 0.6s;
+}
+
+/*
+ * The other half of the same repair: engines that cull by an element's
+ * own local transform alone treat the pre-rotated interior face
+ * (rotateY(180deg)) as permanently back-facing and never draw it, so the
+ * open lid shows the mirrored cover instead of the interior panel. Lift
+ * the culling once the swing is over — in correct engines the interior
+ * is front-facing by then, so nothing changes. A zero-duration delayed
+ * animation rather than a transition because backface-visibility is a
+ * discrete property transitions won't delay; removing the class on close
+ * drops the animation and restores culling instantly.
+ */
+.case[data-open='true'] .case__front-interior,
+.jewel-case[data-open='true'] .jewel-case__front-interior {
+  animation: case-unveil-interior 0s 0.6s forwards;
+}
+
+@keyframes case-unveil-interior {
+  to {
+    backface-visibility: visible;
+  }
 }
 
 .case__shadow,
@@ -362,5 +412,18 @@
   .jewel-case__front,
   .jewel-case__disc-slot {
     transition: none;
+  }
+
+  /* The hinge cuts instead of swinging here, so the two face rules above
+     have no 0.6s swing to wait out — their delays would just leave the
+     mirrored cover visible after an instant open. */
+  .case[data-open='true'] .case__front-art,
+  .jewel-case[data-open='true'] .jewel-case__front-shell {
+    transition: none;
+  }
+
+  .case[data-open='true'] .case__front-interior,
+  .jewel-case[data-open='true'] .jewel-case__front-interior {
+    animation-delay: 0s;
   }
 }

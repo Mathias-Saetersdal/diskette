@@ -210,6 +210,62 @@ export default function Case({
     '--hub-boss-ratio': geometry.hubBossRatio,
   } as CSSProperties
 
+  /*
+   * A direct child of the toggle, not nested in the tray unit, and keyed
+   * so React moves this exact node when its position in the children list
+   * changes below. Both are for engines that paint a preserve-3d scene in
+   * DOM order instead of sorting by depth (Safari/WebKit builds do this —
+   * verified directly, the lifted disc rendered half under the open lid
+   * there): paint order has to match the real depth order in every state,
+   * so the slot renders before the front leaf while the disc is in the
+   * tray (the lid must win while closed and mid-swing) and after it while
+   * the disc is out (the floating disc must win). Engines that depth-sort
+   * properly ignore DOM order here, so this changes nothing for them.
+   *
+   * Always mounted, never conditionally unmounted on `open`: the disc
+   * must stay visible while the case is closing and the lid physically
+   * swings over it, not vanish the instant `open` flips. Only keyboard/AT
+   * reach is gated on `open`, which doesn't touch rendering.
+   */
+  const frontArt = (
+    <CaseFrontFace
+      key="front-art"
+      coverSrc={coverSrc}
+      coverAlt={coverAlt}
+      caseFormat={caseFormat}
+      livery={livery}
+    />
+  )
+
+  const discSlot = (
+    <div
+      key="disc-slot"
+      className={`case__disc-slot${discOut ? ' is-out' : ''}`}
+      // Independently focusable control nested in the case button:
+      // a real <button> can't contain another interactive element,
+      // so this is a role="button" div instead, with its own
+      // keyboard handling and stopPropagation so activating it
+      // doesn't also toggle the case closed.
+      role="button"
+      tabIndex={open ? 0 : -1}
+      aria-hidden={!open}
+      aria-pressed={discOut}
+      aria-label={discOut ? 'Return disc to tray' : `Lift ${title} disc`}
+      onClick={(event) => {
+        if (!open) return
+        event.stopPropagation()
+        toggleDiscOut()
+      }}
+      onKeyDown={handleDiscKeyDown}
+    >
+      {discSource === 'burned' ? (
+        <BurnedDisc title={title} medium={medium} interactive={discOut} />
+      ) : (
+        <Disc src={discSrc ?? ''} alt={discAlt ?? ''} interactive={discOut} />
+      )}
+    </div>
+  )
+
   return (
     <div
       className={`case${liveryClass}`}
@@ -262,42 +318,11 @@ export default function Case({
               <span className="case__hub-push">PUSH</span>
             </div>
           </div>
-
-          {/*
-           * Always mounted, never conditionally unmounted on `open`: the
-           * disc must stay visible while the case is closing and the lid
-           * physically swings over it (a real occlusion, via 3D depth),
-           * not vanish the instant `open` flips. Only keyboard/AT reach is
-           * gated on `open`, which doesn't touch rendering.
-           */}
-          <div
-            className={`case__disc-slot${discOut ? ' is-out' : ''}`}
-            // Independently focusable control nested in the case button:
-            // a real <button> can't contain another interactive element,
-            // so this is a role="button" div instead, with its own
-            // keyboard handling and stopPropagation so activating it
-            // doesn't also toggle the case closed.
-            role="button"
-            tabIndex={open ? 0 : -1}
-            aria-hidden={!open}
-            aria-pressed={discOut}
-            aria-label={discOut ? 'Return disc to tray' : `Lift ${title} disc`}
-            onClick={(event) => {
-              if (!open) return
-              event.stopPropagation()
-              toggleDiscOut()
-            }}
-            onKeyDown={handleDiscKeyDown}
-          >
-            {discSource === 'burned' ? (
-              <BurnedDisc title={title} medium={medium} interactive={discOut} />
-            ) : (
-              <Disc src={discSrc ?? ''} alt={discAlt ?? ''} interactive={discOut} />
-            )}
-          </div>
         </div>
 
-        <div className="case__front">
+        {!discOut && discSlot}
+
+        <div className="case__front" key="front">
           {/*
            * Two faces of the same leaf, not a leaf plus a separate static
            * panel: the interior is what you see when the cover has swung
@@ -305,9 +330,18 @@ export default function Case({
            * itself when facing away; .case__front-interior is pre-rotated
            * 180deg so it faces the viewer exactly when the leaf has swung
            * open, and mirrors that of the leaf so it isn't itself flipped.
+           *
+           * The two faces swap DOM order with `open`, keyed so React moves
+           * the nodes rather than remounting them: in engines that paint
+           * the 3D scene in DOM order with no backface culling (the same
+           * ones the disc slot's own reorder exists for), whichever face
+           * comes last paints over the other, so the face that should be
+           * showing has to come last — the cover while closed, the
+           * interior while open. Engines that cull correctly never show
+           * both at once, so the order is invisible to them.
            */}
-          <CaseFrontFace coverSrc={coverSrc} coverAlt={coverAlt} caseFormat={caseFormat} livery={livery} />
-          <div className="case__front-interior">
+          {open && frontArt}
+          <div className="case__front-interior" key="interior">
             <div className="case__panel-frame" aria-hidden="true" />
             <div className="case__panel-sheen" aria-hidden="true" />
             {/*
@@ -323,7 +357,10 @@ export default function Case({
               <div className="case__booklet-clip-slot" />
             </div>
           </div>
+          {!open && frontArt}
         </div>
+
+        {discOut && discSlot}
       </button>
 
       <div className="case__shadow" aria-hidden="true" />

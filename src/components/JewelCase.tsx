@@ -92,6 +92,58 @@ export default function JewelCase({
     '--disc-ratio': DISC_TO_PANEL_RATIO,
   } as CSSProperties
 
+  const frontShell = (
+    <div className="jewel-case__front-shell" key="front-shell">
+      {/*
+       * The booklet, inset from the clear shell's own edge so that
+       * edge stays visible as a margin around it, per the brief:
+       * the cover sits under the lid, not printed on it.
+       */}
+      <div className="jewel-case__front-poster">
+        <img src={coverSrc} alt={coverAlt} />
+        <div className="jewel-case__front-refraction" aria-hidden="true" />
+      </div>
+      <div className="jewel-case__front-gloss" aria-hidden="true" />
+    </div>
+  )
+
+  /*
+   * A direct child of the toggle, keyed so React moves this exact node
+   * when its position in the children list changes below — before the
+   * front leaf while the disc rests in the tray, after it while the disc
+   * is out. Mirrors Case.tsx exactly; that component's own copy of this
+   * comment has the full reasoning (engines that paint a preserve-3d
+   * scene in DOM order instead of depth-sorting it).
+   *
+   * Same pattern as Case.tsx's disc slot otherwise: a role="button" div
+   * nested in the case's own button, since a real <button> can't contain
+   * another interactive element, with its own keyboard handling and
+   * stopPropagation so lifting the disc doesn't also close the case.
+   */
+  const discSlot = (
+    <div
+      key="disc-slot"
+      className={`jewel-case__disc-slot${discOut ? ' is-out' : ''}`}
+      role="button"
+      tabIndex={open ? 0 : -1}
+      aria-hidden={!open}
+      aria-pressed={discOut}
+      aria-label={discOut ? 'Return disc to tray' : `Lift ${title} disc`}
+      onClick={(event) => {
+        if (!open) return
+        event.stopPropagation()
+        toggleDiscOut()
+      }}
+      onKeyDown={handleDiscKeyDown}
+    >
+      {discSource === 'burned' ? (
+        <BurnedDisc title={title} medium="album" interactive={discOut} />
+      ) : (
+        <Disc src={discSrc ?? ''} alt={discAlt ?? ''} interactive={discOut} />
+      )}
+    </div>
+  )
+
   return (
     <div className="jewel-case" data-open={open} data-enlarged={enlarged} style={style}>
       <button
@@ -131,59 +183,29 @@ export default function JewelCase({
             <div className="jewel-case__tray-relief jewel-case__tray-relief--left" aria-hidden="true" />
             <div className="jewel-case__tray-relief jewel-case__tray-relief--right" aria-hidden="true" />
           </div>
-          {/*
-           * A sibling of .jewel-case__tray, not nested inside it: the
-           * tray's own 5% inset is symmetric, so centring against the
-           * full tray-unit box lands the resting disc in the same place
-           * either way, but the lifted position below only lands at the
-           * whole open case's true horizontal midpoint (Case.css's own
-           * disc-slot lives at this same level, for the same reason).
-           *
-           * Same pattern as Case.tsx's disc slot otherwise: a
-           * role="button" div nested in the case's own button, since a
-           * real <button> can't contain another interactive element,
-           * with its own keyboard handling and stopPropagation so
-           * lifting the disc doesn't also close the case.
-           */}
-          <div
-            className={`jewel-case__disc-slot${discOut ? ' is-out' : ''}`}
-            role="button"
-            tabIndex={open ? 0 : -1}
-            aria-hidden={!open}
-            aria-pressed={discOut}
-            aria-label={discOut ? 'Return disc to tray' : `Lift ${title} disc`}
-            onClick={(event) => {
-              if (!open) return
-              event.stopPropagation()
-              toggleDiscOut()
-            }}
-            onKeyDown={handleDiscKeyDown}
-          >
-            {discSource === 'burned' ? (
-              <BurnedDisc title={title} medium="album" interactive={discOut} />
-            ) : (
-              <Disc src={discSrc ?? ''} alt={discAlt ?? ''} interactive={discOut} />
-            )}
-          </div>
         </div>
 
-        <div className="jewel-case__front">
-          <div className="jewel-case__front-shell">
-            {/*
-             * The booklet, inset from the clear shell's own edge so that
-             * edge stays visible as a margin around it, per the brief:
-             * the cover sits under the lid, not printed on it.
-             */}
-            <div className="jewel-case__front-poster">
-              <img src={coverSrc} alt={coverAlt} />
-              <div className="jewel-case__front-refraction" aria-hidden="true" />
-            </div>
-            <div className="jewel-case__front-gloss" aria-hidden="true" />
-          </div>
+        {!discOut && discSlot}
+
+        <div className="jewel-case__front" key="front">
+          {/*
+           * The two faces swap DOM order with `open`, keyed so React
+           * moves the nodes rather than remounting them — same reasoning
+           * as Case.tsx's own front leaf: in engines that paint the 3D
+           * scene in DOM order with no backface culling, the face that
+           * should be showing has to paint last, the booklet while closed
+           * and the clear back face while open. Engines that cull
+           * correctly never show both at once, so the order is invisible
+           * to them.
+           */}
+          {open && frontShell}
           {/* The same clear lid's back face, seen once the case is open —
               one moulded piece, not a second material. */}
-          <div className="jewel-case__front-interior" aria-hidden="true" />
+          <div className="jewel-case__front-interior" aria-hidden="true" key="interior" />
+          {!open && frontShell}
         </div>
+
+        {discOut && discSlot}
       </button>
 
       <div className="jewel-case__shadow" aria-hidden="true" />

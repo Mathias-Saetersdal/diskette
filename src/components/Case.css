@@ -121,6 +121,19 @@
   transform: translateY(calc(var(--depth) * -0.0993)) scaleY(1.0115);
 }
 
+/*
+ * The disc slot is a direct child of the toggle now (caseMechanism.css
+ * has the why), so the tray-unit correction above no longer reaches it.
+ * The resting disc still has to sit centred in the corrected tray, so
+ * its resting transform carries the same translateY. scaleY is left off
+ * on purpose: applied to the disc it rendered as a 1% ellipse, which was
+ * inherited distortion, not alignment. Out-of-tray keeps the shared
+ * uncorrected transform — a floating disc has no tray edge to align to.
+ */
+.case__disc-slot:not(.is-out) {
+  transform: translate(-50%, calc(-50% + var(--depth) * -0.0993)) translateZ(1px) scale(1);
+}
+
 .case__tray {
   position: absolute;
   inset: 0;
