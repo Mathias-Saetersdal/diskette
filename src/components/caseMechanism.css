@@ -336,6 +336,26 @@
 }
 
 /*
+ * Closing while the disc is still out — the slot sits after the front
+ * leaf in the DOM then (the component freezes it there for the close,
+ * which is what the sibling combinator detects), and the disc's 0.6s
+ * return would run concurrently with the 0.6s lid swing: the lid swept
+ * through the still-flying disc mid-air, and in DOM-order engines the
+ * disc painted through the lid on top of that. Instead the return snaps
+ * to 0.25s — the disc drops into the tray just ahead of the lid, which
+ * only reaches the tray zone past its 90deg point (~0.17s in, covering
+ * fully later still) — and visibility follows at 0.3s, right as the lid
+ * closes over it, instead of the base rule's 0.55s, which left the disc
+ * painting through the shut lid in DOM-order engines.
+ */
+.case[data-open='false'] .case__front ~ .case__disc-slot,
+.jewel-case[data-open='false'] .jewel-case__front ~ .jewel-case__disc-slot {
+  transition:
+    transform 0.25s ease-out,
+    visibility 0s 0.3s;
+}
+
+/*
  * Except while the hover preview has the lid cracked (the -12deg rule
  * further up): a crack you can see into shows the disc sitting in the
  * tray, and hiding it there read as an empty case until `open` flipped
@@ -351,6 +371,24 @@
   .case[data-open='false'] .case__toggle:hover .case__disc-slot,
   .jewel-case[data-open='false'] .jewel-case__toggle:hover .jewel-case__disc-slot {
     visibility: visible;
+  }
+
+  /*
+   * But not while closing from the disc-out state (slot after the front
+   * leaf — same sibling detection as the fast-return rule below): the
+   * pointer is parked on the case right after the click that closed it,
+   * so without this the hover exception held the returned disc painted
+   * through the shut lid in DOM-order engines for the rest of the close.
+   * Wins the hover rule above on specificity and restates the fast
+   * return's own timings, since the cascade resolves visibility and
+   * transition here once this matches.
+   */
+  .case[data-open='false'] .case__toggle:hover .case__front ~ .case__disc-slot,
+  .jewel-case[data-open='false'] .jewel-case__toggle:hover .jewel-case__front ~ .jewel-case__disc-slot {
+    visibility: hidden;
+    transition:
+      transform 0.25s ease-out,
+      visibility 0s 0.3s;
   }
 }
 
@@ -480,7 +518,9 @@
   .jewel-case__front,
   .jewel-case__disc-slot,
   .case[data-open='false'] .case__disc-slot,
-  .jewel-case[data-open='false'] .jewel-case__disc-slot {
+  .jewel-case[data-open='false'] .jewel-case__disc-slot,
+  .case[data-open='false'] .case__front ~ .case__disc-slot,
+  .jewel-case[data-open='false'] .jewel-case__front ~ .jewel-case__disc-slot {
     transition: none;
   }
 
