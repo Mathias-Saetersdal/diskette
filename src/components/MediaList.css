@@ -409,7 +409,46 @@
 .media-list .media-card:nth-child(-n + 5) .jewel-case {
   margin-inline-start: 0px;
   margin-inline-end: calc(var(--growth) * 2);
-  transform: translateX(var(--growth)) scale(var(--enlarge, 1));
+  /* No translateX here — the first-half shift lives on the toggle below.
+     transform falls back to caseMechanism.css's own scale(--enlarge). */
+}
+
+/*
+ * The first-half growth shift, moved off the card root onto the toggle.
+ * On the root it shared the 1.5s enlarge transition, but the lid swings
+ * open in 0.6s — so for the second half of every first-half open, the
+ * lid's leftward spread outran the rightward shift meant to clear it and
+ * covered the neighbour to the left (verified by frame capture; the
+ * second half never shows this because its lid opens into the margin
+ * that side already reserved at 0.6s). The toggle's own transition IS
+ * 0.6s ease, the same clock as the hinge and the recenter, so a shift
+ * living here tracks the swing frame by frame.
+ *
+ * The maths of the move: the root used to apply translateX(growth)
+ * OUTSIDE scale(enlarge); a shift inside the scale needs dividing by it
+ * to land the same place (scale multiplies the inner translation).
+ * Declared ahead of the toggle's own tilt/recenter so it shifts in the
+ * row's plane, unaffected by the rotations after it — this restates
+ * caseMechanism.css's whole toggle transform because transform can't be
+ * extended, only replaced.
+ */
+.media-list .media-card:nth-child(-n + 5) .case .case__toggle,
+.media-list .media-card:nth-child(-n + 5) .jewel-case .jewel-case__toggle {
+  transform: translateX(calc(var(--growth) / var(--enlarge, 1))) translateX(var(--recenter))
+    rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+}
+
+/*
+ * Closing: the shrink runs at --enlarge-duration on the root, and the
+ * toggle's shift has to fall back at that same slow clock — at its usual
+ * 0.6s the shift emptied out while the case was still scaled up, poking
+ * the case's left side into the neighbour gap. Slows the tilt restore to
+ * the same clock as a side effect, which reads consistently with the
+ * 1.5s shrink around it.
+ */
+.media-list .media-card:nth-child(-n + 5) .case[data-closing='true'] .case__toggle,
+.media-list .media-card:nth-child(-n + 5) .jewel-case[data-closing='true'] .jewel-case__toggle {
+  transition: transform var(--enlarge-duration) ease-in-out;
 }
 
 .media-list .media-card:nth-child(n + 6) .case,
@@ -428,7 +467,9 @@
   .media-list .case,
   .media-list .jewel-case,
   .media-list .case[data-closing='true'],
-  .media-list .jewel-case[data-closing='true'] {
+  .media-list .jewel-case[data-closing='true'],
+  .media-list .media-card:nth-child(-n + 5) .case[data-closing='true'] .case__toggle,
+  .media-list .media-card:nth-child(-n + 5) .jewel-case[data-closing='true'] .jewel-case__toggle {
     transition: none;
   }
 }
