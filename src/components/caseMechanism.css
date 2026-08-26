@@ -335,6 +335,25 @@
     visibility 0s 0.55s;
 }
 
+/*
+ * Except while the hover preview has the lid cracked (the -12deg rule
+ * further up): a crack you can see into shows the disc sitting in the
+ * tray, and hiding it there read as an empty case until `open` flipped
+ * and the disc popped in. The fully-shut peek the rule above exists for
+ * isn't a problem here — with the lid visibly ajar, a disc edge at the
+ * case's own edge reads as the disc inside, not a rendering artifact.
+ * Same hover/pointer gate as the preview itself: where the preview can't
+ * happen, this has nothing to reveal. On unhover the rule above takes
+ * back over, and its 0.55s delay holds the disc visible while the crack
+ * swings shut — the same handoff closing already uses.
+ */
+@media (hover: hover) and (pointer: fine) {
+  .case[data-open='false'] .case__toggle:hover .case__disc-slot,
+  .jewel-case[data-open='false'] .jewel-case__toggle:hover .jewel-case__disc-slot {
+    visibility: visible;
+  }
+}
+
 .case__disc-slot:focus-visible,
 .jewel-case__disc-slot:focus-visible {
   outline: none;
