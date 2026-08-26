@@ -4,6 +4,8 @@ import { useSettleOnFirstView } from './useSettleOnFirstView'
 import { SettleContext } from './SettleContext'
 import { games } from '../data/lists'
 import './GamesList.css'
+import { ui } from '../i18n/ui'
+import { useLanguage } from '../i18n/useLanguage'
 
 /**
  * Wraps MediaList rather than passing it a perspective prop: MediaList is
@@ -30,12 +32,13 @@ import './GamesList.css'
  * .media-list:has(.case[data-enlarged='true']) rule).
  */
 export default function GamesList() {
+  const { language } = useLanguage()
   const [settleRef, settle] = useSettleOnFirstView<HTMLDivElement>(450)
 
   return (
     <div className="games-list" ref={settleRef}>
       <SettleContext.Provider value={settle}>
-        <MediaList entries={games} CardComponent={GameCard} ariaLabel="Games, all time" heading="Spill" id="spill" />
+        <MediaList entries={games} CardComponent={GameCard} ariaLabel={ui[language].gamesAriaLabel} heading={ui[language].gamesHeading} id="spill" />
       </SettleContext.Provider>
     </div>
   )

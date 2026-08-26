@@ -1,4 +1,6 @@
-import { introText } from '../data/lists'
+import { introText, introTextEn } from '../data/lists'
+import { ui } from '../i18n/ui'
+import { useLanguage } from '../i18n/useLanguage'
 import '@fontsource/lora/latin-400.css'
 import './Intro.css'
 
@@ -18,11 +20,13 @@ import './Intro.css'
  * pulled from a shared constant either.
  */
 export default function Intro() {
-  const lastIndex = introText.length - 1
+  const { language } = useLanguage()
+  const paragraphs = language === 'en' ? introTextEn : introText
+  const lastIndex = paragraphs.length - 1
   return (
-    <section className="intro" aria-label="Intro">
+    <section className="intro" aria-label={ui[language].introAriaLabel}>
       <h1 className="intro__title">Diskette</h1>
-      {introText.map((paragraph, index) => (
+      {paragraphs.map((paragraph, index) => (
         <p
           key={index}
           className={index === lastIndex ? 'intro__paragraph intro__paragraph--last' : 'intro__paragraph'}

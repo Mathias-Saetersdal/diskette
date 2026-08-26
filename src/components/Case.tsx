@@ -6,6 +6,8 @@ import { CASE_GEOMETRY, MAX_CASE_HEIGHT_MM, type SupportedCaseFormat } from './c
 import CaseFrontFace, { BLURAY_LOGO_SRC } from './CaseFrontFace'
 import './caseMechanism.css'
 import './Case.css'
+import { ui } from '../i18n/ui'
+import { useLanguage } from '../i18n/useLanguage'
 
 // The tray-resting disc, the tray ring, and the hub boss are all sized off
 // the panel width in mm, so they need to be recomputed per format too —
@@ -167,6 +169,7 @@ export default function Case({
   onToggleOpen,
   toggleRef,
 }: CaseProps) {
+  const { language } = useLanguage()
   const [discOut, setDiscOut] = useState(false)
   // A closed case can't have a floating disc. open is now the caller's
   // state, not ours, so enforcing that invariant has to watch the prop
@@ -306,7 +309,7 @@ export default function Case({
       tabIndex={open ? 0 : -1}
       aria-hidden={!open}
       aria-pressed={discOut}
-      aria-label={discOut ? 'Return disc to tray' : `Lift ${title} disc`}
+      aria-label={discOut ? ui[language].returnDisc : ui[language].liftDisc(title)}
       onClick={(event) => {
         if (!open) return
         event.stopPropagation()
@@ -334,7 +337,7 @@ export default function Case({
         type="button"
         className="case__toggle"
         aria-expanded={open}
-        aria-label={`${open ? 'Close' : 'Open'} case: ${title}`}
+        aria-label={open ? ui[language].closeCase(title) : ui[language].openCase(title)}
         onClick={onToggleOpen}
       >
         <div className="case__spine">

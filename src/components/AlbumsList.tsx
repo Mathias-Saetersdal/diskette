@@ -4,6 +4,8 @@ import { useSettleOnFirstView } from './useSettleOnFirstView'
 import { SettleContext } from './SettleContext'
 import { albums } from '../data/lists'
 import './AlbumsList.css'
+import { ui } from '../i18n/ui'
+import { useLanguage } from '../i18n/useLanguage'
 
 /**
  * Wrapped the same way FilmsList.tsx, SeriesList.tsx and GamesList.tsx
@@ -21,6 +23,7 @@ import './AlbumsList.css'
  * staggerMs 300: albums is the third of the four lists in App.tsx.
  */
 export default function AlbumsList() {
+  const { language } = useLanguage()
   const [settleRef, settle] = useSettleOnFirstView<HTMLDivElement>(300)
 
   return (
@@ -29,8 +32,8 @@ export default function AlbumsList() {
         <MediaList
           entries={albums}
           CardComponent={AlbumCard}
-          ariaLabel="Albums, all time"
-          heading="Album"
+          ariaLabel={ui[language].albumsAriaLabel}
+          heading={ui[language].albumsHeading}
           id="album"
         />
       </SettleContext.Provider>

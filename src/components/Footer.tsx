@@ -1,4 +1,6 @@
 import { assetUrl } from '../assetUrl'
+import { ui } from '../i18n/ui'
+import { useLanguage } from '../i18n/useLanguage'
 import './Footer.css'
 
 /**
@@ -37,6 +39,7 @@ const sources = [
 ]
 
 export default function Footer() {
+  const { language } = useLanguage()
   return (
     <footer className="footer">
       <ul className="footer__sources">
@@ -60,7 +63,7 @@ export default function Footer() {
         ))}
       </ul>
       <p className="footer__credit">
-        Laget av Mathias Sætersdal ·{' '}
+        {ui[language].footerCredit} ·{' '}
         <a className="footer__credit-link" href="mailto:mathias@saetersdal.no">
           mathias@saetersdal.no
         </a>

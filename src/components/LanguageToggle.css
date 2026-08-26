@@ -1,0 +1,50 @@
+/*
+ * SectionNav's counterpart on the opposite corner: same type treatment,
+ * colours, opacity vocabulary and focus ring as .section-nav__link
+ * (SectionNav.css), so the two fixed elements read as a pair — no new
+ * accent colour. Horizontal text, no writing-mode: a one-word button in
+ * a corner has no column to fit into. Unlike the nav, never hidden at
+ * narrow widths — on a phone this is the only way to change language.
+ *
+ * The 44px minimums are the hit area, held by the button's own box
+ * rather than padding arithmetic: the visible label sits centred inside
+ * whatever box those minimums produce at any font size.
+ */
+.language-toggle {
+  all: unset;
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 10;
+  box-sizing: border-box;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 14px;
+  cursor: pointer;
+  font: 500 0.85rem/1 system-ui, sans-serif;
+  letter-spacing: 0.04em;
+  color: #888;
+  opacity: 0.6;
+  transition:
+    opacity 0.2s ease,
+    color 0.2s ease;
+}
+
+.language-toggle:hover {
+  opacity: 1;
+  color: #ccc;
+}
+
+.language-toggle:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .language-toggle {
+    transition: none;
+  }
+}

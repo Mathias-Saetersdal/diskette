@@ -1,3 +1,11 @@
+/* eslint-disable react-refresh/only-export-components --
+ * The mark-asset constants below are exported alongside the component on
+ * purpose: Case, FlatCase and their CSS all read them, and the front
+ * face is where each asset's sourcing story is documented. Splitting
+ * them into a separate file to satisfy fast refresh would only move the
+ * imports around; the cost is that editing this file reloads the page
+ * in dev instead of hot-swapping, which is acceptable.
+ */
 import { useState, type CSSProperties } from 'react'
 import { assetUrl } from '../assetUrl'
 import type { Livery } from '../data/lists'

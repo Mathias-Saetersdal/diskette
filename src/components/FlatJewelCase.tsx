@@ -1,6 +1,8 @@
 import type { CSSProperties, RefObject } from 'react'
 import { JEWEL_GEOMETRY } from './caseGeometry'
 import './FlatJewelCase.css'
+import { ui } from '../i18n/ui'
+import { useLanguage } from '../i18n/useLanguage'
 
 const { heightMm, widthMm, depthMm } = JEWEL_GEOMETRY
 
@@ -54,6 +56,7 @@ export default function FlatJewelCase({
   spineTone,
   settleOnMount = false,
 }: FlatJewelCaseProps) {
+  const { language } = useLanguage()
   const style = {
     '--front-face-ratio': widthMm / heightMm,
     // Same depthMm/widthMm-off-caseGeometry.ts pattern as FlatCase.tsx's
@@ -70,7 +73,7 @@ export default function FlatJewelCase({
           ref={buttonRef}
           type="button"
           className="flat-jewel-case"
-          aria-label={`Open case: ${title}`}
+          aria-label={ui[language].openCase(title)}
           onClick={onClick}
         >
           <div className="jewel-case__front-shell">

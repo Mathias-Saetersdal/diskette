@@ -1,11 +1,17 @@
 import { useEffect, useState } from 'react'
+import { ui, type UIStrings } from '../i18n/ui'
+import { useLanguage } from '../i18n/useLanguage'
 import './SectionNav.css'
 
-const SECTIONS = [
-  { id: 'filmer', label: 'Filmer' },
-  { id: 'serier', label: 'Serier' },
-  { id: 'album', label: 'Album' },
-  { id: 'spill', label: 'Spill' },
+// The ids stay Norwegian in both languages: they resolve through
+// getElementById below and are visible in the address bar, so
+// translating them would break existing links. Only the label is looked
+// up per language.
+const SECTIONS: { id: string; labelKey: keyof UIStrings & `${string}Heading` }[] = [
+  { id: 'filmer', labelKey: 'filmsHeading' },
+  { id: 'serier', labelKey: 'seriesHeading' },
+  { id: 'album', labelKey: 'albumsHeading' },
+  { id: 'spill', labelKey: 'gamesHeading' },
 ]
 
 /**
@@ -18,6 +24,7 @@ const SECTIONS = [
  * same job on a phone, one at a time, as they scroll past.
  */
 export default function SectionNav() {
+  const { language } = useLanguage()
   const [activeId, setActiveId] = useState<string | null>(null)
 
   useEffect(() => {
@@ -88,7 +95,7 @@ export default function SectionNav() {
   }
 
   return (
-    <nav className="section-nav" aria-label="Seksjoner">
+    <nav className="section-nav" aria-label={ui[language].navAriaLabel}>
       <ul className="section-nav__list">
         {SECTIONS.map((section) => (
           <li key={section.id}>
@@ -98,7 +105,7 @@ export default function SectionNav() {
               data-current={section.id === activeId}
               onClick={(event) => handleClick(event, section.id)}
             >
-              {section.label}
+              {ui[language][section.labelKey]}
             </a>
           </li>
         ))}

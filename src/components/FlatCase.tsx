@@ -11,6 +11,8 @@ import CaseFrontFace, {
   PS5_WORDMARK_DARK_SRC,
 } from './CaseFrontFace'
 import './FlatCase.css'
+import { ui } from '../i18n/ui'
+import { useLanguage } from '../i18n/useLanguage'
 
 interface FlatCaseProps {
   title: string
@@ -100,6 +102,7 @@ export default function FlatCase({
   spineWidthMm,
   settleOnMount = false,
 }: FlatCaseProps) {
+  const { language } = useLanguage()
   const { heightMm, widthMm, depthMm } = CASE_GEOMETRY[caseFormat]
   const style = {
     '--front-face-ratio': widthMm / heightMm,
@@ -120,7 +123,7 @@ export default function FlatCase({
       type="button"
       className="flat-case"
       style={style}
-      aria-label={`Open case: ${title}`}
+      aria-label={ui[language].openCase(title)}
       onClick={onClick}
     >
       <CaseFrontFace coverSrc={coverSrc} coverAlt={coverAlt} caseFormat={caseFormat} livery={livery} />

@@ -4,6 +4,8 @@ import { useSettleOnFirstView } from './useSettleOnFirstView'
 import { SettleContext } from './SettleContext'
 import { series } from '../data/lists'
 import './SeriesList.css'
+import { ui } from '../i18n/ui'
+import { useLanguage } from '../i18n/useLanguage'
 
 /**
  * KeepCaseCard reused directly, not a SeriesCard: every series entry is a
@@ -28,6 +30,7 @@ import './SeriesList.css'
  * both happen to be on screen at once.
  */
 export default function SeriesList() {
+  const { language } = useLanguage()
   const [settleRef, settle] = useSettleOnFirstView<HTMLDivElement>(150)
 
   return (
@@ -36,8 +39,8 @@ export default function SeriesList() {
         <MediaList
           entries={series}
           CardComponent={KeepCaseCard}
-          ariaLabel="Series, all time"
-          heading="Serier"
+          ariaLabel={ui[language].seriesAriaLabel}
+          heading={ui[language].seriesHeading}
           id="serier"
         />
       </SettleContext.Provider>

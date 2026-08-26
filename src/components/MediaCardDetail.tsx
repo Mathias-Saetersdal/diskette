@@ -1,4 +1,5 @@
 import type { Entry } from '../data/lists'
+import { useLanguage } from '../i18n/useLanguage'
 import '@fontsource/lora/latin-400.css'
 import './MediaCardDetail.css'
 
@@ -46,6 +47,8 @@ interface MediaCardDetailProps {
  * plain interface type as year and creator, not the note's own voice.
  */
 export default function MediaCardDetail({ entry, open, variant = 'card' }: MediaCardDetailProps) {
+  const { language } = useLanguage()
+  const note = language === 'en' ? entry.noteEn : entry.note
   const className = variant === 'row' ? 'media-card-detail media-card-detail--row' : 'media-card-detail'
   return (
     <div className={className} data-open={open} aria-live="polite">
@@ -54,7 +57,7 @@ export default function MediaCardDetail({ entry, open, variant = 'card' }: Media
         <span className="media-card-detail__year">{entry.year}</span>
       </h2>
       <p className="media-card-detail__creator">{entry.creator}</p>
-      {entry.note && <p className="media-card-detail__note">{entry.note}</p>}
+      {note && <p className="media-card-detail__note">{note}</p>}
     </div>
   )
 }

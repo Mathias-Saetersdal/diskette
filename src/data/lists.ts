@@ -71,6 +71,8 @@ export interface Entry {
   /** Omit to let the fetch script resolve it. */
   discSource?: DiscSource;
   note: string;
+  /** English translation of note. Same voice, same slang, same emoji. */
+  noteEn: string;
 }
 
 /**
@@ -93,6 +95,7 @@ export const films: Entry[] = [
     cover: "/assets/film/the-dark-knight/cover.png",
     disc: "/assets/film/the-dark-knight/disc.png",
     note: "Mest ikoniske startscenen jeg har opplevd sammen med beste prestasjonen av en skuespiller gjennom tidene (Joker). Fantastisk plot, action og enestående skuespillere gjør dette til Nolan sit beste verk og dermed beste filmen gjennom tidene.",
+    noteEn: "The most iconic opening scene I have experienced, together with the best performance by an actor of all time (Joker). Fantastic plot, action and outstanding actors make this Nolan's best work and therefore the best film of all time.",
   },
   {
     id: "interstellar",
@@ -107,6 +110,7 @@ export const films: Entry[] = [
     cover: "/assets/film/interstellar/cover.png",
     disc: "/assets/film/interstellar/disc.png",
     note: "Beste scifi filmen laget, men en helt unik måte å fortelle den på. For en cast, musikk, skuespillere, og ikke minst visuals.",
+    noteEn: "Best sci-fi film ever made, but with a completely unique way of telling it. What a cast, what music, what actors, and not least the visuals.",
   },
   {
     id: "fight-club",
@@ -121,6 +125,7 @@ export const films: Entry[] = [
     cover: "/assets/film/fight-club/cover.png",
     disc: "/assets/film/fight-club/disc.png",
     note: "Må ha den beste plot-twisten gjennom tidene. Brad pitt på sitt beste med en av de kuleste historiene fortalt gjør denne filmen ikonisk.",
+    noteEn: "Has to be the best plot twist of all time. Brad Pitt at his best with one of the coolest stories ever told makes this film iconic.",
   },
   {
     id: "the-matrix",
@@ -135,6 +140,7 @@ export const films: Entry[] = [
     cover: "/assets/film/the-matrix/cover.png",
     disc: "/assets/film/the-matrix/disc.png",
     note: "Kuleste konsept på en film, sitter på kanten av setet gjennom hele filmen. Unik action og storytelling med faktastiske skuespillere gjør denne filmen ikonisk.",
+    noteEn: "Coolest concept for a film, you sit on the edge of your seat the whole way through. Unique action and storytelling with fantastic actors make this film iconic.",
   },
   {
     id: "spider-man-2",
@@ -149,6 +155,7 @@ export const films: Entry[] = [
     cover: "/assets/film/spider-man-2/cover.png",
     disc: "/assets/film/spider-man-2/disc.png",
     note: "Peter sliter med å balansere livet som helt, student, venn og kjæreste, noe som mange kan relatere til. Filmen har et godt budskap og er vel gjennomført med mange ikoniske scener og karakterer som sammen gjør dette til beste Spiderman filmen gjennom tidene",
+    noteEn: "Peter struggles to balance life as a hero, a student, a friend and a boyfriend, which a lot of people can relate to. The film has a good message and is well executed, with many iconic scenes and characters that together make this the best Spider-Man film of all time",
   },
   {
     id: "spirited-away",
@@ -163,6 +170,7 @@ export const films: Entry[] = [
     cover: "/assets/film/spirited-away/cover.png",
     disc: "/assets/film/spirited-away/disc.png",
     note: "Denne filmen er ren kunst, og åpnet øynene mine for anime som jeg er uendelig takknemlig for. Miyazaki og Studio Ghibili er på mange måter japan sin disney, bare MYE bedre",
+    noteEn: "This film is pure art, and it opened my eyes to anime, which I am endlessly grateful for. Miyazaki and Studio Ghibli are in many ways Japan's Disney, only MUCH better",
   },
   {
     id: "blade-runner-2049",
@@ -177,6 +185,7 @@ export const films: Entry[] = [
     cover: "/assets/film/blade-runner-2049/cover.png",
     disc: "/assets/film/blade-runner-2049/disc.png",
     note: "For en visuell opplevelse. Dette er slik en scifi film skal lages, full av action, mysterie og en unik verdenbygging",
+    noteEn: "What a visual experience. This is how a sci-fi film should be made, full of action, mystery and unique world building",
   },
   {
     id: "this-is-the-end",
@@ -191,6 +200,7 @@ export const films: Entry[] = [
     cover: "/assets/film/this-is-the-end/cover.png",
     disc: "/assets/film/this-is-the-end/disc.png",
     note: "Virkelig min favoritt komedie, med alle mine favoritt skuespillere. Hver eneste scene i denne filmen er skammelig tidig, og det at de fleste scener er bare de som kødder rundt gjør det 100 ganger bedre.",
+    noteEn: "Really my favourite comedy, with all my favourite actors. Every single scene in this film is shamefully funny, and the fact that most scenes are just them messing around makes it 100 times better.",
   },
   {
     id: "inception",
@@ -205,6 +215,7 @@ export const films: Entry[] = [
     cover: "/assets/film/inception/cover.png",
     disc: "/assets/film/inception/disc.png",
     note: "For en mindfuck av en film, for en cast, for et album av Hans Zimmer. Denne filmen kan være litt forvirrende første gang man ser den, men når man først skjønner, så innser du hvor fantastisk storytelling kan være.",
+    noteEn: "What a mindfuck of a film, what a cast, what an album from Hans Zimmer. This film can be a bit confusing the first time you watch it, but once it clicks you realise how fantastic storytelling can be.",
   },
   {
     id: "superbad",
@@ -219,6 +230,7 @@ export const films: Entry[] = [
     cover: "/assets/film/superbad/cover.png",
     disc: "/assets/film/superbad/disc.png",
     note: "For en ikonisk komedie, dette var starten på en komedie sjanger som har ført til så mange andre gode komedier. Denne filmen kan sees uendelig ganger uten at man blir lei",
+    noteEn: "What an iconic comedy, this was the start of a comedy genre that led to so many other good comedies. This film can be watched endless times without getting tired of it",
   },
 ];
 
@@ -243,6 +255,7 @@ export const series: Entry[] = [
     disc: "/assets/series/one-piece/disc.png",
     discSource: "generated",
     note: "Det krever en del disiplin å se denne fordi den er så lang, men gud bedre, det er verdt det. Serien presenterer verdensproblemer gjennom kunstneriske og meningsfulle historier med unike karakterer.",
+    noteEn: "It takes some discipline to watch this because it is so long, but good lord, it is worth it. The series presents real world problems through artistic and meaningful stories with unique characters.",
   },
   {
     id: "breaking-bad",
@@ -259,6 +272,7 @@ export const series: Entry[] = [
     disc: "/assets/series/breaking-bad/disc.png",
     discSource: "generated",
     note: "Ikke mange serier blir bedre og bedre, men det gjør denne virkelig. Alle karakterer og plots er så goated, med ingen dårlige episoder (Flue-episoden er også tidig på sin egen måte).",
+    noteEn: "Not many series get better and better, but this one really does. Every character and plot is so goated, with no bad episodes (the Fly episode is funny in its own way too).",
   },
   {
     id: "avatar-the-last-airbender",
@@ -275,6 +289,7 @@ export const series: Entry[] = [
     disc: "/assets/series/avatar-the-last-airbender/disc.png",
     discSource: "generated",
     note: "Dette er på mange måter min barndom. Dritfett konsept og karakterer, og den beste redemption arc-en jeg har opplevd gjennom Zuko.",
+    noteEn: "This is my childhood in many ways. Sick concept and characters, and the best redemption arc I have seen through Zuko.",
   },
   {
     id: "game-of-thrones",
@@ -291,6 +306,7 @@ export const series: Entry[] = [
     disc: "/assets/series/game-of-thrones/disc.png",
     discSource: "generated",
     note: "Fantasi på sitt beste. Enormt kul storytelling, og ellers en perfekt serie – minus siste sesong (den snakker vi ikke om).",
+    noteEn: "Fantasy at its best. Hugely cool storytelling, and otherwise a perfect series – minus the last season (we do not talk about that one).",
   },
   {
     id: "invincible",
@@ -306,6 +322,7 @@ export const series: Entry[] = [
     disc: "/assets/series/invincible/disc.png",
     discSource: "generated",
     note: "Kuleste superheltserien jeg har sett med masse kjente skuespillere. Ble hooked etter første episode (plot-twisten i første episode er PEAK og blir bare bedre).",
+    noteEn: "Coolest superhero series I have seen, with loads of famous actors. Got hooked after the first episode (the plot twist in the first episode is PEAK and it only gets better).",
   },
   {
     id: "vinland-saga",
@@ -321,6 +338,7 @@ export const series: Entry[] = [
     disc: "/assets/series/vinland-saga/disc.png",
     discSource: "generated",
     note: "Elsker måten sesong 1 og sesong 2 er HELT annerledes. Begge er utført perfekt og virkelig minneverdige.",
+    noteEn: "Love how season 1 and season 2 are COMPLETELY different. Both are executed perfectly and really memorable.",
   },
   {
     // 1997 Kentaro Miura adaptation, not the 2016 series. Confirm before fetch.
@@ -338,6 +356,7 @@ export const series: Entry[] = [
     disc: "/assets/series/berserk/disc.png",
     discSource: "generated",
     note: "Min første anime (som er et sykt sted å starte). Dark fantasy på sitt beste med den sykeste slutten (1997). Jeg visste ikke hvor jeg skulle gjøre av meg etterpå.",
+    noteEn: "My first anime (which is an insane place to start). Dark fantasy at its best with the sickest ending (1997). I did not know what to do with myself afterwards.",
   },
   {
     id: "its-always-sunny-in-philadelphia",
@@ -353,6 +372,7 @@ export const series: Entry[] = [
     disc: "/assets/series/its-always-sunny-in-philadelphia/disc.png",
     discSource: "generated",
     note: "Tidigste sitcom jeg har sett, men akkurat min type humor. På mange måter er min komfortserie, ettersom jeg ofte kommer tilbake til den når jeg trenger å se på noe mens jeg spiser.",
+    noteEn: "Funniest sitcom I have seen, and exactly my type of humour. It is my comfort series in many ways, since I keep coming back to it when I need something to watch while I eat.",
   },
   {
     id: "eastbound-and-down",
@@ -369,6 +389,7 @@ export const series: Entry[] = [
     disc: "/assets/series/eastbound-and-down/disc.png",
     discSource: "generated",
     note: "Så denne for første gang ganske nylig, men ble umiddelbart en favoritt. Har fått opp klipp av denne på TikTok i åresvis, er så mange goated moments.",
+    noteEn: "Watched this for the first time pretty recently, but it became a favourite immediately. TikTok has been feeding me clips of it for years, there are so many goated moments.",
   },
   {
     id: "south-park",
@@ -384,6 +405,7 @@ export const series: Entry[] = [
     disc: "/assets/series/south-park/disc.png",
     discSource: "generated",
     note: "Min favoritt da jeg var mindre fordi de var litt frekke i språket. Blitt enda mer glad i det i voksen alder ettersom de tøyser mye med ting som skjer aktivt i verden.",
+    noteEn: "My favourite when I was younger because they were a bit rude with the language. I have grown even fonder of it as an adult since they mess around with things happening in the world right now.",
   },
 ];
 
@@ -408,6 +430,7 @@ export const albums: Entry[] = [
     disc: "/assets/album/currents/disc.png",
     discSource: "generated",
     note: "Hele dette albumet er en vibe ass. No skips, kommer aldri til å bli lei av min favorittartist sitt beste album.",
+    noteEn: "This whole album is a vibe. No skips, never going to get tired of my favourite artist's best album.",
   },
   {
     id: "man-on-the-moon-iii-the-chosen",
@@ -423,6 +446,7 @@ export const albums: Entry[] = [
     disc: "/assets/album/man-on-the-moon-iii-the-chosen/disc.png",
     discSource: "generated",
     note: "Det 3. albumet i serien, og for en avslutning. Denne topper de andre ettersom alle sangene er bangers. (Når denne fyren begynner å nynne🥹)",
+    noteEn: "The 3rd album in the series, and what an ending. This one tops the others since every song is a banger. (When this guy starts humming🥹)",
   },
   {
     id: "astroworld",
@@ -438,6 +462,7 @@ export const albums: Entry[] = [
     disc: "/assets/album/astroworld/disc.png",
     discSource: "generated",
     note: "Antall ganger dette albumet er blitt blastet fra start til slutt er mange. Peak Travis med ingen skips og the heavy hitters, hitter HARDT.",
+    noteEn: "The number of times this album has been blasted start to finish is a lot. Peak Travis with no skips, and the heavy hitters hit HARD.",
   },
   {
     id: "at-long-last-asap",
@@ -453,6 +478,7 @@ export const albums: Entry[] = [
     disc: "/assets/album/at-long-last-asap/disc.png",
     discSource: "generated",
     note: "Mr. A$AP sitt beste og mest ikoniske album. Min mest spilte artist gjennom tidene av en grunn, og dette er det beste han har laget.",
+    noteEn: "Mr. A$AP's best and most iconic album. My most played artist of all time for a reason, and this is the best thing he has made.",
   },
   {
     // Released 3 October 2017 on S2OP. Cover Art Archive coverage unverified.
@@ -469,6 +495,7 @@ export const albums: Entry[] = [
     disc: "/assets/album/rommet/disc.png",
     discSource: "generated",
     note: "Beste norske albumet laget. En spacy vibe med fengende og syk lyrikk. Minner meg om en norsk Kid Cudi.",
+    noteEn: "Best Norwegian album ever made. A spacy vibe with catchy, sick lyrics. Reminds me of a Norwegian Kid Cudi.",
   },
   {
     id: "one-of-wun",
@@ -484,6 +511,7 @@ export const albums: Entry[] = [
     disc: "/assets/album/one-of-wun/disc.png",
     discSource: "generated",
     note: "Har slepet litt på Gunna, men fy søren, dette albumet er så rått. Et rap album men bare bangers.",
+    noteEn: "I slept on Gunna a bit, but damn, this album is so hard. A rap album with nothing but bangers.",
   },
   {
     id: "2014-forest-hills-drive",
@@ -499,6 +527,7 @@ export const albums: Entry[] = [
     disc: "/assets/album/2014-forest-hills-drive/disc.png",
     discSource: "generated",
     note: "J Cole back in the day var the goat med dette albumet. For en vibe dette albumet er, har meg tilbake til 2014/2015 hver gang.",
+    noteEn: "J Cole back in the day was the goat with this album. What a vibe this album is, takes me back to 2014/2015 every time.",
   },
   {
     // No official CD pressing. Burned by definition, not by fallback.
@@ -514,6 +543,7 @@ export const albums: Entry[] = [
     cover: "/assets/album/the-life-of-pablo/cover.png",
     discSource: "burned",
     note: "Dette for meg er peak Kanye. Noen få skips på dette albumet med de som hitter, HITTER HARDT.",
+    noteEn: "This is peak Kanye for me. A few skips on this album, and the ones that hit, HIT HARD.",
   },
   {
     id: "damn",
@@ -529,6 +559,7 @@ export const albums: Entry[] = [
     disc: "/assets/album/damn/disc.png",
     discSource: "generated",
     note: "For et rått og komplett rapalbum av en av de beste til å gjøre det. Milevis bedre enn Drake BTW.",
+    noteEn: "What a hard and complete rap album from one of the best to do it. Miles better than Drake BTW.",
   },
   {
     id: "konnichiwa",
@@ -544,6 +575,7 @@ export const albums: Entry[] = [
     disc: "/assets/album/konnichiwa/disc.png",
     discSource: "generated",
     note: "Britisk rap/grime på japanske tracks. Burde på mange måter ikke funke men er så jævlig fett.",
+    noteEn: "British rap/grime over Japanese tracks. In a lot of ways it should not work but it is so fucking sick.",
   },
 ];
 
@@ -576,6 +608,7 @@ export const games: Entry[] = [
     disc: "/assets/game/elden-ring/disc.png",
     discSource: "generated",
     note: "Dette er et umenneskelig fett spill, jeg har aldri vært så imponert av noe i mitt liv. Dette er virkelig kunst, og ingen spill har gitt meg mer satisfaction.",
+    noteEn: "This is an inhumanly sick game, I have never been so impressed by anything in my life. This is real art, and no game has given me more satisfaction.",
   },
   {
     id: "call-of-duty-black-ops-ii",
@@ -594,6 +627,7 @@ export const games: Entry[] = [
     disc: "/assets/game/call-of-duty-black-ops-ii/disc.png",
     discSource: "generated",
     note: "Beste skytespillet gjennom tidene men beste zombie spillmodus i ett. Dette er mye av min barndom, og jeg er så heldig å få oppleve det på nytt i voksen alder med kompiser på grunn av PS5-porten.",
+    noteEn: "Best shooter of all time and the best zombies mode in one. This is a lot of my childhood, and I am lucky enough to get to experience it again as an adult with mates thanks to the PS5 port.",
   },
   {
     id: "sly-3-honor-among-thieves",
@@ -612,6 +646,7 @@ export const games: Entry[] = [
     disc: "/assets/game/sly-3-honor-among-thieves/disc.png",
     discSource: "generated",
     note: "Mitt favorittspill som liten og har en spesiell plass i mitt hjerte. Var skamfett at d fulgte med 3D-briller (blå og rød).",
+    noteEn: "My favourite game as a kid and it has a special place in my heart. It was sick that it came with 3D glasses (blue and red).",
   },
   {
     id: "lego-star-wars-the-complete-saga",
@@ -630,6 +665,7 @@ export const games: Entry[] = [
     disc: "/assets/game/lego-star-wars-the-complete-saga/disc.png",
     discSource: "generated",
     note: "Som stor Star Wars-fan er det selvforklarende at jeg elsket dette spillet som liten. Veldig gøy å spille med min søster og venner.",
+    noteEn: "As a big Star Wars fan it is self-explanatory that I loved this game as a kid. Really fun to play with my sister and friends.",
   },
   {
     id: "call-of-duty-black-ops-iii",
@@ -649,6 +685,7 @@ export const games: Entry[] = [
     disc: "/assets/game/call-of-duty-black-ops-iii/disc.png",
     discSource: "generated",
     note: "Eneste Cod med jetpacks jeg fucket med. Grindet dette religiøst og er stolt av å si at jeg fikk dark matter.",
+    noteEn: "Only CoD with jetpacks I fucked with. Grinded this religiously and I am proud to say I got dark matter.",
   },
   {
     id: "elden-ring-nightreign",
@@ -668,6 +705,7 @@ export const games: Entry[] = [
     disc: "/assets/game/elden-ring-nightreign/disc.png",
     discSource: "generated",
     note: "Som enorm fan av Elden ring så lå d i kortene at jeg kom til å elske dette spillet. Er litt repetitivt, men også veldig avhengighetsskapende og har skapt mange gode minner med venner her.",
+    noteEn: "As a huge Elden Ring fan it was in the cards that I would love this game. It is a bit repetitive, but also very addictive and it has made a lot of good memories with friends.",
   },
   {
     id: "dark-souls-iii",
@@ -687,6 +725,7 @@ export const games: Entry[] = [
     disc: "/assets/game/dark-souls-iii/disc.png",
     discSource: "generated",
     note: "Det første jeg spilte etter at jeg var ferdig med Elden Ring, og det skuffet virkelig ikke. For en verdensbygging! Det er virkelig kunst på mange måter.",
+    noteEn: "The first thing I played after I finished Elden Ring, and it really did not disappoint. What world building! It is real art in a lot of ways.",
   },
   {
     // Played from download. Burned rather than generated.
@@ -705,6 +744,7 @@ export const games: Entry[] = [
     spineTone: "#1a9fd9",
     discSource: "burned",
     note: "Et ganske artig arcade-fotballbilspill, men med et enormt skillgap. Har så mange timer på dette spillet med kompiser, hvor vi ler oss ihjel av hvor dårlige vi er.",
+    noteEn: "A pretty fun arcade football car game, but with a huge skill gap. I have so many hours in this game with mates, where we laugh ourselves to death at how bad we are.",
   },
   {
     // Work is 2013. The PS5 version arrived in 2022.
@@ -725,6 +765,7 @@ export const games: Entry[] = [
     disc: "/assets/game/grand-theft-auto-v/disc.png",
     discSource: "generated",
     note: "Virkelig et banebrytende spill med dritbra story og endeløs moro med venner. Å gjøre bankran og races med kompiser har skapt så mange gode minner.",
+    noteEn: "A game that really moved things forward, with a sick story and endless fun with friends. Doing heists and races with mates has made so many good memories.",
   },
   {
     // No PS5 physical release. Burned rather than generated.
@@ -743,6 +784,7 @@ export const games: Entry[] = [
     spineTone: "#f4c542",
     discSource: "burned",
     note: "Gøyeste co-op spillet jeg har spilt med en klassisk og kunstnerisk arkitektur. Har gitt meg minner for livet.",
+    noteEn: "Funnest co-op game I have played, with a classic, artistic art direction. Given me memories for life.",
   },
 ];
 
@@ -762,4 +804,14 @@ export const introText = [
   "En film, et album og et spill er kunst på hver sin måte. De blir sjelden behandlet som det. Her ligger de som mediene de kom i.",
   "Rangeringen er ikke objektiv. Den er full av nostalgi. Noe står høyt fordi det faktisk er godt laget, og noe står høyt fordi jeg opplevde det i riktig alder. Jeg skiller ikke alltid mellom de to.",
   "Døm meg gjerne. Er du sterkt uenig, si fra på",
+];
+
+// Same four paragraphs in English, same order. The last one ends without
+// a full stop for the same reason the Norwegian one does: Intro.tsx
+// appends the mailto link and the period itself.
+export const introTextEn = [
+  "These are my favourite films, series, albums and games. Ten of each, ranked. I made the site because I felt like it, not because anyone asked for it.",
+  "A film, an album and a game are each art in their own way. They rarely get treated like it. Here they sit as the media they came in.",
+  "The ranking is not objective. It is full of nostalgia. Some things rank high because they are actually well made, and some rank high because I experienced them at the right age. I do not always separate the two.",
+  "Judge away. If you strongly disagree, tell me at",
 ];

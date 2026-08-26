@@ -4,6 +4,8 @@ import { useSettleOnFirstView } from './useSettleOnFirstView'
 import { SettleContext } from './SettleContext'
 import { films } from '../data/lists'
 import './FilmsList.css'
+import { ui } from '../i18n/ui'
+import { useLanguage } from '../i18n/useLanguage'
 
 /**
  * Wraps MediaList for two reasons, the same shape GamesList.tsx already
@@ -25,6 +27,7 @@ import './FilmsList.css'
  * gets no delay — the other three stagger after it, not before.
  */
 export default function FilmsList() {
+  const { language } = useLanguage()
   const [settleRef, settle] = useSettleOnFirstView<HTMLDivElement>(0)
 
   return (
@@ -33,8 +36,8 @@ export default function FilmsList() {
         <MediaList
           entries={films}
           CardComponent={KeepCaseCard}
-          ariaLabel="Films, all time"
-          heading="Filmer"
+          ariaLabel={ui[language].filmsAriaLabel}
+          heading={ui[language].filmsHeading}
           id="filmer"
         />
       </SettleContext.Provider>

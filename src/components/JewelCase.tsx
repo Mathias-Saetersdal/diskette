@@ -5,6 +5,8 @@ import { JEWEL_GEOMETRY } from './caseGeometry'
 import type { DiscSource } from '../data/lists'
 import './caseMechanism.css'
 import './JewelCase.css'
+import { ui } from '../i18n/ui'
+import { useLanguage } from '../i18n/useLanguage'
 
 // caseGeometry.ts's JEWEL_GEOMETRY: front face ratio 0.880. One fixed
 // size, unlike Case.tsx's per-format table: every album is the same
@@ -69,6 +71,7 @@ export default function JewelCase({
   onToggleOpen,
   toggleRef,
 }: JewelCaseProps) {
+  const { language } = useLanguage()
   const [discOut, setDiscOut] = useState(false)
   // A closed case can't have a floating disc — same render-time invariant
   // as Case.tsx, watching the prop/state that actually gates it rather
@@ -160,7 +163,7 @@ export default function JewelCase({
       tabIndex={open ? 0 : -1}
       aria-hidden={!open}
       aria-pressed={discOut}
-      aria-label={discOut ? 'Return disc to tray' : `Lift ${title} disc`}
+      aria-label={discOut ? ui[language].returnDisc : ui[language].liftDisc(title)}
       onClick={(event) => {
         if (!open) return
         event.stopPropagation()
@@ -183,7 +186,7 @@ export default function JewelCase({
         type="button"
         className="jewel-case__toggle"
         aria-expanded={open}
-        aria-label={`${open ? 'Close' : 'Open'} case: ${title}`}
+        aria-label={open ? ui[language].closeCase(title) : ui[language].openCase(title)}
         onClick={onToggleOpen}
       >
         {/* Opaque black plastic, blank — the reference photos show no
