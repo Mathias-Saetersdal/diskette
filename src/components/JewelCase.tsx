@@ -76,15 +76,19 @@ export default function JewelCase({
   if (!open && discOut) setDiscOut(false)
 
   // Both mirror Case.tsx exactly — see that component's own comments for
-  // the full reasoning. slotAfterFront freezes the disc slot's DOM side
-  // once the case is no longer open, so the closing commit never reorders
-  // the toggle's children (a reorder moved the front leaf's DOM node and
-  // cancelled its hinge transition, snapping the lid shut). interiorOnTop
-  // defers the face swap past the closing swing, so the mirrored booklet
-  // never paints on top of the still-open leaf in engines that paint DOM
-  // order without backface culling.
+  // the full reasoning. slotAfterFront is the disc slot's DOM side,
+  // managed so the reorder it drives never shares a commit with a
+  // transition-starting style change (which teleported the lift and
+  // snapped the closing lid); interiorOnTop defers the face swap past
+  // the closing swing, so the mirrored booklet never paints on top of
+  // the still-open leaf in engines that paint DOM order without
+  // backface culling.
   const [slotAfterFront, setSlotAfterFront] = useState(false)
-  if (open && slotAfterFront !== discOut) setSlotAfterFront(discOut)
+  useEffect(() => {
+    if (!open || discOut || !slotAfterFront) return
+    const id = setTimeout(() => setSlotAfterFront(false), 600) // return transition, caseMechanism.css
+    return () => clearTimeout(id)
+  }, [open, discOut, slotAfterFront])
 
   const [interiorOnTop, setInteriorOnTop] = useState(false)
   if (open && !interiorOnTop) setInteriorOnTop(true)
@@ -94,7 +98,16 @@ export default function JewelCase({
     return () => clearTimeout(id)
   }, [open, interiorOnTop])
 
-  const toggleDiscOut = () => setDiscOut((was) => !was)
+  const toggleDiscOut = () => {
+    if (discOut) {
+      setDiscOut(false)
+    } else {
+      // Two-phase lift, reorder first — Case.tsx's slotAfterFront comment
+      // has the full reasoning.
+      setSlotAfterFront(true)
+      requestAnimationFrame(() => requestAnimationFrame(() => setDiscOut(true)))
+    }
+  }
 
   const handleDiscKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (!open) return

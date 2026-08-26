@@ -176,18 +176,32 @@ export default function Case({
   if (!open && discOut) setDiscOut(false)
 
   // Which side of the front leaf the disc slot renders on (see the
-  // discSlot comment below for why the side matters at all). Follows
-  // discOut only while the case is open; frozen once it isn't. Without
-  // the freeze, closing with the disc out flips discOut in the same
-  // commit `open` falls, React reorders the toggle's children, and the
-  // reorder moves the .case__front DOM node — which cancels the hinge
-  // transition that was starting on it, so the lid snapped shut instead
-  // of swinging. Confirmed by frame capture, not assumed. Frozen, the
-  // closing commit changes no child order, the lid keeps its transition,
-  // and the returning disc simply stays on the leaf's far side until the
-  // whole case unmounts.
+  // discSlot comment below for why the side matters at all). Managed
+  // explicitly rather than derived from discOut, because the DOM reorder
+  // it drives must never share a commit with a transition-starting style
+  // change on the node that ends up moved:
+  //
+  // - Lifting: toggleDiscOut moves the slot first (this flag alone) and
+  //   only sets discOut a couple of frames later, once the moved node has
+  //   painted at rest — a node re-inserted and given is-out in the same
+  //   frame has no settled before-change style, so the lift transition
+  //   never started and the disc teleported to centre (Safari; verified).
+  // - Returning while open: discOut falls immediately (the slot node
+  //   isn't the one React moves on that reorder direction, so its
+  //   transition runs), and the effect below moves the slot back only
+  //   after the 0.6s return has landed, when moving it changes nothing
+  //   visible.
+  // - Closing: no sync at all, so the closing commit changes no child
+  //   order — a reorder there moved the .case__front DOM node and
+  //   cancelled the hinge transition that was starting on it, snapping
+  //   the lid shut. Confirmed by frame capture, not assumed. The effect
+  //   below is gated on `open` for the same reason.
   const [slotAfterFront, setSlotAfterFront] = useState(false)
-  if (open && slotAfterFront !== discOut) setSlotAfterFront(discOut)
+  useEffect(() => {
+    if (!open || discOut || !slotAfterFront) return
+    const id = setTimeout(() => setSlotAfterFront(false), 600) // return transition, caseMechanism.css
+    return () => clearTimeout(id)
+  }, [open, discOut, slotAfterFront])
 
   // Which of the leaf's two faces paints last (on top) in engines that
   // paint DOM order with no backface culling: the interior while the
@@ -218,7 +232,18 @@ export default function Case({
   const isPs3Early = livery === 'ps3-early'
   const liveryClass = isStandardBluray ? ' case--bluray-livery' : livery !== 'standard' ? ` case--${livery}-livery` : ''
 
-  const toggleDiscOut = () => setDiscOut((was) => !was)
+  const toggleDiscOut = () => {
+    if (discOut) {
+      setDiscOut(false)
+    } else {
+      // Two-phase lift: reorder first, lift second — see slotAfterFront's
+      // comment above. Double rAF, not one: a single callback fires
+      // before the reordered node's first style pass, which is exactly
+      // the same-frame situation being avoided.
+      setSlotAfterFront(true)
+      requestAnimationFrame(() => requestAnimationFrame(() => setDiscOut(true)))
+    }
+  }
 
   const handleDiscKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (!open) return
