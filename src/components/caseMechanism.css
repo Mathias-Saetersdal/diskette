@@ -314,6 +314,27 @@
   transition: transform 0.6s ease;
 }
 
+/*
+ * A shut case shows no disc at all. Geometrically the resting disc's
+ * right edge actually projected past the closed lid's silhouette under
+ * the shelf tilt (the lid sits a case-depth forward of the tray plane,
+ * and the yaw shifts the two planes' projections apart), a thin grey
+ * arc peeking out of the closed, enlarging case. Rather than nudging
+ * the disc to compensate, it simply isn't painted while the case is
+ * closed — which is also what a real shut case does. The 0.55s delay
+ * keeps it visible while the lid swings shut over it on close (the
+ * hinge takes 0.6s; by 0.55s the gap is a few degrees from shut), and
+ * the open state's instant transition brings it back the moment the
+ * opening swing starts, when the lid still covers the tray anyway.
+ */
+.case[data-open='false'] .case__disc-slot,
+.jewel-case[data-open='false'] .jewel-case__disc-slot {
+  visibility: hidden;
+  transition:
+    transform 0.6s ease,
+    visibility 0s 0.55s;
+}
+
 .case__disc-slot:focus-visible,
 .jewel-case__disc-slot:focus-visible {
   outline: none;
@@ -438,7 +459,9 @@
   .jewel-case__toggle,
   .jewel-case__spine,
   .jewel-case__front,
-  .jewel-case__disc-slot {
+  .jewel-case__disc-slot,
+  .case[data-open='false'] .case__disc-slot,
+  .jewel-case[data-open='false'] .jewel-case__disc-slot {
     transition: none;
   }
 
