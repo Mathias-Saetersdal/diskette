@@ -3,7 +3,17 @@
   width: min(70vmin, 480px);
   aspect-ratio: 1 / 1;
   border-radius: 50%;
-  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.5));
+  /*
+   * box-shadow, not filter: drop-shadow — the art and sweep inside this
+   * element animate continuously, and a filter re-rasterises the whole
+   * subtree every animated frame (a real cost, this is the single most
+   * animated element on the page). box-shadow follows the border-radius
+   * circle, which is the disc's own silhouette anyway, and is painted
+   * once. The only difference is the 15mm hub hole no longer cuts the
+   * shadow, which is invisible in practice: everything behind a disc
+   * here is already near-black.
+   */
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
   /* Lets content size itself off the disc's own box (cqw) instead of the
      viewport, so a shrunk instance in a row doesn't outgrow its face. */
   container-type: inline-size;
@@ -62,7 +72,14 @@
   inset: 0;
   border-radius: 50%;
   opacity: var(--sweep-opacity, 0.5);
-  mix-blend-mode: screen;
+  /*
+   * No mix-blend-mode: screen any more. For a white highlight over dark
+   * artwork, screen and plain alpha compositing land within a few percent
+   * of each other, and a blended element that rotates every frame forces
+   * the compositor to re-read its backdrop on every one of those frames —
+   * in Safari it also gets a compositing layer that ignores backface
+   * culling, the same problem the header wordmarks had.
+   */
   background: conic-gradient(
     from 0deg,
     transparent 0deg,

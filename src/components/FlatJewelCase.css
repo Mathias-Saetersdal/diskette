@@ -151,8 +151,11 @@
   right: -22%;
   bottom: -10%;
   height: 22%;
-  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.32) 0%, rgba(0, 0, 0, 0) 75%);
-  filter: blur(10px);
+  /* Softness lives in the gradient falloff, not a filter: blur — forty
+     closed cards each carrying a blurred layer costs raster memory and
+     re-blurs on the hover zoom, for a shape a longer fade draws
+     identically. */
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.22) 30%, rgba(0, 0, 0, 0) 90%);
   pointer-events: none;
 }
 

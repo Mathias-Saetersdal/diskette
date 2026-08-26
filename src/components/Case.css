@@ -314,8 +314,12 @@
 /*
  * Sheen: a soft diagonal highlight sweeping across the whole floor, the
  * light-catching read the reference photos have and a flat fill can't.
- * Low opacity, screen-blended, so it doesn't lighten the base fill —
- * it's the same colour, just catching light unevenly.
+ * Plain alpha compositing, no mix-blend-mode: for low-opacity white over
+ * near-black plastic the two are visually indistinguishable, and the
+ * blend forced the compositor to re-read this layer's backdrop on every
+ * frame the case animated (the hinge, the enlarge) — one of the real
+ * costs behind the choppy open. In Safari a blended layer also ignores
+ * backface culling, the same bug the header wordmarks had.
  */
 .case__panel-sheen {
   position: absolute;
@@ -329,7 +333,6 @@
     rgba(255, 255, 255, 0.05) 85%,
     rgba(255, 255, 255, 0.12) 100%
   );
-  mix-blend-mode: screen;
 }
 
 /* Outer face: the cover art. Hides itself once rotated past 90deg instead
@@ -531,9 +534,8 @@
   height: calc(var(--front-w) * 0.055);
   width: auto;
   transform: translate(-50%, -50%) rotate(-90deg);
-  /* Fill is #231f20 on the source file, not white — same recolour trick as
-     .case__front-platform-logo below, see that rule for why a filter. */
-  filter: brightness(0) invert(1);
+  /* No filter: the rendered file is the pre-recoloured white copy
+     (PS3_EARLY_LOGO_WHITE_SRC — CaseFrontFace.tsx has the reasoning). */
 }
 
 /*
@@ -688,20 +690,13 @@
 }
 
 /*
- * Neither source file carries a white fill — ps3-logo-new.svg has no fill
- * attribute at all (SVG's own default, black); PS2_LOGO_SRC is the same
- * situation (no fill attribute, SVG default black — that constant's own
- * comment has the full finding on an unrelated, unreachable gradient left
- * in the file). An <img> can't be reached by an external `fill` or
- * `color` rule (it's a replaced element, opaque to the page's own CSS), so
- * recolouring means a bitmap-level filter instead: brightness(0) crushes
- * every opaque pixel to black regardless of its original shade, then
- * invert(1) flips that to white, leaving transparent pixels untouched.
+ * No recolour rules for the ps2/ps3-late platform logos here any more:
+ * the rendered files are the pre-recoloured white copies
+ * (PS2_LOGO_WHITE_SRC / PS3_LATE_LOGO_WHITE_SRC — CaseFrontFace.tsx has
+ * the full reasoning; a CSS filter on an <img> both costs compositing
+ * time on every animated frame and, in Safari, promotes the image to a
+ * layer that ignores the lid's backface culling mid-swing).
  */
-.case__front-art--ps2 .case__front-platform-logo,
-.case__front-art--ps3-late .case__front-platform-logo {
-  filter: brightness(0) invert(1);
-}
 
 /*
  * ps4 and ps5's logo lockup: the PS mark (PS_LOGO_SRC, upright) and the
@@ -737,52 +732,17 @@
 }
 
 /*
- * ps5: PS5_WORDMARK_SRC is an opaque PNG (white background, dark text —
- * CaseFrontFace.tsx's own export comment), not a transparent SVG like
- * every other mark here, so a plain filter can't make its background
- * disappear the way it recolours a transparent one — brightness(0) would
- * crush the background and the text to the same black, losing the shape
- * entirely. mix-blend-mode: multiply instead: a white source pixel
- * multiplies against whatever is behind it and reads as that colour (the
- * white header, so effectively invisible), while the dark text pixels
- * multiply toward black regardless of the backdrop and stay visible. No
- * filter needed on top — the source's own dark grey already reads as
- * near-black against white. PS_LOGO_SRC (the mark) is a real transparent
- * vector but carries its own multi-colour PlayStation button-symbol fill
- * (confirmed by rendering it, not assumed) rather than a single tone — a
- * real PS5 case's own mark is flat black, so brightness(0) forces that
- * regardless of the source's colours.
+ * No filter or blend rules for the ps4/ps5 lockups here any more: the
+ * rendered files are pre-recoloured, genuinely transparent copies
+ * (PS_LOGO_WHITE_SRC / PS_LOGO_BLACK_SRC for the mark,
+ * PS4_WORDMARK_WHITE_SRC / PS5_WORDMARK_DARK_SRC for the wordmark —
+ * CaseFrontFace.tsx's export comments have the generation details). The
+ * invert filters and mix-blend-modes this replaces were the direct cause
+ * of the mirrored cover showing on PS4 and PS5 lids while the hinge
+ * swung in Safari: blended and filtered images get their own compositing
+ * layers there, and those layers ignore the face's backface culling.
+ * They also cost compositing time on every animated frame.
  */
-.case__front-art--ps5 .case__front-platform-mark {
-  filter: brightness(0);
-}
-
-.case__front-art--ps5 .case__front-platform-wordmark {
-  mix-blend-mode: multiply;
-}
-
-/*
- * ps4: same opaque-PNG problem as ps5's wordmark, but the target colour
- * is white text on this livery's own blue header, not black on white, so
- * multiply alone won't do it (multiplying toward a blue backdrop doesn't
- * produce white). filter: invert(1) first turns the white background
- * black and the dark text white (still fully opaque, invert doesn't
- * touch alpha); mix-blend-mode: screen then reads that inverted black as
- * transparent (screen of black-on-anything = the backdrop, i.e. the blue
- * header shows through) while the inverted white text stays opaque white
- * regardless of backdrop. PS_LOGO_SRC (the mark) keeps the existing
- * brightness(0) invert(1) treatment already used elsewhere in this file
- * for forcing a mark white — no blend-mode needed there since it's a
- * genuinely transparent SVG.
- */
-.case__front-art--ps4 .case__front-platform-mark {
-  filter: brightness(0) invert(1);
-}
-
-.case__front-art--ps4 .case__front-platform-wordmark {
-  filter: invert(1);
-  mix-blend-mode: screen;
-}
 
 /*
  * Reserves the PlayStation Network mark's own footprint at the header's

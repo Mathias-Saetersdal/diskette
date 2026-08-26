@@ -302,11 +302,16 @@
   width: calc(var(--disc-ratio) * var(--front-w));
   cursor: pointer;
   transform: translate(-50%, -50%) translateZ(1px) scale(1);
-  transition:
-    left 0.6s ease,
-    top 0.6s ease,
-    transform 0.6s ease,
-    width 0.6s ease;
+  /*
+   * transform only — the lift used to animate left/top/width too, and
+   * every one of those is a layout property, so each frame of the 0.6s
+   * lift re-laid-out and re-rasterised the slot's whole subtree (the
+   * disc, its spin, its sweep) on the CPU. The lifted position below is
+   * now expressed entirely inside transform (translate for the move,
+   * scale for the 5% growth), which compositors animate on the GPU
+   * without touching layout at all.
+   */
+  transition: transform 0.6s ease;
 }
 
 .case__disc-slot:focus-visible,
@@ -337,33 +342,50 @@
   animation: none;
 }
 
-/* Lifted: shifts left to the centre of the whole open case (the fold at
-   x: --depth, in toggle coordinates, is the open spread's horizontal
-   midpoint) and grows slightly beyond its resting size. */
+/*
+ * Lifted: shifts left to the centre of the whole open case (the fold at
+ * x: --depth, in toggle coordinates, is the open spread's horizontal
+ * midpoint) and grows slightly beyond its resting size. All transform,
+ * none of it layout (see the base rule's transition comment): the first
+ * translate carries the -50%/-50% centring the base rule has, plus the
+ * move itself — half a panel width left to the fold, and 4% of the case
+ * height up (the old top: 50% -> 46% hop, in the same units). scale(1.05)
+ * is the old 105% width.
+ */
 .case__disc-slot.is-out,
 .jewel-case__disc-slot.is-out {
-  left: var(--depth);
-  top: 46%;
-  width: calc(var(--disc-ratio) * var(--front-w) * 1.05);
-  transform: translate(-50%, -50%) translateZ(90px) scale(1);
+  transform: translate(calc(-50% - var(--front-w) / 2), calc(-50% - var(--case-h) * 0.04)) translateZ(90px)
+    scale(1.05);
 }
 
 /*
- * Once the hinge has finished swinging open, the lid's outward face
- * (cover art or the jewel shell holding the booklet) must contribute
- * nothing: engines that paint the 3D scene without proper backface
- * culling otherwise show it as a mirrored copy of the cover on the open
- * lid — the actual bug this fixes, seen on albums and games. In engines
- * that cull correctly this is a no-op, since the face already hides
- * itself once rotated past 90deg. The 0.6s delay waits out the hinge
- * transition so the cover stays visible while the lid is actually
- * swinging; unmatching on close falls back to the base rule's absent
- * transition, so the face returns instantly for the closing swing.
+ * The lid's outward face (cover art or the jewel shell holding the
+ * booklet) must contribute nothing once it faces away from the viewer:
+ * engines that paint the 3D scene without proper backface culling
+ * otherwise show it as a mirrored copy of the cover — persistently on
+ * the open lid (the original bug, seen on albums and games), and
+ * transiently through the jewel case's translucent interior during the
+ * swing itself. In engines that cull correctly all of this is a no-op,
+ * since the face already hides itself past 90deg.
+ *
+ * The timing tracks the hinge's own 90deg crossing, not its end: the
+ * 0.6s ease hinge passes 90deg roughly 0.17s in (ease's y=0.5 sits at
+ * x~0.29 of the duration). Opening hides the face at 0.2s — just after
+ * the crossing, so correct engines lose nothing and broken ones show at
+ * most a ~30ms mirror sliver. Closing un-hides it through the base
+ * rule's own 0.17s delay below, so the face stays hidden until the
+ * closing swing carries it back past 90deg and actually faces the
+ * viewer again.
  */
+.case .case__front-art,
+.jewel-case .jewel-case__front-shell {
+  transition: visibility 0s 0.17s;
+}
+
 .case[data-open='true'] .case__front-art,
 .jewel-case[data-open='true'] .jewel-case__front-shell {
   visibility: hidden;
-  transition: visibility 0s 0.6s;
+  transition: visibility 0s 0.2s;
 }
 
 /*
@@ -379,7 +401,7 @@
  */
 .case[data-open='true'] .case__front-interior,
 .jewel-case[data-open='true'] .jewel-case__front-interior {
-  animation: case-unveil-interior 0s 0.6s forwards;
+  animation: case-unveil-interior 0s 0.2s forwards;
 }
 
 @keyframes case-unveil-interior {
@@ -388,6 +410,13 @@
   }
 }
 
+/*
+ * No filter: blur any more — the whole .case subtree scales during the
+ * enlarge, and a filtered layer inside it re-rasterises on those frames.
+ * The radial gradient carries the softness itself instead: a longer
+ * falloff (opaque core fading from 20% out to 85%) reads the same as
+ * the old tighter gradient plus blur(6px), at zero per-frame cost.
+ */
 .case__shadow,
 .jewel-case__shadow {
   position: absolute;
@@ -395,8 +424,7 @@
   right: 8%;
   bottom: -6%;
   height: 14%;
-  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.5) 0%, transparent 72%);
-  filter: blur(6px);
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.35) 20%, transparent 85%);
   pointer-events: none;
 }
 
@@ -414,9 +442,12 @@
     transition: none;
   }
 
-  /* The hinge cuts instead of swinging here, so the two face rules above
-     have no 0.6s swing to wait out — their delays would just leave the
-     mirrored cover visible after an instant open. */
+  /* The hinge cuts instead of swinging here, so the face rules above
+     have no swing to time against — their delays would just leave the
+     mirrored cover visible after an instant open, or the case faceless
+     for a beat after an instant close. */
+  .case .case__front-art,
+  .jewel-case .jewel-case__front-shell,
   .case[data-open='true'] .case__front-art,
   .jewel-case[data-open='true'] .jewel-case__front-shell {
     transition: none;

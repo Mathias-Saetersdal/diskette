@@ -1,4 +1,4 @@
-import { useState, type CSSProperties, type KeyboardEvent, type RefObject } from 'react'
+import { useEffect, useState, type CSSProperties, type KeyboardEvent, type RefObject } from 'react'
 import Disc, { DISC_DIAMETER_MM } from './Disc'
 import BurnedDisc from './BurnedDisc'
 import { JEWEL_GEOMETRY } from './caseGeometry'
@@ -74,6 +74,25 @@ export default function JewelCase({
   // as Case.tsx, watching the prop/state that actually gates it rather
   // than branching inside a toggle handler.
   if (!open && discOut) setDiscOut(false)
+
+  // Both mirror Case.tsx exactly — see that component's own comments for
+  // the full reasoning. slotAfterFront freezes the disc slot's DOM side
+  // once the case is no longer open, so the closing commit never reorders
+  // the toggle's children (a reorder moved the front leaf's DOM node and
+  // cancelled its hinge transition, snapping the lid shut). interiorOnTop
+  // defers the face swap past the closing swing, so the mirrored booklet
+  // never paints on top of the still-open leaf in engines that paint DOM
+  // order without backface culling.
+  const [slotAfterFront, setSlotAfterFront] = useState(false)
+  if (open && slotAfterFront !== discOut) setSlotAfterFront(discOut)
+
+  const [interiorOnTop, setInteriorOnTop] = useState(false)
+  if (open && !interiorOnTop) setInteriorOnTop(true)
+  useEffect(() => {
+    if (open || !interiorOnTop) return
+    const id = setTimeout(() => setInteriorOnTop(false), 600) // hinge duration, caseMechanism.css
+    return () => clearTimeout(id)
+  }, [open, interiorOnTop])
 
   const toggleDiscOut = () => setDiscOut((was) => !was)
 
@@ -185,7 +204,7 @@ export default function JewelCase({
           </div>
         </div>
 
-        {!discOut && discSlot}
+        {!slotAfterFront && discSlot}
 
         <div className="jewel-case__front" key="front">
           {/*
@@ -198,14 +217,14 @@ export default function JewelCase({
            * correctly never show both at once, so the order is invisible
            * to them.
            */}
-          {open && frontShell}
+          {interiorOnTop && frontShell}
           {/* The same clear lid's back face, seen once the case is open —
               one moulded piece, not a second material. */}
           <div className="jewel-case__front-interior" aria-hidden="true" key="interior" />
-          {!open && frontShell}
+          {!interiorOnTop && frontShell}
         </div>
 
-        {discOut && discSlot}
+        {slotAfterFront && discSlot}
       </button>
 
       <div className="jewel-case__shadow" aria-hidden="true" />

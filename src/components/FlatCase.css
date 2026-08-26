@@ -410,69 +410,17 @@
   width: calc(var(--spine-h) * 0.15);
 }
 
-/* ps5 mark: PS_LOGO_SRC is a real transparent vector but carries its own
-   multi-colour PlayStation button-symbol fill (confirmed by rendering
-   it), not a single tone — a real PS5 case's own mark is flat black, so
-   brightness(0) forces that regardless of the source's colours; no
-   invert needed since black is already the target against this white
-   header. */
-.flat-case-spine--ps5 .flat-case-spine-mark {
-  filter: brightness(0);
-}
-
-/* ps5 wordmark: PS5_WORDMARK_SRC is an opaque PNG (white background,
-   dark text — CaseFrontFace.tsx's own export comment), not a transparent
-   SVG like the mark above, so brightness(0) would crush the background
-   and the text to the same black instead of clearing it. mix-blend-mode:
-   multiply instead: a white source pixel multiplies against whatever is
-   behind it (this spine's own white header) and reads as that colour,
-   effectively invisible, while the dark text pixels multiply toward
-   black regardless of the backdrop and stay visible. Same technique
-   Case.css uses for this asset on the front header. */
-.flat-case-spine--ps5 .flat-case-spine-wordmark {
-  mix-blend-mode: multiply;
-}
-
-/* ps4 mark: PS_LOGO_SRC's own four-colour fill (see the ps5 comment
-   above) and #333 default don't read against this spine's blue header,
-   so it gets the same brightness(0) invert(1) recolour Case.css's own
-   front-header mark uses. */
-.flat-case-spine--ps4 .flat-case-spine-mark {
-  filter: brightness(0) invert(1);
-}
-
-/* ps4 wordmark: same opaque-PNG problem as ps5's, but the target is
-   white text on this livery's own blue header, not black on white, so
-   multiply alone won't produce it. filter: invert(1) turns the white
-   background black and the dark text white (still fully opaque); mix-
-   blend-mode: screen then reads that inverted black as transparent
-   (screen of black-on-anything = the backdrop, i.e. the blue header
-   shows through) while the inverted white text stays opaque regardless
-   of backdrop. Same technique Case.css uses for this asset on the front
-   header. */
-.flat-case-spine--ps4 .flat-case-spine-wordmark {
-  filter: invert(1);
-  mix-blend-mode: screen;
-}
-
-/* ps3-late wordmark: PS3_LATE_LOGO_SRC has no fill attribute at all (SVG
-   default black) — a genuine transparent SVG, not an opaque PNG like
-   ps4/ps5's wordmarks, so the plain filter here is enough on its own, no
-   mix-blend-mode needed. */
-.flat-case-spine--ps3-late .flat-case-spine-wordmark {
-  filter: brightness(0) invert(1);
-}
-
-/* ps2: PS_LOGO_SRC (the mark) is the real four-colour PlayStation family
-   mark already used unfiltered on this livery's own front header — kept
-   in its own natural colour here too, sitting on the white block for
-   contrast, per "the colour PlayStation mark". PS2_LOGO_SRC (the
-   wordmark) defaults to black (dead, unreachable gradient classes in the
-   source file — CaseFrontFace.tsx's own sourcing note) and sits on the
-   black header remainder, so it needs forcing white same as the others. */
-.flat-case-spine--ps2 .flat-case-spine-wordmark {
-  filter: brightness(0) invert(1);
-}
+/*
+ * No filter or blend rules for the spine marks and wordmarks any more:
+ * FlatCase.tsx renders the pre-recoloured, genuinely transparent copies
+ * per livery (PS_LOGO_WHITE_SRC/PS_LOGO_BLACK_SRC, and the -white/-dark
+ * wordmark files — CaseFrontFace.tsx's export comments have the
+ * generation details). ps2's mark keeps the four-colour original on its
+ * white block, which never needed a filter. The invert filters and
+ * mix-blend-modes this replaces cost compositing on forty closed cards
+ * and, in Safari, promoted each affected image to a layer that ignored
+ * backface culling once the same assets animated inside an open case.
+ */
 
 /*
  * The edge highlight: a curved plastic edge catches light as a narrow
@@ -526,7 +474,10 @@
   right: -22%;
   bottom: -10%;
   height: 22%;
-  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.32) 0%, rgba(0, 0, 0, 0) 75%);
-  filter: blur(10px);
+  /* Softness lives in the gradient falloff, not a filter: blur — forty
+     closed cards each carrying a blurred layer costs raster memory and
+     re-blurs on the hover zoom, for a shape a longer fade draws
+     identically. */
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.22) 30%, rgba(0, 0, 0, 0) 90%);
   pointer-events: none;
 }

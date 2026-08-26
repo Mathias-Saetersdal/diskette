@@ -175,6 +175,37 @@ export default function Case({
   // with anything external), not an effect.
   if (!open && discOut) setDiscOut(false)
 
+  // Which side of the front leaf the disc slot renders on (see the
+  // discSlot comment below for why the side matters at all). Follows
+  // discOut only while the case is open; frozen once it isn't. Without
+  // the freeze, closing with the disc out flips discOut in the same
+  // commit `open` falls, React reorders the toggle's children, and the
+  // reorder moves the .case__front DOM node — which cancels the hinge
+  // transition that was starting on it, so the lid snapped shut instead
+  // of swinging. Confirmed by frame capture, not assumed. Frozen, the
+  // closing commit changes no child order, the lid keeps its transition,
+  // and the returning disc simply stays on the leaf's far side until the
+  // whole case unmounts.
+  const [slotAfterFront, setSlotAfterFront] = useState(false)
+  if (open && slotAfterFront !== discOut) setSlotAfterFront(discOut)
+
+  // Which of the leaf's two faces paints last (on top) in engines that
+  // paint DOM order with no backface culling: the interior while the
+  // case is open, the cover once it's closed. The falling edge waits out
+  // the 0.6s closing swing rather than swapping the moment `open` falls —
+  // an instant swap put the mirrored cover art on top of the whole
+  // still-open leaf for the first frames of the close (verified by frame
+  // capture in WebKit). During the swing the interior stays on top, so
+  // the lid closes dark and the cover appears once it lands, matching
+  // the opening direction's own dark swing.
+  const [interiorOnTop, setInteriorOnTop] = useState(false)
+  if (open && !interiorOnTop) setInteriorOnTop(true)
+  useEffect(() => {
+    if (open || !interiorOnTop) return
+    const id = setTimeout(() => setInteriorOnTop(false), 600) // hinge duration, caseMechanism.css
+    return () => clearTimeout(id)
+  }, [open, interiorOnTop])
+
   const spine = useSpineColors(coverSrc)
   const geometry = useCaseGeometry(caseFormat)
 
@@ -320,7 +351,7 @@ export default function Case({
           </div>
         </div>
 
-        {!discOut && discSlot}
+        {!slotAfterFront && discSlot}
 
         <div className="case__front" key="front">
           {/*
@@ -340,7 +371,7 @@ export default function Case({
            * interior while open. Engines that cull correctly never show
            * both at once, so the order is invisible to them.
            */}
-          {open && frontArt}
+          {interiorOnTop && frontArt}
           <div className="case__front-interior" key="interior">
             <div className="case__panel-frame" aria-hidden="true" />
             <div className="case__panel-sheen" aria-hidden="true" />
@@ -357,10 +388,10 @@ export default function Case({
               <div className="case__booklet-clip-slot" />
             </div>
           </div>
-          {!open && frontArt}
+          {!interiorOnTop && frontArt}
         </div>
 
-        {discOut && discSlot}
+        {slotAfterFront && discSlot}
       </button>
 
       <div className="case__shadow" aria-hidden="true" />

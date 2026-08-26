@@ -44,6 +44,16 @@ export const BLURAY_LOGO_SRC = assetUrl('/assets/marks/blu-ray-disc-white.png')
 // is still unusable (no real alpha channel); PS3-late's badge stays
 // styled text until a working one is sourced.
 export const PS_LOGO_SRC = assetUrl('/assets/marks/playstation-logo.svg')
+// Single-colour copies of the mark above, recoloured at the file level
+// (scripts wrote an injected <style> forcing one fill) rather than with
+// CSS filters at render time. The filters and blend modes this replaces
+// were not only a per-frame compositing cost: Safari promotes filtered
+// and blended images to their own compositing layers, and those layers
+// ignore the ancestor faces' backface culling — the actual cause of the
+// mirrored cover showing through PS4 and PS5 lids while the hinge swung.
+// A plain <img> with the colour baked in has neither problem.
+export const PS_LOGO_WHITE_SRC = assetUrl('/assets/marks/ps-logo-white.svg')
+export const PS_LOGO_BLACK_SRC = assetUrl('/assets/marks/ps-logo-black.svg')
 // Two more real vectors, checked the same way before use: genuine <path>
 // data (not an <image> wrapping a raster), no background rect, and every
 // corner pixel of a rasterised check came back alpha:0 — confirmed with
@@ -52,6 +62,11 @@ export const PS_LOGO_SRC = assetUrl('/assets/marks/playstation-logo.svg')
 // filter rules below correct — see those rules for why a CSS filter
 // rather than editing the SVG.
 export const PS3_LATE_LOGO_SRC = assetUrl('/assets/marks/ps3-logo-new.svg')
+// White copies of the wordmarks below, same file-level recolour and same
+// reasoning as PS_LOGO_WHITE_SRC above.
+export const PS2_LOGO_WHITE_SRC = assetUrl('/assets/marks/ps2-logo-white.svg')
+export const PS3_LATE_LOGO_WHITE_SRC = assetUrl('/assets/marks/ps3-logo-new-white.svg')
+export const PS3_EARLY_LOGO_WHITE_SRC = assetUrl('/assets/marks/ps3-logo-old-white.svg')
 // ps4-logo.svg and ps5-logo.svg (the files these constants used to point
 // at) turned out to be full lockups — the PlayStation button icon and the
 // platform wordmark baked into one image, confirmed by rendering both and
@@ -67,6 +82,15 @@ export const PS3_LATE_LOGO_SRC = assetUrl('/assets/marks/ps3-logo-new.svg')
 // editing the files.
 export const PS4_WORDMARK_SRC = assetUrl('/assets/marks/ps4-wordmark.png')
 export const PS5_WORDMARK_SRC = assetUrl('/assets/marks/ps5-wordmark.png')
+// Transparent, single-colour versions of the two opaque scans above,
+// generated with sharp (alpha from inverted luminance, colour flattened):
+// white text for PS4's blue header, near-black for PS5's white one. These
+// are what actually renders; the opaque originals stay as the source
+// material. Same reasoning as PS_LOGO_WHITE_SRC above — the invert
+// filters and mix-blend-modes these replace broke backface culling in
+// Safari and cost compositing time every animated frame.
+export const PS4_WORDMARK_WHITE_SRC = assetUrl('/assets/marks/ps4-wordmark-white.png')
+export const PS5_WORDMARK_DARK_SRC = assetUrl('/assets/marks/ps5-wordmark-dark.png')
 // ps3-logo-old.svg: the full "PLAYSTATION 3" wordmark, not the shorter "PS3"
 // mark above — ps3-early's own reference photo carries this one on the
 // spine, not the front (Case.tsx renders it, not this file). Same
@@ -215,17 +239,21 @@ export default function CaseFrontFace({ coverSrc, coverAlt, caseFormat, livery }
             // used to be baked into that same file, now drawn alongside
             // it instead of twice.
             <span className={`case__front-platform-lockup case__front-platform-lockup--${livery}`}>
-              <img className="case__front-platform-mark" src={PS_LOGO_SRC} alt="" />
+              <img
+                className="case__front-platform-mark"
+                src={livery === 'ps4' ? PS_LOGO_WHITE_SRC : PS_LOGO_BLACK_SRC}
+                alt=""
+              />
               <img
                 className="case__front-platform-wordmark"
-                src={livery === 'ps4' ? PS4_WORDMARK_SRC : PS5_WORDMARK_SRC}
+                src={livery === 'ps4' ? PS4_WORDMARK_WHITE_SRC : PS5_WORDMARK_DARK_SRC}
                 alt=""
               />
             </span>
           ) : (
             <img
               className={`case__front-platform-logo case__front-platform-logo--${livery}`}
-              src={livery === 'ps2' ? PS2_LOGO_SRC : PS3_LATE_LOGO_SRC}
+              src={livery === 'ps2' ? PS2_LOGO_WHITE_SRC : PS3_LATE_LOGO_WHITE_SRC}
               alt=""
             />
           )}
@@ -297,7 +325,7 @@ export default function CaseFrontFace({ coverSrc, coverAlt, caseFormat, livery }
            */}
           <span className="case__front-ps3-early-wordmark-area">
             <span className="case__front-ps3-early-wordmark-slot">
-              <img className="case__front-ps3-early-wordmark" src={PS3_EARLY_LOGO_SRC} alt="" />
+              <img className="case__front-ps3-early-wordmark" src={PS3_EARLY_LOGO_WHITE_SRC} alt="" />
             </span>
           </span>
         </span>

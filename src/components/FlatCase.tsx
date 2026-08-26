@@ -3,10 +3,12 @@ import type { Livery } from '../data/lists'
 import { CASE_GEOMETRY, MAX_CASE_HEIGHT_MM, type SupportedCaseFormat } from './caseGeometry'
 import CaseFrontFace, {
   PS_LOGO_SRC,
-  PS2_LOGO_SRC,
-  PS3_LATE_LOGO_SRC,
-  PS4_WORDMARK_SRC,
-  PS5_WORDMARK_SRC,
+  PS_LOGO_WHITE_SRC,
+  PS_LOGO_BLACK_SRC,
+  PS2_LOGO_WHITE_SRC,
+  PS3_LATE_LOGO_WHITE_SRC,
+  PS4_WORDMARK_WHITE_SRC,
+  PS5_WORDMARK_DARK_SRC,
 } from './CaseFrontFace'
 import './FlatCase.css'
 
@@ -136,33 +138,39 @@ export default function FlatCase({
   // when livery is genuinely "standard."
   const spineLivery = livery === 'standard' && caseFormat === 'dvd' ? 'dvd' : livery
 
-  // The upright mark, PS_LOGO_SRC for every livery that gets one. ps3-late
-  // does not: no separate PS button mark on this livery's spine, only the
-  // wordmark below. ps3-early gets neither: its own marks render on the
-  // front face (CaseFrontFace.tsx's case__front-ps3-early-strip), not the
-  // spine — Case.tsx's real spine renders nothing for it either.
-  const markSrc = livery === 'ps2' || livery === 'ps4' || livery === 'ps5' ? PS_LOGO_SRC : null
+  // The upright mark. ps2 keeps the four-colour original on its white
+  // block; ps4 and ps5 use the pre-recoloured single-tone copies
+  // (CaseFrontFace.tsx's export comments — the CSS filters these replace
+  // broke backface culling in Safari and cost compositing time). ps3-late
+  // gets none: no separate PS button mark on this livery's spine, only
+  // the wordmark below. ps3-early gets neither: its own marks render on
+  // the front face (CaseFrontFace.tsx's case__front-ps3-early-strip), not
+  // the spine — Case.tsx's real spine renders nothing for it either.
+  const markSrc =
+    livery === 'ps2'
+      ? PS_LOGO_SRC
+      : livery === 'ps4'
+        ? PS_LOGO_WHITE_SRC
+        : livery === 'ps5'
+          ? PS_LOGO_BLACK_SRC
+          : null
 
-  // The rotated wordmark, read down the spine. PS4_WORDMARK_SRC/
-  // PS5_WORDMARK_SRC are the cropped, text-only assets (CaseFrontFace.tsx's
-  // export comment) — the files these used to point at carried the PS
-  // mark baked in too, which is what drew it a second time alongside the
-  // separate mark above. PS3_LATE_LOGO_SRC never had that problem — a
-  // genuine transparent SVG, already wordmark-only. It used to be rendered
-  // as the mark slot's own small upright icon instead, which is wrong on
-  // two counts: that file's own natural size is 300x64 (a ~4.7:1 wordmark
-  // shape, not an icon), and this livery has no separate PS mark on the
-  // spine at all — the wordmark is the whole lockup. No asset plays this
-  // role for ps3-early (no spine marks at all).
+  // The rotated wordmark, read down the spine — every one the
+  // pre-recoloured asset for its own header colour: dark text for ps5's
+  // white header, white for the rest. The cropped, text-only PS4/PS5
+  // files exist because the originals carried the PS mark baked in too,
+  // which drew it a second time alongside the separate mark above
+  // (CaseFrontFace.tsx's export comment). No asset plays this role for
+  // ps3-early (no spine marks at all).
   const wordmarkSrc =
     livery === 'ps5'
-      ? PS5_WORDMARK_SRC
+      ? PS5_WORDMARK_DARK_SRC
       : livery === 'ps4'
-        ? PS4_WORDMARK_SRC
+        ? PS4_WORDMARK_WHITE_SRC
         : livery === 'ps3-late'
-          ? PS3_LATE_LOGO_SRC
+          ? PS3_LATE_LOGO_WHITE_SRC
           : livery === 'ps2'
-            ? PS2_LOGO_SRC
+            ? PS2_LOGO_WHITE_SRC
             : null
 
   return (
