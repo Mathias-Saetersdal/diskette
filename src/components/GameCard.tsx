@@ -12,6 +12,8 @@ import './MediaCard.css'
 interface GameCardProps {
   entry: Entry
   active: boolean
+  /** Some other entry in this list is active — forwarded to useCaseSequence. */
+  displaced?: boolean
   onActivate: () => void
   onDeactivate: () => void
   /**
@@ -53,9 +55,10 @@ interface GameCardProps {
  * MediaList.tsx renders the desktop copy (variant='row') itself, fed by
  * onSequenceChange below.
  */
-export default function GameCard({ entry, active, onActivate, onDeactivate, onSequenceChange }: GameCardProps) {
+export default function GameCard({ entry, active, displaced, onActivate, onDeactivate, onSequenceChange }: GameCardProps) {
   const { open, enlarged, showCase, caseToggleRef, flatButtonRef, onToggleOpen } = useCaseSequence({
     active,
+    displaced,
     onDeactivate,
     delayShowCase: true,
   })

@@ -17,6 +17,8 @@ import './MediaCard.css'
 interface AlbumCardProps {
   entry: Entry
   active: boolean
+  /** Some other entry in this list is active — forwarded to useCaseSequence. */
+  displaced?: boolean
   onActivate: () => void
   onDeactivate: () => void
   /**
@@ -49,9 +51,10 @@ interface AlbumCardProps {
  * renders the desktop copy (variant='row') itself, fed by
  * onSequenceChange below.
  */
-export default function AlbumCard({ entry, active, onActivate, onDeactivate, onSequenceChange }: AlbumCardProps) {
+export default function AlbumCard({ entry, active, displaced, onActivate, onDeactivate, onSequenceChange }: AlbumCardProps) {
   const { open, enlarged, showCase, caseToggleRef, flatButtonRef, onToggleOpen } = useCaseSequence({
     active,
+    displaced,
     onDeactivate,
   })
   const settle = useContext(SettleContext)

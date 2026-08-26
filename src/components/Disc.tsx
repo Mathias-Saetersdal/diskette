@@ -211,7 +211,15 @@ interface DiscProps {
 export default function Disc({ src, alt, interactive }: DiscProps) {
   return (
     <DiscShell interactive={interactive}>
-      <img src={src} alt={alt} />
+      {/*
+       * decoding="async": disc scans run 2-3MB at 1000x1000, and a
+       * synchronous decode of that on mount lands exactly on the frame
+       * the case starts enlarging — a visible hitch at click time.
+       * fetchpriority="high": by mount time this image is the one thing
+       * the user is waiting to see; the idle preloader (preloadDiscs.ts)
+       * has usually cached it already, and this covers the cold path.
+       */}
+      <img src={src} alt={alt} decoding="async" fetchPriority="high" />
     </DiscShell>
   )
 }

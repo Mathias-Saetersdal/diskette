@@ -483,6 +483,23 @@
 }
 
 /*
+ * While two cards animate at once — one displaced and collapsing, its
+ * neighbour enlarging into the space it hasn't finished giving back —
+ * their boxes can genuinely overlap for the crossfade. The one the user
+ * just opened must win that overlap: data-enlarged is true on the
+ * opening card from its first frame and drops on the displaced one the
+ * moment its collapse starts (useCaseSequence's displaced path), so
+ * this raises exactly the newer card for exactly the overlap window.
+ * position: relative with no offsets only makes z-index apply; it moves
+ * nothing.
+ */
+.media-list .media-card:has(.case[data-enlarged='true']),
+.media-list .media-card:has(.jewel-case[data-enlarged='true']) {
+  position: relative;
+  z-index: 2;
+}
+
+/*
  * Hover/focus zoom on a resting closed card. Transform only, so it never
  * reflows the row (MediaList.css owns the row layout, this only changes
  * paint). :hover and :focus-visible both, so tabbing to a card gets the

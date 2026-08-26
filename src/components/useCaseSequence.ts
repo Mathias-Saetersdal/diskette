@@ -32,6 +32,18 @@ interface UseCaseSequenceArgs {
    * why the games row specifically needs that gap and no other list does.
    */
   delayShowCase?: boolean
+  /**
+   * True while some OTHER entry in the same list is the active one
+   * (MediaList passes activeId !== null && activeId !== entry.id). Only
+   * read while closing: a card displaced by a neighbour collapses its
+   * close — lid swing and shrink run concurrently instead of the full
+   * swing-then-wait-then-shrink sequence — so two full 3D cases spend
+   * 1.5s alive together instead of 3.6s. That long tail was both the
+   * visible overlap when opening a card next to the open one and a good
+   * share of the jank while it lasted. A card closed by its own toggle
+   * (activeId back to null) keeps the unhurried sequence.
+   */
+  displaced?: boolean
 }
 
 // Games only (delayShowCase below) — a short, arbitrary beat, not timed
@@ -51,7 +63,12 @@ const SHOW_CASE_DELAY_MS = 30
  * referenced Case specifically, only open/enlarged/closing state and
  * focus handoff between two refs the caller owns.
  */
-export function useCaseSequence({ active, onDeactivate, delayShowCase = false }: UseCaseSequenceArgs) {
+export function useCaseSequence({
+  active,
+  onDeactivate,
+  delayShowCase = false,
+  displaced = false,
+}: UseCaseSequenceArgs) {
   const [enlarged, setEnlarged] = useState(false)
   const [open, setOpen] = useState(false)
   // Whether the swap from the flat placeholder to the full case has
@@ -120,6 +137,12 @@ export function useCaseSequence({ active, onDeactivate, delayShowCase = false }:
   // if it deactivated mid-opening, before the hinge ever ran: open is
   // already false, so this doesn't fire.
   if (!active && !prefersReducedMotion && open) setOpen(false)
+  // Displaced by a neighbour: shrink alongside the swing instead of after
+  // it (see UseCaseSequenceArgs's displaced comment). This makes the
+  // 600ms shrink timer below a no-op — enlarged is already false when it
+  // would fire — and the closing-end effect starts its own shrink-length
+  // wait immediately, so the whole close takes one shrink duration.
+  if (!active && !prefersReducedMotion && displaced && enlarged) setEnlarged(false)
 
   // Scroll is the sequence's first stage, not something layered on top of
   // it: centring a case that's already mid-scale would fight MediaList.css's

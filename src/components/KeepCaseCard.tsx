@@ -19,6 +19,8 @@ const SERIES_SPINE_WIDTH_MM = 28
 interface KeepCaseCardProps {
   entry: Entry
   active: boolean
+  /** Some other entry in this list is active — forwarded to useCaseSequence. */
+  displaced?: boolean
   onActivate: () => void
   onDeactivate: () => void
   /**
@@ -72,12 +74,14 @@ interface KeepCaseCardProps {
 export default function KeepCaseCard({
   entry,
   active,
+  displaced,
   onActivate,
   onDeactivate,
   onSequenceChange,
 }: KeepCaseCardProps) {
   const { open, enlarged, showCase, caseToggleRef, flatButtonRef, onToggleOpen } = useCaseSequence({
     active,
+    displaced,
     onDeactivate,
   })
   const settle = useContext(SettleContext)

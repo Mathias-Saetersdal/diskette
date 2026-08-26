@@ -11,6 +11,8 @@ interface SequenceState {
 interface MediaCardProps {
   entry: Entry
   active: boolean
+  /** Some other entry in this list is active — see useCaseSequence's own displaced comment. */
+  displaced?: boolean
   onActivate: () => void
   onDeactivate: () => void
   onSequenceChange?: (state: SequenceState) => void
@@ -119,6 +121,7 @@ export default function MediaList({ entries, CardComponent, ariaLabel, heading, 
               key={entry.id}
               entry={entry}
               active={entry.id === activeId}
+              displaced={activeId !== null && activeId !== entry.id}
               onActivate={() => setActiveId(entry.id)}
               onDeactivate={() => setActiveId(null)}
               onSequenceChange={(state) => handleSequenceChange(entry, state)}
