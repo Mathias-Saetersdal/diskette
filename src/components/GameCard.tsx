@@ -56,7 +56,7 @@ interface GameCardProps {
  * onSequenceChange below.
  */
 export default function GameCard({ entry, active, displaced, onActivate, onDeactivate, onSequenceChange }: GameCardProps) {
-  const { open, enlarged, showCase, caseToggleRef, flatButtonRef, onToggleOpen } = useCaseSequence({
+  const { open, enlarged, closing, showCase, caseToggleRef, flatButtonRef, onToggleOpen } = useCaseSequence({
     active,
     displaced,
     onDeactivate,
@@ -83,6 +83,7 @@ export default function GameCard({ entry, active, displaced, onActivate, onDeact
           livery={entry.livery}
           open={open}
           enlarged={enlarged}
+          closing={closing}
           onToggleOpen={onToggleOpen}
           toggleRef={caseToggleRef}
         />

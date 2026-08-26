@@ -289,5 +289,9 @@ export function useCaseSequence({
     }
   }
 
-  return { open, enlarged, showCase, caseToggleRef, flatButtonRef, onToggleOpen }
+  // closing is exposed so Case/JewelCase can stamp data-closing on their
+  // root: MediaList.css keys the margin-shrink timing and the stacking of
+  // a closing card off it — CSS alone can't tell "enlarged on the way
+  // open" from "enlarged on the way shut", the attribute pair is the same.
+  return { open, enlarged, closing, showCase, caseToggleRef, flatButtonRef, onToggleOpen }
 }

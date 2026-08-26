@@ -52,7 +52,7 @@ interface AlbumCardProps {
  * onSequenceChange below.
  */
 export default function AlbumCard({ entry, active, displaced, onActivate, onDeactivate, onSequenceChange }: AlbumCardProps) {
-  const { open, enlarged, showCase, caseToggleRef, flatButtonRef, onToggleOpen } = useCaseSequence({
+  const { open, enlarged, closing, showCase, caseToggleRef, flatButtonRef, onToggleOpen } = useCaseSequence({
     active,
     displaced,
     onDeactivate,
@@ -75,6 +75,7 @@ export default function AlbumCard({ entry, active, displaced, onActivate, onDeac
           discSource={entry.discSource}
           open={open}
           enlarged={enlarged}
+          closing={closing}
           onToggleOpen={onToggleOpen}
           toggleRef={caseToggleRef}
         />

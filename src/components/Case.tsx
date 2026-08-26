@@ -59,6 +59,13 @@ interface CaseProps {
    * rotation on .case__toggle) and reach true a beat apart.
    */
   enlarged: boolean
+  /**
+   * The close sequence is running (useCaseSequence's own closing state).
+   * Stamped on the root as data-closing so MediaList.css can slow the
+   * margin release and stack a closing card correctly — the attribute
+   * pair enlarged/open alone can't distinguish opening from closing.
+   */
+  closing?: boolean
   /** Focused once this Case mounts as the newly-active entry. */
   toggleRef?: RefObject<HTMLButtonElement | null>
 }
@@ -166,6 +173,7 @@ export default function Case({
   livery,
   open,
   enlarged,
+  closing = false,
   onToggleOpen,
   toggleRef,
 }: CaseProps) {
@@ -330,6 +338,7 @@ export default function Case({
       className={`case${liveryClass}`}
       data-open={open}
       data-enlarged={enlarged}
+      data-closing={closing}
       style={style}
     >
       <button

@@ -45,6 +45,13 @@ interface JewelCaseProps {
    * Mirrors Case.tsx's own enlarged prop.
    */
   enlarged: boolean
+  /**
+   * The close sequence is running (useCaseSequence's own closing state).
+   * Stamped on the root as data-closing so MediaList.css can slow the
+   * margin release and stack a closing card correctly — the attribute
+   * pair enlarged/open alone can't distinguish opening from closing.
+   */
+  closing?: boolean
   /** Focused once this mounts, if it's replacing a previous focus target. */
   toggleRef?: RefObject<HTMLButtonElement | null>
 }
@@ -68,6 +75,7 @@ export default function JewelCase({
   discSource,
   open,
   enlarged,
+  closing = false,
   onToggleOpen,
   toggleRef,
 }: JewelCaseProps) {
@@ -180,7 +188,7 @@ export default function JewelCase({
   )
 
   return (
-    <div className="jewel-case" data-open={open} data-enlarged={enlarged} style={style}>
+    <div className="jewel-case" data-open={open} data-enlarged={enlarged} data-closing={closing} style={style}>
       <button
         ref={toggleRef}
         type="button"

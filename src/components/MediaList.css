@@ -345,11 +345,35 @@
    * matches the hinge's own duration (caseMechanism.css's
    * .case__toggle/.case__front, both 0.6s ease) so the shift reads as
    * part of the same motion as the lid swinging, not a separate, slower
-   * adjustment trailing behind it.
+   * adjustment trailing behind it. This is the OPENING direction's
+   * timing only — the reserved space must always lead what the card
+   * visually needs, and on the way open the visuals are the slower side.
+   * The data-closing rule below flips the margin to the slow duration
+   * for the whole close, where fast-releasing margins were exactly what
+   * let neighbours slide in under a still-large closing case.
    */
   transition:
     transform var(--enlarge-duration) ease-in-out,
     margin-inline 0.6s ease;
+}
+
+/*
+ * Closing, either kind: the margins release no faster than the case
+ * visually shrinks. The shrink is the transform — scale and the
+ * direction-switch translateX both, at --enlarge-duration ease-in-out —
+ * so the margins take the same duration and curve, keeping the reserved
+ * space and the visual footprint in lockstep every frame. With the old
+ * always-0.6s release, neighbours reclaimed the space in 0.6s while the
+ * case took 1.5s to shrink out of it: the visible overlap, and the
+ * closing case appearing to slide behind the card beside it. CSS can't
+ * tell "enlarged on the way open" from "enlarged on the way shut" (same
+ * attribute pair), which is why the components stamp data-closing.
+ */
+.media-list .case[data-closing='true'],
+.media-list .jewel-case[data-closing='true'] {
+  transition:
+    transform var(--enlarge-duration) ease-in-out,
+    margin-inline var(--enlarge-duration) ease-in-out;
 }
 
 /*
@@ -402,7 +426,9 @@
  */
 @media (prefers-reduced-motion: reduce) {
   .media-list .case,
-  .media-list .jewel-case {
+  .media-list .jewel-case,
+  .media-list .case[data-closing='true'],
+  .media-list .jewel-case[data-closing='true'] {
     transition: none;
   }
 }
@@ -493,6 +519,22 @@
  * position: relative with no offsets only makes z-index apply; it moves
  * nothing.
  */
+/*
+ * A closing card sits above the resting flats but below whichever card
+ * is enlarging (z-index 2 below): without this, plain DOM order stacked
+ * a closing card UNDER the resting card to its right the moment their
+ * boxes touched, which read as the case sliding behind its neighbour.
+ * Declared before the enlarged rule so a card matching both (the
+ * graceful self-close's first phase, closing with enlarged still true)
+ * gets the later rule's z-index 2 — correctly, since nothing else is
+ * animating during a graceful close.
+ */
+.media-list .media-card:has(.case[data-closing='true']),
+.media-list .media-card:has(.jewel-case[data-closing='true']) {
+  position: relative;
+  z-index: 1;
+}
+
 .media-list .media-card:has(.case[data-enlarged='true']),
 .media-list .media-card:has(.jewel-case[data-enlarged='true']) {
   position: relative;
