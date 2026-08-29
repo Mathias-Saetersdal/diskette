@@ -10,6 +10,16 @@ interface FlatJewelCaseProps {
   title: string
   coverSrc: string
   coverAlt: string
+  /**
+   * Original pixel dimensions of the cover, from the derived-asset record
+   * (src/assetSources.ts) — intrinsic-ratio hints for the img, never its
+   * on-screen size (.jewel-case__front-poster img's own 100%/100% CSS box
+   * still wins). Omitted when the record's production fallback reports 0
+   * (unknown). Always lazy, no fetch priority: albums sit third on the
+   * page, never among the first four covers in document order.
+   */
+  coverWidth?: number
+  coverHeight?: number
   onClick: () => void
   buttonRef?: RefObject<HTMLButtonElement | null>
   /**
@@ -51,6 +61,8 @@ export default function FlatJewelCase({
   title,
   coverSrc,
   coverAlt,
+  coverWidth,
+  coverHeight,
   onClick,
   buttonRef,
   spineTone,
@@ -78,7 +90,17 @@ export default function FlatJewelCase({
         >
           <div className="jewel-case__front-shell">
             <div className="jewel-case__front-poster">
-              <img src={coverSrc} alt={coverAlt} loading="lazy" />
+              <img
+                src={coverSrc}
+                alt={coverAlt}
+                {...(coverWidth && coverHeight ? { width: coverWidth, height: coverHeight } : {})}
+                loading="lazy"
+                // Albums sit third on the page, never the first row —
+                // demoted for the same reason as every non-films cover
+                // (FlatCase.tsx's fetchPriority comment).
+                fetchPriority="low"
+                decoding="async"
+              />
               <div className="jewel-case__front-refraction" aria-hidden="true" />
             </div>
             <div className="jewel-case__front-gloss" aria-hidden="true" />

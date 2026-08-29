@@ -1,5 +1,5 @@
 import { useEffect, useState, type CSSProperties, type KeyboardEvent, type RefObject } from 'react'
-import Disc, { DISC_DIAMETER_MM } from './Disc'
+import Disc, { DISC_DIAMETER_MM, decodedImageUrl, loadDecodedImage } from './Disc'
 import BurnedDisc from './BurnedDisc'
 import { JEWEL_GEOMETRY } from './caseGeometry'
 import type { DiscSource } from '../data/lists'
@@ -24,6 +24,13 @@ interface JewelCaseProps {
   title: string
   coverSrc: string
   coverAlt: string
+  /**
+   * The 512px .full.webp for the cover. Requested once the case reaches
+   * its open state, decoded, then swapped in over coverSrc in place —
+   * same mechanics as CaseFrontFace.tsx's coverFullSrc, on this
+   * component's own booklet img.
+   */
+  coverFullSrc?: string
   /** Absent when discSource is 'burned' — BurnedDisc renders instead, no fetched image involved. */
   discSrc?: string
   discAlt?: string
@@ -70,6 +77,7 @@ export default function JewelCase({
   title,
   coverSrc,
   coverAlt,
+  coverFullSrc,
   discSrc,
   discAlt,
   discSource,
@@ -109,6 +117,34 @@ export default function JewelCase({
     return () => clearTimeout(id)
   }, [open, interiorOnTop])
 
+  // The open-state assets' requests (disc, full-resolution cover) start
+  // when the case enters its open state, never before — same sticky
+  // render-time pattern and reasoning as Case.tsx's openAssetsRequested.
+  const [openAssetsRequested, setOpenAssetsRequested] = useState(false)
+  if (open && !openAssetsRequested) setOpenAssetsRequested(true)
+
+  // Full-resolution booklet upgrade, same mechanics as CaseFrontFace.tsx:
+  // starts from the shared cache so a reopened case never re-shows the
+  // list asset, swaps in place on decode, stays on coverSrc on failure.
+  const fullSrc = openAssetsRequested ? coverFullSrc : undefined
+  const [fullUrl, setFullUrl] = useState<string | null>(() =>
+    coverFullSrc ? (decodedImageUrl(coverFullSrc) ?? null) : null,
+  )
+  useEffect(() => {
+    if (!fullSrc) return
+    let cancelled = false
+    loadDecodedImage(fullSrc)
+      .then((url) => {
+        if (!cancelled) setFullUrl(url)
+      })
+      .catch(() => {
+        // Stay on the list asset. No error surface.
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [fullSrc])
+
   const toggleDiscOut = () => {
     if (discOut) {
       setDiscOut(false)
@@ -143,7 +179,7 @@ export default function JewelCase({
        * the cover sits under the lid, not printed on it.
        */}
       <div className="jewel-case__front-poster">
-        <img src={coverSrc} alt={coverAlt} />
+        <img src={fullUrl ?? coverSrc} alt={coverAlt} />
         <div className="jewel-case__front-refraction" aria-hidden="true" />
       </div>
       <div className="jewel-case__front-gloss" aria-hidden="true" />
@@ -182,7 +218,7 @@ export default function JewelCase({
       {discSource === 'burned' ? (
         <BurnedDisc title={title} medium="album" interactive={discOut} />
       ) : (
-        <Disc src={discSrc ?? ''} alt={discAlt ?? ''} interactive={discOut} />
+        <Disc src={openAssetsRequested ? (discSrc ?? '') : ''} alt={discAlt ?? ''} interactive={discOut} />
       )}
     </div>
   )

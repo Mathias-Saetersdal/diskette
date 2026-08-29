@@ -20,6 +20,30 @@ interface FlatCaseProps {
   coverAlt: string
   caseFormat: SupportedCaseFormat
   livery: Livery
+  /**
+   * Original pixel dimensions of the cover, from the derived-asset record
+   * (src/assetSources.ts) — intrinsic-ratio hints for the img, never its
+   * on-screen size. Omitted when the record's production fallback reports
+   * 0 (unknown).
+   */
+  coverWidth?: number
+  coverHeight?: number
+  /**
+   * Loads this cover up front instead of lazily. Only the page's first
+   * four covers in document order get it (films ranks 1 to 4 — films is
+   * the first list on the one scrolling page, App.tsx); every other list
+   * cover stays lazy.
+   */
+  eager?: boolean
+  /**
+   * "high" on the page's first two covers only. "low" on every cover
+   * outside the first row: all 40 load at rest regardless (the page sits
+   * inside Chrome's lazy-load distance threshold), so without this the
+   * thirty below-fold covers round-robin against the ten visible ones for
+   * the same bandwidth. Demoting them lets the browser starve them
+   * instead. Absent for the rest of the first row.
+   */
+  fetchPriority?: 'high' | 'low'
   onClick: () => void
   /** Focused when this placeholder remounts after the case it replaced closes. */
   buttonRef?: RefObject<HTMLButtonElement | null>
@@ -95,6 +119,10 @@ export default function FlatCase({
   coverAlt,
   caseFormat,
   livery,
+  coverWidth,
+  coverHeight,
+  eager = false,
+  fetchPriority,
   onClick,
   buttonRef,
   restTilt = false,
@@ -126,7 +154,17 @@ export default function FlatCase({
       aria-label={ui[language].openCase(title)}
       onClick={onClick}
     >
-      <CaseFrontFace coverSrc={coverSrc} coverAlt={coverAlt} caseFormat={caseFormat} livery={livery} />
+      <CaseFrontFace
+        coverSrc={coverSrc}
+        coverAlt={coverAlt}
+        caseFormat={caseFormat}
+        livery={livery}
+        coverWidth={coverWidth}
+        coverHeight={coverHeight}
+        loading={eager ? 'eager' : 'lazy'}
+        fetchPriority={fetchPriority}
+        decoding="async"
+      />
     </button>
   )
 

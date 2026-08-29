@@ -4,7 +4,7 @@ import FlatCase from './FlatCase'
 import MediaCardDetail from './MediaCardDetail'
 import { useCaseSequence } from './useCaseSequence'
 import { SettleContext } from './SettleContext'
-import { assetUrl } from '../assetUrl'
+import { derivedAsset } from '../assetSources'
 import type { SupportedCaseFormat } from './caseGeometry'
 import type { Entry } from '../data/lists'
 import './MediaCard.css'
@@ -68,14 +68,21 @@ export default function GameCard({ entry, active, displaced, onActivate, onDeact
     onSequenceChange?.({ showCase, open })
   }, [showCase, open, onSequenceChange])
 
+  const cover = derivedAsset(entry.cover)
+
   return (
     <div className="media-card">
       {showCase ? (
         <Case
           title={entry.title}
-          coverSrc={assetUrl(entry.cover)}
+          // List derivative until open, full derivative after decode —
+          // see KeepCaseCard.tsx's identical props.
+          coverSrc={cover.list}
+          coverFullSrc={cover.full}
           coverAlt={`${entry.title} cover`}
-          discSrc={entry.disc ? assetUrl(entry.disc) : undefined}
+          // The 512px full derivative, requested only at open — see
+          // KeepCaseCard.tsx's identical prop.
+          discSrc={entry.disc ? derivedAsset(entry.disc).full : undefined}
           discAlt={`${entry.title} disc`}
           medium={entry.medium}
           discSource={entry.discSource}
@@ -90,10 +97,19 @@ export default function GameCard({ entry, active, displaced, onActivate, onDeact
       ) : (
         <FlatCase
           title={entry.title}
-          coverSrc={assetUrl(entry.cover)}
-          coverAlt={`${entry.title} cover`}
+          // The 260px list derivative (src/assetSources.ts) — the open
+          // Case above keeps the original. Games sit last on the page, so
+          // every cover here is lazy with no fetch priority.
+          coverSrc={cover.list}
+          coverAlt={entry.title}
           caseFormat={entry.case as SupportedCaseFormat}
           livery={entry.livery}
+          coverWidth={cover.width || undefined}
+          coverHeight={cover.height || undefined}
+          // Games are the last list on the page, never the first row:
+          // demoted so these never compete with the visible covers for
+          // bandwidth (FlatCase.tsx's fetchPriority comment).
+          fetchPriority="low"
           onClick={onActivate}
           buttonRef={flatButtonRef}
           restTilt

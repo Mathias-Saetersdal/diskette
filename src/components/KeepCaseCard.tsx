@@ -4,7 +4,7 @@ import FlatCase from './FlatCase'
 import MediaCardDetail from './MediaCardDetail'
 import { useCaseSequence } from './useCaseSequence'
 import { SettleContext } from './SettleContext'
-import { assetUrl } from '../assetUrl'
+import { derivedAsset } from '../assetSources'
 import type { SupportedCaseFormat } from './caseGeometry'
 import type { Entry } from '../data/lists'
 import './MediaCard.css'
@@ -90,14 +90,29 @@ export default function KeepCaseCard({
     onSequenceChange?.({ showCase, open })
   }, [showCase, open, onSequenceChange])
 
+  // Both representations paint from derivatives now: the resting card and
+  // the opening case use the 260px list asset, and the open case upgrades
+  // to the 512px full asset once decoded. One src, no srcset: 260 already
+  // covers the widest resting cover face at DPR 3 (stage 1 measurement),
+  // so a larger candidate never improves what is on screen.
+  const cover = derivedAsset(entry.cover)
+
   return (
     <div className="media-card">
       {showCase ? (
         <Case
           title={entry.title}
-          coverSrc={assetUrl(entry.cover)}
+          // The list derivative carries the face until open; the full
+          // derivative swaps in once decoded (Case.tsx coverFullSrc).
+          // Nothing loads the original cover PNG any more.
+          coverSrc={cover.list}
+          coverFullSrc={cover.full}
           coverAlt={`${entry.title} cover`}
-          discSrc={entry.disc ? assetUrl(entry.disc) : undefined}
+          // The 512px full derivative: covers the widest on-screen disc
+          // (jewel, 190.37px at 1440, scale(2) included) at DPR 3.
+          // Requested only once the case reaches its open state (Case.tsx
+          // discRequested); nothing prefetches it.
+          discSrc={entry.disc ? derivedAsset(entry.disc).full : undefined}
           discAlt={`${entry.title} disc`}
           medium={entry.medium}
           discSource={entry.discSource}
@@ -112,10 +127,22 @@ export default function KeepCaseCard({
       ) : (
         <FlatCase
           title={entry.title}
-          coverSrc={assetUrl(entry.cover)}
-          coverAlt={`${entry.title} cover`}
+          coverSrc={cover.list}
+          coverAlt={entry.title}
           caseFormat={entry.case as SupportedCaseFormat}
           livery={entry.livery}
+          coverWidth={cover.width || undefined}
+          coverHeight={cover.height || undefined}
+          // Films is the first list on the one scrolling page (App.tsx),
+          // so the page's first four covers in document order are films
+          // ranks 1 to 4, and only those load eagerly — series (this same
+          // component) and everything below stay lazy. fetchpriority high
+          // on the first two only; every cover outside the films row is
+          // demoted to low so the browser starves those requests instead
+          // of round-robining them against the visible row (all 40 load
+          // at rest — FlatCase.tsx's fetchPriority comment).
+          eager={entry.medium === 'film' && entry.rank <= 4}
+          fetchPriority={entry.medium === 'film' ? (entry.rank <= 2 ? 'high' : undefined) : 'low'}
           onClick={onActivate}
           buttonRef={flatButtonRef}
           // Every entry KeepCaseCard ever renders gets a real spine now

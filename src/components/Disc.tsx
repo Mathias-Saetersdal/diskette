@@ -1,3 +1,12 @@
+/* eslint-disable react-refresh/only-export-components --
+ * Same trade as CaseFrontFace.tsx's own disable: the decoded-image cache
+ * below is exported alongside the components on purpose (CaseFrontFace
+ * and JewelCase load their full covers through the identical mechanism,
+ * and the cache semantics are documented here where they were settled).
+ * Splitting it into its own file to satisfy fast refresh would only move
+ * the imports around; the cost is that editing this file reloads the page
+ * in dev instead of hot-swapping, which is acceptable.
+ */
 import {
   useEffect,
   useRef,
@@ -202,6 +211,56 @@ export function DiscShell({
   )
 }
 
+// Fetched-and-decoded open-state assets, kept for the life of the page.
+// Case unmounts on close, so this lives at module level: closing and
+// reopening an entry must not refetch, and the HTTP cache alone can't
+// promise that (a dev panel with caching disabled refetches every
+// remount). Discs and the open-state full covers (CaseFrontFace.tsx,
+// JewelCase.tsx) share it, so one entry open at a time means at most two
+// requests ever in flight here.
+//
+// What each entry stores: an object URL string, whose backing Blob is the
+// COMPRESSED WebP bytes (~50-130KB per asset). Never the decoded bitmap:
+// the Image below is function-local and dropped after decode, so the
+// decoded pixels live only in the engine's own evictable image cache, the
+// same place every rendered img's pixels go. The object URLs are never
+// revoked, deliberately — revoking one would break the reopen-from-cache
+// path — and are bounded at one per distinct asset.
+const decodedImages = new Map<string, string>() // src -> object URL of the compressed blob
+const inflightImages = new Map<string, Promise<string>>()
+
+/** The already-decoded object URL for src, if a load has completed. */
+export function decodedImageUrl(src: string): string | undefined {
+  return decodedImages.get(src)
+}
+
+export function loadDecodedImage(src: string): Promise<string> {
+  const cached = decodedImages.get(src)
+  if (cached) return Promise.resolve(cached)
+  const inflight = inflightImages.get(src)
+  if (inflight) return inflight
+  const request = fetch(src)
+    .then((response) => {
+      if (!response.ok) throw new Error(`${response.status} fetching ${src}`)
+      return response.blob()
+    })
+    .then(async (blob) => {
+      // Decode before anyone renders it, so the asset appears complete on
+      // its first painted frame — no fade, no progressive scan-in.
+      const url = URL.createObjectURL(blob)
+      const image = new Image()
+      image.src = url
+      await image.decode()
+      decodedImages.set(src, url)
+      return url
+    })
+    .finally(() => {
+      inflightImages.delete(src)
+    })
+  inflightImages.set(src, request)
+  return request
+}
+
 interface DiscProps {
   src: string
   alt: string
@@ -209,17 +268,31 @@ interface DiscProps {
 }
 
 export default function Disc({ src, alt, interactive }: DiscProps) {
+  // src arrives empty until the case reaches its open state (Case.tsx and
+  // JewelCase.tsx gate it), so nothing here touches the network at rest
+  // or during the enlarge. A failed load leaves the tray empty and the
+  // case interactive: no throw, no error surface, and the failure isn't
+  // cached, so the next open retries.
+  const [objectUrl, setObjectUrl] = useState<string | null>(() =>
+    src ? (decodedImageUrl(src) ?? null) : null,
+  )
+  useEffect(() => {
+    if (!src) return
+    let cancelled = false
+    loadDecodedImage(src)
+      .then((url) => {
+        if (!cancelled) setObjectUrl(url)
+      })
+      .catch(() => {
+        // The open interaction never blocked on this; the tray just
+        // stays empty.
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [src])
+
   return (
-    <DiscShell interactive={interactive}>
-      {/*
-       * decoding="async": disc scans run 2-3MB at 1000x1000, and a
-       * synchronous decode of that on mount lands exactly on the frame
-       * the case starts enlarging — a visible hitch at click time.
-       * fetchpriority="high": by mount time this image is the one thing
-       * the user is waiting to see; the idle preloader (preloadDiscs.ts)
-       * has usually cached it already, and this covers the cold path.
-       */}
-      <img src={src} alt={alt} decoding="async" fetchPriority="high" />
-    </DiscShell>
+    <DiscShell interactive={interactive}>{objectUrl && <img src={objectUrl} alt={alt} />}</DiscShell>
   )
 }

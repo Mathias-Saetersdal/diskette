@@ -6,8 +6,9 @@
  * imports around; the cost is that editing this file reloads the page
  * in dev instead of hot-swapping, which is acceptable.
  */
-import { useState, type CSSProperties } from 'react'
+import { useEffect, useState, type CSSProperties } from 'react'
 import { assetUrl } from '../assetUrl'
+import { decodedImageUrl, loadDecodedImage } from './Disc'
 import type { Livery } from '../data/lists'
 import type { SupportedCaseFormat } from './caseGeometry'
 import './Case.css'
@@ -130,6 +131,38 @@ interface CaseFrontFaceProps {
   coverAlt: string
   caseFormat: SupportedCaseFormat
   livery: Livery
+  /**
+   * Original pixel dimensions of the cover, from the derived-asset record
+   * (src/assetSources.ts). Intrinsic-ratio hints only: the CSS box
+   * (.case__front-poster img's own 100%/100%, Case.css) still sizes the
+   * element, so these never change layout. Both or neither — a 0 from the
+   * lookup's production fallback means unknown, and callers pass nothing.
+   * FlatCase (the list placeholder) supplies them; Case (the open case)
+   * passes none of these four props and renders exactly as before.
+   */
+  coverWidth?: number
+  coverHeight?: number
+  /** Defaults to "lazy", the behaviour every caller had before these props. */
+  loading?: 'eager' | 'lazy'
+  /**
+   * "high" for the page's first two covers, "low" for every cover outside
+   * the first row (FlatCase's fetchPriority comment has the split),
+   * absent for the rest of the first row. Left absent, the browser's own
+   * heuristics apply, which is the pre-existing behaviour.
+   */
+  fetchPriority?: 'high' | 'low'
+  decoding?: 'async'
+  /**
+   * The 512px .full.webp for this cover. Passed by the open Case only,
+   * and only once the case has reached its open state — never by
+   * FlatCase, so the list view can't trigger it. When set, the full asset
+   * loads through Disc.tsx's shared decoded-image cache and replaces
+   * coverSrc in place the moment it has decoded: same image at higher
+   * resolution, so no fade and no transition, and a load failure just
+   * stays on coverSrc. Cached for the page's life, so reopening renders
+   * the full asset immediately with zero network.
+   */
+  coverFullSrc?: string
 }
 
 /**
@@ -142,7 +175,38 @@ interface CaseFrontFaceProps {
  * where nothing above it defines one. The actual rules (case__front-art and
  * its children) live in Case.css, shared rather than duplicated.
  */
-export default function CaseFrontFace({ coverSrc, coverAlt, caseFormat, livery }: CaseFrontFaceProps) {
+export default function CaseFrontFace({
+  coverSrc,
+  coverAlt,
+  caseFormat,
+  livery,
+  coverWidth,
+  coverHeight,
+  loading = 'lazy',
+  fetchPriority,
+  decoding,
+  coverFullSrc,
+}: CaseFrontFaceProps) {
+  // Full-resolution upgrade, open case only (coverFullSrc's own comment).
+  // Starts from the cache so a reopened case never re-shows the list
+  // asset first.
+  const [fullUrl, setFullUrl] = useState<string | null>(() =>
+    coverFullSrc ? (decodedImageUrl(coverFullSrc) ?? null) : null,
+  )
+  useEffect(() => {
+    if (!coverFullSrc) return
+    let cancelled = false
+    loadDecodedImage(coverFullSrc)
+      .then((url) => {
+        if (!cancelled) setFullUrl(url)
+      })
+      .catch(() => {
+        // Stay on the list asset. No error surface.
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [coverFullSrc])
   // Games are the first list built with no assets fetched yet (every
   // cover 404s until they're sourced by hand — docs/05-build-plan.md).
   // Nothing else in the codebase handles a broken image src, so a missing
@@ -218,7 +282,15 @@ export default function CaseFrontFace({ coverSrc, coverAlt, caseFormat, livery }
        */}
       <div className="case__front-poster">
         {!coverFailed && (
-          <img src={coverSrc} alt={coverAlt} loading="lazy" onError={() => setCoverFailed(true)} />
+          <img
+            src={fullUrl ?? coverSrc}
+            alt={coverAlt}
+            {...(coverWidth && coverHeight ? { width: coverWidth, height: coverHeight } : {})}
+            loading={loading}
+            {...(fetchPriority ? { fetchPriority } : {})}
+            {...(decoding ? { decoding } : {})}
+            onError={() => setCoverFailed(true)}
+          />
         )}
       </div>
       {hasHeader && (

@@ -34,6 +34,13 @@ interface CaseProps {
   title: string
   coverSrc: string
   coverAlt: string
+  /**
+   * The 512px .full.webp for the cover. Requested once the case reaches
+   * its open state, decoded, then swapped in over coverSrc in place —
+   * CaseFrontFace.tsx's coverFullSrc has the mechanics. Optional so a
+   * caller without derived assets (TiltCompare) just never upgrades.
+   */
+  coverFullSrc?: string
   /** Absent when discSource is 'burned' — BurnedDisc renders instead, no fetched image involved. */
   discSrc?: string
   discAlt?: string
@@ -165,6 +172,7 @@ export default function Case({
   title,
   coverSrc,
   coverAlt,
+  coverFullSrc,
   discSrc,
   discAlt,
   medium,
@@ -230,6 +238,17 @@ export default function Case({
     const id = setTimeout(() => setInteriorOnTop(false), 600) // hinge duration, caseMechanism.css
     return () => clearTimeout(id)
   }, [open, interiorOnTop])
+
+  // The open-state assets' requests (the disc, and the full-resolution
+  // cover) start when the case enters its open state, never before: at
+  // rest and through the enlarge the disc slot mounts with an empty src
+  // (Disc.tsx ignores it) and the front face keeps the list cover. Sticky
+  // by the same render-time pattern as interiorOnTop above — it never
+  // falls back to false, so neither asset vanishes under the closing lid
+  // when `open` drops. Full close unmounts this component and Disc.tsx's
+  // module cache keeps both off the network on reopen.
+  const [openAssetsRequested, setOpenAssetsRequested] = useState(false)
+  if (open && !openAssetsRequested) setOpenAssetsRequested(true)
 
   const spine = useSpineColors(coverSrc)
   const geometry = useCaseGeometry(caseFormat)
@@ -301,6 +320,7 @@ export default function Case({
       coverAlt={coverAlt}
       caseFormat={caseFormat}
       livery={livery}
+      coverFullSrc={openAssetsRequested ? coverFullSrc : undefined}
     />
   )
 
@@ -328,7 +348,7 @@ export default function Case({
       {discSource === 'burned' ? (
         <BurnedDisc title={title} medium={medium} interactive={discOut} />
       ) : (
-        <Disc src={discSrc ?? ''} alt={discAlt ?? ''} interactive={discOut} />
+        <Disc src={openAssetsRequested ? (discSrc ?? '') : ''} alt={discAlt ?? ''} interactive={discOut} />
       )}
     </div>
   )
