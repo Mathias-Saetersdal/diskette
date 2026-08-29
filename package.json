@@ -8,6 +8,7 @@
     "derive-assets": "tsx scripts/derive-assets.ts",
     "prebuild": "npm run derive-assets",
     "build": "tsx scripts/check-notes.ts && tsx scripts/check-assets.ts && tsc -b && vite build",
+    "postbuild": "tsx scripts/strip-originals.ts",
     "lint": "eslint .",
     "preview": "vite preview"
   },
