@@ -1,5 +1,6 @@
 import { useContext, useEffect } from 'react'
 import Case from './Case'
+import { loadDecodedImage } from './Disc'
 import FlatCase from './FlatCase'
 import MediaCardDetail from './MediaCardDetail'
 import { useCaseSequence } from './useCaseSequence'
@@ -96,6 +97,20 @@ export default function KeepCaseCard({
   // covers the widest resting cover face at DPR 3 (stage 1 measurement),
   // so a larger candidate never improves what is on screen.
   const cover = derivedAsset(entry.cover)
+  const discFull = entry.disc ? derivedAsset(entry.disc).full : undefined
+
+  // The disc request leaves at click, in the same tick the interaction
+  // begins — not when `open` settles ~2s later (scroll settle plus the
+  // 1.5s enlarge), which left even an HTTP-cached disc paying its
+  // revalidation round trip inside the hinge swing. Same shared cache
+  // Disc.tsx reads at open, so this is the same single request moved
+  // earlier: no refetch on reopen, failure stays silent here and the
+  // tray simply renders empty. Burned entries have no disc field, so
+  // they skip this entirely.
+  const activate = () => {
+    if (discFull) loadDecodedImage(discFull).catch(() => {})
+    onActivate()
+  }
 
   return (
     <div className="media-card">
@@ -109,10 +124,10 @@ export default function KeepCaseCard({
           coverFullSrc={cover.full}
           coverAlt={`${entry.title} cover`}
           // The 512px full derivative: covers the widest on-screen disc
-          // (jewel, 190.37px at 1440, scale(2) included) at DPR 3.
-          // Requested only once the case reaches its open state (Case.tsx
-          // discRequested); nothing prefetches it.
-          discSrc={entry.disc ? derivedAsset(entry.disc).full : undefined}
+          // (jewel, 190.37px at 1440, scale(2) included) at DPR 3. The
+          // request left at click (activate above); Disc.tsx reads the
+          // shared cache when the open state feeds it this src.
+          discSrc={discFull}
           discAlt={`${entry.title} disc`}
           medium={entry.medium}
           discSource={entry.discSource}
@@ -143,7 +158,7 @@ export default function KeepCaseCard({
           // at rest — FlatCase.tsx's fetchPriority comment).
           eager={entry.medium === 'film' && entry.rank <= 4}
           fetchPriority={entry.medium === 'film' ? (entry.rank <= 2 ? 'high' : undefined) : 'low'}
-          onClick={onActivate}
+          onClick={activate}
           buttonRef={flatButtonRef}
           // Every entry KeepCaseCard ever renders gets a real spine now
           // (build plan review, stage 4) — films and series, the only two

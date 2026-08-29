@@ -4,6 +4,7 @@ import FlatCase from './FlatCase'
 import MediaCardDetail from './MediaCardDetail'
 import { useCaseSequence } from './useCaseSequence'
 import { SettleContext } from './SettleContext'
+import { loadDecodedImage } from './Disc'
 import { derivedAsset } from '../assetSources'
 import type { SupportedCaseFormat } from './caseGeometry'
 import type { Entry } from '../data/lists'
@@ -69,6 +70,14 @@ export default function GameCard({ entry, active, displaced, onActivate, onDeact
   }, [showCase, open, onSequenceChange])
 
   const cover = derivedAsset(entry.cover)
+  const discFull = entry.disc ? derivedAsset(entry.disc).full : undefined
+
+  // The disc request leaves at click, in the same tick the interaction
+  // begins - KeepCaseCard.tsx's identical activate has the reasoning.
+  const activate = () => {
+    if (discFull) loadDecodedImage(discFull).catch(() => {})
+    onActivate()
+  }
 
   return (
     <div className="media-card">
@@ -80,9 +89,9 @@ export default function GameCard({ entry, active, displaced, onActivate, onDeact
           coverSrc={cover.list}
           coverFullSrc={cover.full}
           coverAlt={`${entry.title} cover`}
-          // The 512px full derivative, requested only at open — see
-          // KeepCaseCard.tsx's identical prop.
-          discSrc={entry.disc ? derivedAsset(entry.disc).full : undefined}
+          // The 512px full derivative, requested at click — see
+          // KeepCaseCard.tsx's identical activate and prop.
+          discSrc={discFull}
           discAlt={`${entry.title} disc`}
           medium={entry.medium}
           discSource={entry.discSource}
@@ -110,7 +119,7 @@ export default function GameCard({ entry, active, displaced, onActivate, onDeact
           // demoted so these never compete with the visible covers for
           // bandwidth (FlatCase.tsx's fetchPriority comment).
           fetchPriority="low"
-          onClick={onActivate}
+          onClick={activate}
           buttonRef={flatButtonRef}
           restTilt
           spineTone={entry.spineTone}
