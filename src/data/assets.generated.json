@@ -1,0 +1,972 @@
+{
+  "/assets/album/2014-forest-hills-drive/cover.png": {
+    "list": "/assets/derived/album/2014-forest-hills-drive/cover.list.webp",
+    "full": "/assets/derived/album/2014-forest-hills-drive/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1218,
+    "height": 1200,
+    "thumbhash": "lOcBD4KavpdOg3ewaLiIB0SGqj79R4AI",
+    "dominant": "#283838"
+  },
+  "/assets/album/2014-forest-hills-drive/disc.png": {
+    "list": "/assets/derived/album/2014-forest-hills-drive/disc.list.webp",
+    "full": "/assets/derived/album/2014-forest-hills-drive/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "lOcBDwKarqdOlHewaLiICESGqT39R4AI",
+    "dominant": "#283838"
+  },
+  "/assets/album/astroworld/cover.png": {
+    "list": "/assets/derived/album/astroworld/cover.list.webp",
+    "full": "/assets/derived/album/astroworld/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1056,
+    "height": 1200,
+    "thumbhash": "4RgGNgiLcPyjh6dmXIGDV3Z4OGCCBCY=",
+    "dominant": "#98b8c8"
+  },
+  "/assets/album/astroworld/disc.png": {
+    "list": "/assets/derived/album/astroworld/disc.list.webp",
+    "full": "/assets/derived/album/astroworld/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "ISkGJwSNcF1PXHltuUZYemZomRAmGWAB",
+    "dominant": "#98b8c8"
+  },
+  "/assets/album/at-long-last-asap/cover.png": {
+    "list": "/assets/derived/album/at-long-last-asap/cover.list.webp",
+    "full": "/assets/derived/album/at-long-last-asap/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1056,
+    "height": 1200,
+    "thumbhash": "2vcFBgBw2No4Z3Z7aJhlY3Zpr5v47Jw=",
+    "dominant": "#080808"
+  },
+  "/assets/album/at-long-last-asap/disc.png": {
+    "list": "/assets/derived/album/at-long-last-asap/disc.list.webp",
+    "full": "/assets/derived/album/at-long-last-asap/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "2/cFBwBg2GqbdGW5h1dHVYen97x7z80I",
+    "dominant": "#080808"
+  },
+  "/assets/album/currents/cover.png": {
+    "list": "/assets/derived/album/currents/cover.list.webp",
+    "full": "/assets/derived/album/currents/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1056,
+    "height": 1200,
+    "thumbhash": "lScGDgBaiBh5iQeJd4V3dld3trC4lU8=",
+    "dominant": "#080808"
+  },
+  "/assets/album/currents/disc.png": {
+    "list": "/assets/derived/album/currents/disc.list.webp",
+    "full": "/assets/derived/album/currents/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "licGDwA6h0mUpnewiFV5hleFdQd+af4K",
+    "dominant": "#080808"
+  },
+  "/assets/album/damn/cover.png": {
+    "list": "/assets/derived/album/damn/cover.list.webp",
+    "full": "/assets/derived/album/damn/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1056,
+    "height": 1200,
+    "thumbhash": "IkgSHgxqWAiWh3d4mIqId3iHl496+ag=",
+    "dominant": "#d8d8e8"
+  },
+  "/assets/album/damn/disc.png": {
+    "list": "/assets/derived/album/damn/disc.list.webp",
+    "full": "/assets/derived/album/damn/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "JCgSFwhqWHhgaXiGh6p4iIh3h/qoqI8L",
+    "dominant": "#d8d8e8"
+  },
+  "/assets/album/konnichiwa/cover.png": {
+    "list": "/assets/derived/album/konnichiwa/cover.list.webp",
+    "full": "/assets/derived/album/konnichiwa/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1056,
+    "height": 1200,
+    "thumbhash": "NBgGDgT3OHiId/cYuHeHhHuHB4hwgAg=",
+    "dominant": "#e8e8e8"
+  },
+  "/assets/album/konnichiwa/disc.png": {
+    "list": "/assets/derived/album/konnichiwa/disc.list.webp",
+    "full": "/assets/derived/album/konnichiwa/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "MxgKDwT3OJiIeHeOgot3V6d3d4AIB4gA",
+    "dominant": "#e8e8e8"
+  },
+  "/assets/album/man-on-the-moon-iii-the-chosen/cover.png": {
+    "list": "/assets/derived/album/man-on-the-moon-iii-the-chosen/cover.list.webp",
+    "full": "/assets/derived/album/man-on-the-moon-iii-the-chosen/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1056,
+    "height": 1200,
+    "thumbhash": "2lYKJgiPW6iHiDiod3Z4eYd3/3bzfFY=",
+    "dominant": "#281848"
+  },
+  "/assets/album/man-on-the-moon-iii-the-chosen/disc.png": {
+    "list": "/assets/derived/album/man-on-the-moon-iii-the-chosen/disc.list.webp",
+    "full": "/assets/derived/album/man-on-the-moon-iii-the-chosen/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "22YKJwp/W4h5iYeDeYh3l3d3+F9W31YG",
+    "dominant": "#281848"
+  },
+  "/assets/album/one-of-wun/cover.png": {
+    "list": "/assets/derived/album/one-of-wun/cover.list.webp",
+    "full": "/assets/derived/album/one-of-wun/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1200,
+    "height": 1200,
+    "thumbhash": "FtcJFwIHmJiJloeUeZmVWXmGmB/7+aIP",
+    "dominant": "#384848"
+  },
+  "/assets/album/one-of-wun/disc.png": {
+    "list": "/assets/derived/album/one-of-wun/disc.list.webp",
+    "full": "/assets/derived/album/one-of-wun/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "FtcJFwIHmJiJloeUeZmVWXmGmB/7+aIP",
+    "dominant": "#384848"
+  },
+  "/assets/album/rommet/cover.png": {
+    "list": "/assets/derived/album/rommet/cover.list.webp",
+    "full": "/assets/derived/album/rommet/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1200,
+    "height": 1200,
+    "thumbhash": "ZQgGDwAW9V1gnWaORklobEd39ZlL8+MA",
+    "dominant": "#282828"
+  },
+  "/assets/album/rommet/disc.png": {
+    "list": "/assets/derived/album/rommet/disc.list.webp",
+    "full": "/assets/derived/album/rommet/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "ZAgGDwAX9V1gnWaORklobEd39ZpL8+MA",
+    "dominant": "#282828"
+  },
+  "/assets/album/the-life-of-pablo/cover.png": {
+    "list": "/assets/derived/album/the-life-of-pablo/cover.list.webp",
+    "full": "/assets/derived/album/the-life-of-pablo/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1056,
+    "height": 1200,
+    "thumbhash": "YpoGFgSW+TapiMdYaHaIepeY92l7n7Y=",
+    "dominant": "#f88858"
+  },
+  "/assets/film/blade-runner-2049/backdrop.jpg": {
+    "list": "/assets/derived/film/blade-runner-2049/backdrop.list.webp",
+    "full": "/assets/derived/film/blade-runner-2049/backdrop.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1280,
+    "height": 720,
+    "thumbhash": "kmYKFIgPhUdDl4d0eYbAQP4lYw==",
+    "dominant": "#180828"
+  },
+  "/assets/film/blade-runner-2049/cover.png": {
+    "list": "/assets/derived/film/blade-runner-2049/cover.list.webp",
+    "full": "/assets/derived/film/blade-runner-2049/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 800,
+    "height": 1200,
+    "thumbhash": "kCgKPRSVaG95d1h3eIaHZ2+2+Geb",
+    "dominant": "#080808"
+  },
+  "/assets/film/blade-runner-2049/disc.png": {
+    "list": "/assets/derived/film/blade-runner-2049/disc.list.webp",
+    "full": "/assets/derived/film/blade-runner-2049/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "1TiGLQ4r91Rvc5U2uI+I+IiICDh4h3CCNw==",
+    "dominant": "#080808"
+  },
+  "/assets/film/fight-club/backdrop.jpg": {
+    "list": "/assets/derived/film/fight-club/backdrop.list.webp",
+    "full": "/assets/derived/film/fight-club/backdrop.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1280,
+    "height": 720,
+    "thumbhash": "SMcFDIKnSlZ+eYikgFeIgIYGaA==",
+    "dominant": "#080808"
+  },
+  "/assets/film/fight-club/cover.png": {
+    "list": "/assets/derived/film/fight-club/cover.list.webp",
+    "full": "/assets/derived/film/fight-club/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 800,
+    "height": 1200,
+    "thumbhash": "1kkSNQhpeJd3B4d2h2Z4h3eEoJYJ",
+    "dominant": "#080808"
+  },
+  "/assets/film/fight-club/disc.png": {
+    "list": "/assets/derived/film/fight-club/disc.list.webp",
+    "full": "/assets/derived/film/fight-club/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "njiOFQQrBpeIiIiqdzePZ/R4Bzd3h3ByOA==",
+    "dominant": "#080808"
+  },
+  "/assets/film/inception/backdrop.jpg": {
+    "list": "/assets/derived/film/inception/backdrop.list.webp",
+    "full": "/assets/derived/film/inception/backdrop.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1280,
+    "height": 720,
+    "thumbhash": "l+cJFICWZmkKXIhEeImUf0dr+g==",
+    "dominant": "#384848"
+  },
+  "/assets/film/inception/cover.png": {
+    "list": "/assets/derived/film/inception/cover.list.webp",
+    "full": "/assets/derived/film/inception/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 800,
+    "height": 1200,
+    "thumbhash": "E7cJFQYrWIGHCLZ3l3mHaHRvTPfW",
+    "dominant": "#080808"
+  },
+  "/assets/film/inception/disc.png": {
+    "list": "/assets/derived/film/inception/disc.list.webp",
+    "full": "/assets/derived/film/inception/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "WDiGDQQrmqo79mR9ps916F+XBzd3iHCDNw==",
+    "dominant": "#080808"
+  },
+  "/assets/film/interstellar/backdrop.jpg": {
+    "list": "/assets/derived/film/interstellar/backdrop.list.webp",
+    "full": "/assets/derived/film/interstellar/backdrop.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1280,
+    "height": 720,
+    "thumbhash": "hfcJFIIH2Dd5h3h1ion4hYlvqA==",
+    "dominant": "#080808"
+  },
+  "/assets/film/interstellar/cover.png": {
+    "list": "/assets/derived/film/interstellar/cover.list.webp",
+    "full": "/assets/derived/film/interstellar/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 800,
+    "height": 1200,
+    "thumbhash": "HfgRHQSGd2l4CHhYiYiHZ3ZoUIcF",
+    "dominant": "#182838"
+  },
+  "/assets/film/interstellar/disc.png": {
+    "list": "/assets/derived/film/interstellar/disc.list.webp",
+    "full": "/assets/derived/film/interstellar/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "H/iJFQIriHiPdXqXZnmPifaYB0eHh4BzRw==",
+    "dominant": "#e8e8e8"
+  },
+  "/assets/film/spider-man-2/backdrop.jpg": {
+    "list": "/assets/derived/film/spider-man-2/backdrop.list.webp",
+    "full": "/assets/derived/film/spider-man-2/backdrop.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1280,
+    "height": 720,
+    "thumbhash": "FZoOJIawVWmpmHmIeHmAiWjAiA==",
+    "dominant": "#080808"
+  },
+  "/assets/film/spider-man-2/cover.png": {
+    "list": "/assets/derived/film/spider-man-2/cover.list.webp",
+    "full": "/assets/derived/film/spider-man-2/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 800,
+    "height": 1200,
+    "thumbhash": "U4kKHQiiV3+JCFuYWHd4eISPo/RJ",
+    "dominant": "#080808"
+  },
+  "/assets/film/spider-man-2/disc.png": {
+    "list": "/assets/derived/film/spider-man-2/disc.list.webp",
+    "full": "/assets/derived/film/spider-man-2/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "kLmGFQgrhrhthYBc2Kd/c/lHBzd3iIByOA==",
+    "dominant": "#080808"
+  },
+  "/assets/film/spirited-away/backdrop.jpg": {
+    "list": "/assets/derived/film/spirited-away/backdrop.list.webp",
+    "full": "/assets/derived/film/spirited-away/backdrop.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1280,
+    "height": 720,
+    "thumbhash": "m5YFLIYCR7TIh5VEZ4UGdYcwVw==",
+    "dominant": "#98b8d8"
+  },
+  "/assets/film/spirited-away/cover.png": {
+    "list": "/assets/derived/film/spirited-away/cover.list.webp",
+    "full": "/assets/derived/film/spirited-away/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 800,
+    "height": 1200,
+    "thumbhash": "SygOHQY5pnCJlpeIiHaGaEhwiQSY",
+    "dominant": "#080808"
+  },
+  "/assets/film/spirited-away/disc.png": {
+    "list": "/assets/derived/film/spirited-away/disc.list.webp",
+    "full": "/assets/derived/film/spirited-away/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "CgiGDQIr0lmgaKjF06GgOAi5Bzd3iHByNw==",
+    "dominant": "#080808"
+  },
+  "/assets/film/superbad/backdrop.jpg": {
+    "list": "/assets/derived/film/superbad/backdrop.list.webp",
+    "full": "/assets/derived/film/superbad/backdrop.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1280,
+    "height": 720,
+    "thumbhash": "WwgOFIBAqZdma4dZmYiFf7fyFw==",
+    "dominant": "#181818"
+  },
+  "/assets/film/superbad/cover.png": {
+    "list": "/assets/derived/film/superbad/cover.list.webp",
+    "full": "/assets/derived/film/superbad/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 800,
+    "height": 1200,
+    "thumbhash": "5TgSDQb3pniW92iniHhWiGF8cKUH",
+    "dominant": "#f8e8d8"
+  },
+  "/assets/film/superbad/disc.png": {
+    "list": "/assets/derived/film/superbad/disc.list.webp",
+    "full": "/assets/derived/film/superbad/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "YyiKDQIrt5iOdYS3+FavhPSIBzd3iHCDNw==",
+    "dominant": "#080808"
+  },
+  "/assets/film/the-dark-knight/backdrop.jpg": {
+    "list": "/assets/derived/film/the-dark-knight/backdrop.list.webp",
+    "full": "/assets/derived/film/the-dark-knight/backdrop.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1280,
+    "height": 720,
+    "thumbhash": "UOcFJIiveaqahnhneHUXf3bwdw==",
+    "dominant": "#081828"
+  },
+  "/assets/film/the-dark-knight/cover.png": {
+    "list": "/assets/derived/film/the-dark-knight/cover.list.webp",
+    "full": "/assets/derived/film/the-dark-knight/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 800,
+    "height": 1200,
+    "thumbhash": "D9cJDQR8eK+ImHi3iIqnmAV6OYCG",
+    "dominant": "#081828"
+  },
+  "/assets/film/the-dark-knight/disc.png": {
+    "list": "/assets/derived/film/the-dark-knight/disc.list.webp",
+    "full": "/assets/derived/film/the-dark-knight/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "D9eFDQIr1Pd9hcYWyAml9UQ4Bzd3iHCDNw==",
+    "dominant": "#080808"
+  },
+  "/assets/film/the-matrix/backdrop.jpg": {
+    "list": "/assets/derived/film/the-matrix/backdrop.list.webp",
+    "full": "/assets/derived/film/the-matrix/backdrop.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1280,
+    "height": 720,
+    "thumbhash": "7vcVDIL6dIhslYiIhnf6a6mPpw==",
+    "dominant": "#f8f8f8"
+  },
+  "/assets/film/the-matrix/cover.png": {
+    "list": "/assets/derived/film/the-matrix/cover.list.webp",
+    "full": "/assets/derived/film/the-matrix/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 800,
+    "height": 1200,
+    "thumbhash": "TrgNDQiXaH+Hp2h4eIdnZ7d/egV4",
+    "dominant": "#080808"
+  },
+  "/assets/film/the-matrix/disc.png": {
+    "list": "/assets/derived/film/the-matrix/disc.list.webp",
+    "full": "/assets/derived/film/the-matrix/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "2/eFDQIrONnPWJEspdiagJ8YBzd3d3ByOA==",
+    "dominant": "#080808"
+  },
+  "/assets/film/this-is-the-end/backdrop.jpg": {
+    "list": "/assets/derived/film/this-is-the-end/backdrop.list.webp",
+    "full": "/assets/derived/film/this-is-the-end/backdrop.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1280,
+    "height": 720,
+    "thumbhash": "SygGDIIJl6aGhnhwanYYsGUAWQ==",
+    "dominant": "#080808"
+  },
+  "/assets/film/this-is-the-end/cover.png": {
+    "list": "/assets/derived/film/this-is-the-end/cover.list.webp",
+    "full": "/assets/derived/film/this-is-the-end/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 800,
+    "height": 1200,
+    "thumbhash": "GkkKBQB6Z3+XaHZah3OYSJ0m0Aox",
+    "dominant": "#080808"
+  },
+  "/assets/film/this-is-the-end/disc.png": {
+    "list": "/assets/derived/film/this-is-the-end/disc.list.webp",
+    "full": "/assets/derived/film/this-is-the-end/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "kbmGDQQrONmKhnkJh4mQlwqIBzd3iHCDNw==",
+    "dominant": "#f80808"
+  },
+  "/assets/game/call-of-duty-black-ops-ii/cover.png": {
+    "list": "/assets/derived/game/call-of-duty-black-ops-ii/cover.list.webp",
+    "full": "/assets/derived/game/call-of-duty-black-ops-ii/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1132,
+    "height": 1200,
+    "thumbhash": "EAgOBwBvV4d6l4hCd3eIR4iEBd5TwDwE",
+    "dominant": "#080808"
+  },
+  "/assets/game/call-of-duty-black-ops-ii/disc.png": {
+    "list": "/assets/derived/game/call-of-duty-black-ops-ii/disc.list.webp",
+    "full": "/assets/derived/game/call-of-duty-black-ops-ii/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "EAgOBwBvV4dpl4hCd3eIR4iFBt5DwEwD",
+    "dominant": "#080808"
+  },
+  "/assets/game/call-of-duty-black-ops-iii/cover.png": {
+    "list": "/assets/derived/game/call-of-duty-black-ops-iii/cover.list.webp",
+    "full": "/assets/derived/game/call-of-duty-black-ops-iii/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1132,
+    "height": 1200,
+    "thumbhash": "TRgKDwJ3Z5aPg3aYiWaXKHdxU/xHtn8G",
+    "dominant": "#080808"
+  },
+  "/assets/game/call-of-duty-black-ops-iii/disc.png": {
+    "list": "/assets/derived/game/call-of-duty-black-ops-iii/disc.list.webp",
+    "full": "/assets/derived/game/call-of-duty-black-ops-iii/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "TRgKDwJ3Z5aPg3aYiWaXGIdwU/xHtX8F",
+    "dominant": "#080808"
+  },
+  "/assets/game/cuphead/cover.png": {
+    "list": "/assets/derived/game/cuphead/cover.list.webp",
+    "full": "/assets/derived/game/cuphead/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1190,
+    "height": 1200,
+    "thumbhash": "pEwGRwT3d4mfdXd3mNhp1zaGha9X/EcH",
+    "dominant": "#f8c808"
+  },
+  "/assets/game/dark-souls-iii/cover.png": {
+    "list": "/assets/derived/game/dark-souls-iii/cover.list.webp",
+    "full": "/assets/derived/game/dark-souls-iii/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1132,
+    "height": 1200,
+    "thumbhash": "1xkKHwCwaGmuWIeqlGp1iYWUGf6ah4oA",
+    "dominant": "#181808"
+  },
+  "/assets/game/dark-souls-iii/disc.png": {
+    "list": "/assets/derived/game/dark-souls-iii/disc.list.webp",
+    "full": "/assets/derived/game/dark-souls-iii/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "1xkKHwDBV2qvZ3iolHp0aYaVKv15eHgA",
+    "dominant": "#181808"
+  },
+  "/assets/game/elden-ring-nightreign/cover.png": {
+    "list": "/assets/derived/game/elden-ring-nightreign/cover.list.webp",
+    "full": "/assets/derived/game/elden-ring-nightreign/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1190,
+    "height": 1200,
+    "thumbhash": "2AYOFwJmaHiBdnhwiohph4eHqPj294YG",
+    "dominant": "#080818"
+  },
+  "/assets/game/elden-ring-nightreign/disc.png": {
+    "list": "/assets/derived/game/elden-ring-nightreign/disc.list.webp",
+    "full": "/assets/derived/game/elden-ring-nightreign/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "2AYOFwJmaHiBdnhwiohph4eHqPj294YG",
+    "dominant": "#080818"
+  },
+  "/assets/game/elden-ring/cover.png": {
+    "list": "/assets/derived/game/elden-ring/cover.list.webp",
+    "full": "/assets/derived/game/elden-ring/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1190,
+    "height": 1200,
+    "thumbhash": "kAgKHwQXiHdweYiGiKh3WIh4dnBIB4kC",
+    "dominant": "#080808"
+  },
+  "/assets/game/elden-ring/disc.png": {
+    "list": "/assets/derived/game/elden-ring/disc.list.webp",
+    "full": "/assets/derived/game/elden-ring/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "kAgKHwQXiHdweYiGiLh3WIh4d3BIB4oC",
+    "dominant": "#080808"
+  },
+  "/assets/game/grand-theft-auto-v/cover.png": {
+    "list": "/assets/derived/game/grand-theft-auto-v/cover.list.webp",
+    "full": "/assets/derived/game/grand-theft-auto-v/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1190,
+    "height": 1200,
+    "thumbhash": "nigGFwQaWJyneXZgnRS8Z2WEXD/t+ZkN",
+    "dominant": "#080808"
+  },
+  "/assets/game/grand-theft-auto-v/disc.png": {
+    "list": "/assets/derived/game/grand-theft-auto-v/disc.list.webp",
+    "full": "/assets/derived/game/grand-theft-auto-v/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "nigGFwQaWJyneXZwnRS8Z2WEXE/t+ZkN",
+    "dominant": "#080808"
+  },
+  "/assets/game/lego-star-wars-the-complete-saga/cover.png": {
+    "list": "/assets/derived/game/lego-star-wars-the-complete-saga/cover.list.webp",
+    "full": "/assets/derived/game/lego-star-wars-the-complete-saga/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1042,
+    "height": 1200,
+    "thumbhash": "FfgNHgRZaQdmd3eIeId4c0h4B5yt8fo=",
+    "dominant": "#080808"
+  },
+  "/assets/game/lego-star-wars-the-complete-saga/disc.png": {
+    "list": "/assets/derived/game/lego-star-wars-the-complete-saga/disc.list.webp",
+    "full": "/assets/derived/game/lego-star-wars-the-complete-saga/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "E/gNHwZIaHdghneYeUeHJ5h3ifGISp8I",
+    "dominant": "#080808"
+  },
+  "/assets/game/rocket-league/cover.png": {
+    "list": "/assets/derived/game/rocket-league/cover.list.webp",
+    "full": "/assets/derived/game/rocket-league/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1132,
+    "height": 1200,
+    "thumbhash": "ppYJLwp7emd/WHd9lliIGKiJJgrpgHEM",
+    "dominant": "#f8f8f8"
+  },
+  "/assets/game/sly-3-honor-among-thieves/cover.png": {
+    "list": "/assets/derived/game/sly-3-honor-among-thieves/cover.list.webp",
+    "full": "/assets/derived/game/sly-3-honor-among-thieves/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 922,
+    "height": 1200,
+    "thumbhash": "UhgKLQZXh3BmWGqolnNoV8ZwSA2H",
+    "dominant": "#080808"
+  },
+  "/assets/game/sly-3-honor-among-thieves/disc.png": {
+    "list": "/assets/derived/game/sly-3-honor-among-thieves/disc.list.webp",
+    "full": "/assets/derived/game/sly-3-honor-among-thieves/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "lSgGLwZnd1tAN2fAVOqIdyiaVw1V9GAH",
+    "dominant": "#080808"
+  },
+  "/assets/series/avatar-the-last-airbender/backdrop.jpg": {
+    "list": "/assets/derived/series/avatar-the-last-airbender/backdrop.list.webp",
+    "full": "/assets/derived/series/avatar-the-last-airbender/backdrop.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1280,
+    "height": 720,
+    "thumbhash": "pRgKFISZmXSfl4ZLeImEoEIEaw==",
+    "dominant": "#d86858"
+  },
+  "/assets/series/avatar-the-last-airbender/cover.png": {
+    "list": "/assets/derived/series/avatar-the-last-airbender/cover.list.webp",
+    "full": "/assets/derived/series/avatar-the-last-airbender/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 800,
+    "height": 1200,
+    "thumbhash": "kHkGHQI4BnyCGJdZmYWHiAh8gIMD",
+    "dominant": "#080808"
+  },
+  "/assets/series/avatar-the-last-airbender/disc.png": {
+    "list": "/assets/derived/series/avatar-the-last-airbender/disc.list.webp",
+    "full": "/assets/derived/series/avatar-the-last-airbender/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "0nkKJwQIJopllmqCaXeIh3d4h1BHBmYF",
+    "dominant": "#080808"
+  },
+  "/assets/series/berserk/backdrop.jpg": {
+    "list": "/assets/derived/series/berserk/backdrop.list.webp",
+    "full": "/assets/derived/series/berserk/backdrop.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1280,
+    "height": 720,
+    "thumbhash": "GxgKDIKmlnaPZ3ilh5pJgJACFw==",
+    "dominant": "#382828"
+  },
+  "/assets/series/berserk/cover.png": {
+    "list": "/assets/derived/series/berserk/cover.list.webp",
+    "full": "/assets/derived/series/berserk/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 800,
+    "height": 1200,
+    "thumbhash": "EggODQKVaGeHCEmnmXiYdpxq8PUX",
+    "dominant": "#080808"
+  },
+  "/assets/series/berserk/disc.png": {
+    "list": "/assets/derived/series/berserk/disc.list.webp",
+    "full": "/assets/derived/series/berserk/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "VRgKDwLTSJljg4igdpmKaJdn99qEbW8K",
+    "dominant": "#080808"
+  },
+  "/assets/series/breaking-bad/backdrop.jpg": {
+    "list": "/assets/derived/series/breaking-bad/backdrop.list.webp",
+    "full": "/assets/derived/series/breaking-bad/backdrop.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1280,
+    "height": 720,
+    "thumbhash": "XOgFNIxUd7TeeYihiWCHkHYIWA==",
+    "dominant": "#589898"
+  },
+  "/assets/series/breaking-bad/cover.png": {
+    "list": "/assets/derived/series/breaking-bad/cover.list.webp",
+    "full": "/assets/derived/series/breaking-bad/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 800,
+    "height": 1200,
+    "thumbhash": "jfgJFQAXl3+GV3dXl3NsSDiLYADY",
+    "dominant": "#080808"
+  },
+  "/assets/series/breaking-bad/disc.png": {
+    "list": "/assets/derived/series/breaking-bad/disc.list.webp",
+    "full": "/assets/derived/series/breaking-bad/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "0PgJFwIHmKeLhIhwjCfYOKh4dhBIB4YO",
+    "dominant": "#181808"
+  },
+  "/assets/series/eastbound-and-down/backdrop.jpg": {
+    "list": "/assets/derived/series/eastbound-and-down/backdrop.list.webp",
+    "full": "/assets/derived/series/eastbound-and-down/backdrop.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1280,
+    "height": 720,
+    "thumbhash": "rYYFLIyWeqV4YIeDipIHc4MgNw==",
+    "dominant": "#08b8e8"
+  },
+  "/assets/series/eastbound-and-down/cover.png": {
+    "list": "/assets/derived/series/eastbound-and-down/cover.list.webp",
+    "full": "/assets/derived/series/eastbound-and-down/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 800,
+    "height": 1200,
+    "thumbhash": "LscJJQqWapSGiJkHiJylhwmVhXBp",
+    "dominant": "#f8f8f8"
+  },
+  "/assets/series/eastbound-and-down/disc.png": {
+    "list": "/assets/derived/series/eastbound-and-down/disc.list.webp",
+    "full": "/assets/derived/series/eastbound-and-down/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "LccFNw52a2WUioeRZvt4hniHmVBYCYYF",
+    "dominant": "#f8f8f8"
+  },
+  "/assets/series/game-of-thrones/backdrop.jpg": {
+    "list": "/assets/derived/series/game-of-thrones/backdrop.list.webp",
+    "full": "/assets/derived/series/game-of-thrones/backdrop.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1280,
+    "height": 720,
+    "thumbhash": "xfcFBIAHiId1eImEeon4eIxv2A==",
+    "dominant": "#080808"
+  },
+  "/assets/series/game-of-thrones/cover.png": {
+    "list": "/assets/derived/series/game-of-thrones/cover.list.webp",
+    "full": "/assets/derived/series/game-of-thrones/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 800,
+    "height": 1200,
+    "thumbhash": "yvcFBQBIZ492V0d4eHd4RweKeIBY",
+    "dominant": "#080808"
+  },
+  "/assets/series/game-of-thrones/disc.png": {
+    "list": "/assets/derived/series/game-of-thrones/disc.list.webp",
+    "full": "/assets/derived/series/game-of-thrones/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "zPcFBwA5Rip7gHiEhniHNoh2d5BYB4YF",
+    "dominant": "#181818"
+  },
+  "/assets/series/invincible/backdrop.jpg": {
+    "list": "/assets/derived/series/invincible/backdrop.list.webp",
+    "full": "/assets/derived/series/invincible/backdrop.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1280,
+    "height": 720,
+    "thumbhash": "zQYGDIIIiZKMhHiHWoRVdZAFYg==",
+    "dominant": "#181838"
+  },
+  "/assets/series/invincible/cover.png": {
+    "list": "/assets/derived/series/invincible/cover.list.webp",
+    "full": "/assets/derived/series/invincible/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 800,
+    "height": 1200,
+    "thumbhash": "kgcGHQIjCnyHdntFiGTKOCdwOLBV",
+    "dominant": "#181838"
+  },
+  "/assets/series/invincible/disc.png": {
+    "list": "/assets/derived/series/invincible/disc.list.webp",
+    "full": "/assets/derived/series/invincible/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "UgcKFwQxC4uedmejZ3iHZ5d2WJA3AnwD",
+    "dominant": "#181838"
+  },
+  "/assets/series/its-always-sunny-in-philadelphia/backdrop.jpg": {
+    "list": "/assets/derived/series/its-always-sunny-in-philadelphia/backdrop.list.webp",
+    "full": "/assets/derived/series/its-always-sunny-in-philadelphia/backdrop.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1280,
+    "height": 720,
+    "thumbhash": "43YJZJKKZ3eMeIhwh3h2gGcHOA==",
+    "dominant": "#08a8e8"
+  },
+  "/assets/series/its-always-sunny-in-philadelphia/cover.png": {
+    "list": "/assets/derived/series/its-always-sunny-in-philadelphia/cover.list.webp",
+    "full": "/assets/derived/series/its-always-sunny-in-philadelphia/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 800,
+    "height": 1200,
+    "thumbhash": "YJwGJQLHl4mGBYl3V5bZt+pfqCX4",
+    "dominant": "#f89808"
+  },
+  "/assets/series/its-always-sunny-in-philadelphia/disc.png": {
+    "list": "/assets/derived/series/its-always-sunny-in-philadelphia/disc.list.webp",
+    "full": "/assets/derived/series/its-always-sunny-in-philadelphia/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "4ZsGJwTXp6V/h5SWerVnaZh3t7/EOoAF",
+    "dominant": "#f8d808"
+  },
+  "/assets/series/one-piece/backdrop.jpg": {
+    "list": "/assets/derived/series/one-piece/backdrop.list.webp",
+    "full": "/assets/derived/series/one-piece/backdrop.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1280,
+    "height": 720,
+    "thumbhash": "nygGJIaseEB3o5pnZatGcNcAdw==",
+    "dominant": "#e84838"
+  },
+  "/assets/series/one-piece/cover.png": {
+    "list": "/assets/derived/series/one-piece/cover.list.webp",
+    "full": "/assets/derived/series/one-piece/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 800,
+    "height": 1200,
+    "thumbhash": "9fcFDQIEVN+lFq6qaWk21gW1WWCb",
+    "dominant": "#f8f8f8"
+  },
+  "/assets/series/one-piece/disc.png": {
+    "list": "/assets/derived/series/one-piece/disc.list.webp",
+    "full": "/assets/derived/series/one-piece/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "8/cJDwIwc4ZudYaFeFeI12iDCkGVEGQJ",
+    "dominant": "#f8f8f8"
+  },
+  "/assets/series/south-park/backdrop.jpg": {
+    "list": "/assets/derived/series/south-park/backdrop.list.webp",
+    "full": "/assets/derived/series/south-park/backdrop.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1280,
+    "height": 720,
+    "thumbhash": "mQgGHIgIuIiGh3h0enWXcIwItw==",
+    "dominant": "#485848"
+  },
+  "/assets/series/south-park/cover.png": {
+    "list": "/assets/derived/series/south-park/cover.list.webp",
+    "full": "/assets/derived/series/south-park/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 800,
+    "height": 1200,
+    "thumbhash": "2wgGNQg4d4d2CYdYh4a4iIhwigeX",
+    "dominant": "#785838"
+  },
+  "/assets/series/south-park/disc.png": {
+    "list": "/assets/derived/series/south-park/disc.list.webp",
+    "full": "/assets/derived/series/south-park/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "3ggGPwgJVkaJdYlzlwlnWWh5hgineHAI",
+    "dominant": "#987848"
+  },
+  "/assets/series/vinland-saga/backdrop.jpg": {
+    "list": "/assets/derived/series/vinland-saga/backdrop.list.webp",
+    "full": "/assets/derived/series/vinland-saga/backdrop.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1280,
+    "height": 720,
+    "thumbhash": "YfcJFIK8Umifh4d4l2oBp6nCnw==",
+    "dominant": "#385878"
+  },
+  "/assets/series/vinland-saga/cover.png": {
+    "list": "/assets/derived/series/vinland-saga/cover.list.webp",
+    "full": "/assets/derived/series/vinland-saga/cover.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 800,
+    "height": 1200,
+    "thumbhash": "4xcKDQb5i492xnnHdpVmiBeYcJMI",
+    "dominant": "#f8f8f8"
+  },
+  "/assets/series/vinland-saga/disc.png": {
+    "list": "/assets/derived/series/vinland-saga/disc.list.webp",
+    "full": "/assets/derived/series/vinland-saga/disc.full.webp",
+    "listWidth": 260,
+    "fullWidth": 512,
+    "width": 1000,
+    "height": 1000,
+    "thumbhash": "JSgODwbJeoePd3Z6d1d4hol5lwAYB4AD",
+    "dominant": "#f8f8f8"
+  }
+}
