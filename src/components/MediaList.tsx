@@ -1,4 +1,4 @@
-import { useState, type ComponentType } from 'react'
+import { memo, useCallback, useMemo, useState, type ComponentType } from 'react'
 import type { Entry } from '../data/lists'
 import MediaCardDetail from './MediaCardDetail'
 import './MediaList.css'
@@ -56,17 +56,28 @@ interface MediaListProps {
  * logic of its own, only exactly one entry can be showing at a time, the
  * same exclusivity activeId already enforces).
  *
- * One state object, not two: every card's own onSequenceChange callback
- * is a fresh closure each render (it captures that card's own entry), so
- * every card's effect re-fires on every render of this component, not
- * only the active card's — confirmed directly, an earlier version with
- * separate detailEntry/detailOpen state left detailOpen stuck at false,
- * because the inactive cards' own showCase: false updates ran after the
- * active card's showCase: true one in the same batch and won the race.
- * Folding both fields into one updater sidesteps that: an inactive card's
- * own update only ever touches state by checking the CURRENT entry id
- * inside the updater itself, so it can only ever clear its own former
- * turn, never a different card's active one, regardless of call order.
+ * One state object, not two — an earlier version with separate
+ * detailEntry/detailOpen state left detailOpen stuck at false, because
+ * the inactive cards' own showCase: false updates ran after the active
+ * card's showCase: true one in the same batch and won the race. Folding
+ * both fields into one updater sidesteps that: an inactive card's own
+ * update only ever touches state by checking the CURRENT entry id inside
+ * the updater itself, so it can only ever clear its own former turn,
+ * never a different card's active one, regardless of call order.
+ *
+ * The three callbacks each card receives are identity-stable (built once
+ * in cardCallbacks below), and the card itself renders through a memo
+ * wrapper. Before this, every render of this component built 40 fresh
+ * closures, which re-rendered all 40 cards and re-fired every card's
+ * onSequenceChange effect on every detail update — and during the one
+ * window where two sequences run at once (opening a card while its
+ * neighbour's displaced close is mid-flight) those cascades landed in the
+ * middle of the animations, measured at 28 frames over 25ms in dev where
+ * a single open produced 3. With stable props, a detail update re-renders
+ * this component and the detail panel only; the cards bail out in memo's
+ * props compare. The `displaced` flag still flips for every card when
+ * activeId changes, so those two discrete re-renders per activation
+ * remain, by design — that flag genuinely concerns every card.
  *
  * entries is already rank order (src/data/lists.ts) — that ordering is the
  * only thing that conveys rank here. No badge, no number beyond the rank
@@ -76,29 +87,51 @@ export default function MediaList({ entries, CardComponent, ariaLabel, heading, 
   const [activeId, setActiveId] = useState<string | null>(null)
   const [detail, setDetail] = useState<{ entry: Entry; open: boolean } | null>(null)
 
-  const handleSequenceChange = (entry: Entry, state: SequenceState) => {
+  const handleSequenceChange = useCallback((entry: Entry, state: SequenceState) => {
     setDetail((prev) => {
       if (state.showCase) {
         // Bail out with the same reference when nothing has actually
-        // changed, not just a value that looks the same: every card's own
-        // onSequenceChange prop is a fresh closure each render of this
-        // component (it captures that card's own entry), so its own
-        // useEffect re-fires on every render here, active card included —
-        // returning a new {entry, open} object unconditionally on every
-        // one of those calls, even when open hadn't actually flipped,
-        // kept triggering a further render, which recreated the closures,
-        // which fired the effects again. Confirmed directly: the render
-        // loop this caused ran continuously in the background and was
-        // enough to stop the card-level fade transition elsewhere on the
-        // page from ever settling on 200ms Chrome CPU couldn't otherwise
-        // account for. Returning prev unchanged here is what actually
-        // stops that loop once state has genuinely settled.
+        // changed, not just a value that looks the same. Historically
+        // this guard is what stopped a continuous render loop: the
+        // callbacks used to be fresh closures every render, so every
+        // card's effect re-fired on every render here, and returning a
+        // new {entry, open} object each time kept feeding that cycle —
+        // confirmed directly, it ran in the background hard enough to
+        // stop a 200ms fade elsewhere from ever settling. The closures
+        // are identity-stable now (cardCallbacks below), so the effects
+        // no longer re-fire on renders at all, but the guard stays: it
+        // costs nothing and keeps a genuinely unchanged update from
+        // rendering the detail panel.
         if (prev && prev.entry.id === entry.id && prev.open === state.open) return prev
         return { entry, open: state.open }
       }
       return prev?.entry.id === entry.id ? null : prev
     })
-  }
+  }, [])
+
+  // One callback trio per entry, created once: identity-stable props are
+  // what let the memo wrapper below actually skip. setActiveId and
+  // handleSequenceChange are themselves stable, so nothing in here can go
+  // stale — each closure captures only its own entry object, which is
+  // module-constant data.
+  const cardCallbacks = useMemo(
+    () =>
+      new Map(
+        entries.map((entry) => [
+          entry.id,
+          {
+            onActivate: () => setActiveId(entry.id),
+            onDeactivate: () => setActiveId(null),
+            onSequenceChange: (state: SequenceState) => handleSequenceChange(entry, state),
+          },
+        ]),
+      ),
+    [entries, handleSequenceChange],
+  )
+
+  // Memoized once per CardComponent (which never changes in practice —
+  // each list passes its card type as a module-level constant).
+  const Card = useMemo(() => memo(CardComponent), [CardComponent])
 
   return (
     <section id={id} className="media-list-section" aria-label={ariaLabel}>
@@ -117,14 +150,12 @@ export default function MediaList({ entries, CardComponent, ariaLabel, heading, 
         <h2 className="media-list-heading">{heading}</h2>
         <div className="media-list">
           {entries.map((entry) => (
-            <CardComponent
+            <Card
               key={entry.id}
               entry={entry}
               active={entry.id === activeId}
               displaced={activeId !== null && activeId !== entry.id}
-              onActivate={() => setActiveId(entry.id)}
-              onDeactivate={() => setActiveId(null)}
-              onSequenceChange={(state) => handleSequenceChange(entry, state)}
+              {...cardCallbacks.get(entry.id)!}
             />
           ))}
         </div>

@@ -267,7 +267,15 @@ export function useCaseSequence({
     if (showCase && !wasShowingCase) {
       caseToggleRef.current?.focus()
     } else if (!showCase && wasShowingCase) {
-      flatButtonRef.current?.focus()
+      // Only reclaim focus if this card's own unmount just dropped it to
+      // <body>. On a displaced close, focus already belongs to the case
+      // the user opened next — pulling it to this card's flat button
+      // stole it from that case mid-animation, and the browser's own
+      // scroll-into-view on focus could shove the row around while both
+      // cards were still moving.
+      if (document.activeElement === document.body || document.activeElement === null) {
+        flatButtonRef.current?.focus()
+      }
     }
   }, [showCase])
 
